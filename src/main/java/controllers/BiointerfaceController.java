@@ -9,15 +9,17 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import jssc.SerialPortList;
 import programms.ChannelChart;
+import programms.MyUsbDevice;
 import server.com_port.ComPacks;
 import server.com_port.ComPortHandler;
 import server.com_port.ComPortServer;
 
+import javax.usb.UsbException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
 
 public class BiointerfaceController implements Initializable{
 
@@ -46,7 +48,10 @@ public class BiointerfaceController implements Initializable{
 
     private List<ChannelChart> channelCharts = new ArrayList<ChannelChart>();
 
+    private MyUsbDevice myUsbDevice;
+
     static public ComPortServer comPortServer;
+
 
     private void buildingWaveform(){
         channelCharts.add(new ChannelChart(1, channel1checkBox));
@@ -71,6 +76,12 @@ public class BiointerfaceController implements Initializable{
                 o.setSliderZoomValue((int)allSliderZoom.getValue());
             }
         });
+
+        try {
+            myUsbDevice = new MyUsbDevice();
+        } catch (UsbException e) {
+            e.printStackTrace();
+        }
     }
 
     public void comboBoxComShown(){
