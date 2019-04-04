@@ -1,6 +1,6 @@
 package server.com_port;
 
-import programms.ChannelChart;
+import channel.ChannelGraphic;
 import jssc.SerialPort;
 import server.ChannelHandler;
 
@@ -11,10 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Пучков Константин on 12.03.2019.
  */
 public class ComPortHandler<T> implements ChannelHandler<Integer[], ComPacks, SerialPort> {
-    private List<ChannelChart> channelCharts;
+    private final List<ChannelGraphic> channelGraphics;
 
-    public ComPortHandler(List<ChannelChart> channelCharts) {
-        this.channelCharts = channelCharts;
+    public ComPortHandler(List<ChannelGraphic> channelGraphics) {
+        this.channelGraphics = channelGraphics;
     }
 
     @Override
@@ -30,10 +30,10 @@ public class ComPortHandler<T> implements ChannelHandler<Integer[], ComPacks, Se
     @Override
     public void channelRead(LinkedBlockingQueue<ComPacks> sendBuffer, Integer[] message, SerialPort context) throws Exception {
         int i=0;
-        for(ChannelChart o: channelCharts){
+        for(ChannelGraphic o: channelGraphics){
             if(o.paneIsActiv()) {
                 //o.dataCash.add(val[i]-2048);
-                o.dataCash.add(message[i]);
+                o.channelData.dataCash.add(message[i]);
             }
             i++;
         }

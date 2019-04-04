@@ -176,7 +176,9 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
                             //передача пакета в хендлер
                             if (handler != null) {
                                 try {
+
                                     handler.channelRead(sendBuffer, message, getInterface());
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

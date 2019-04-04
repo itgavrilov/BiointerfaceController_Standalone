@@ -8,8 +8,9 @@ public enum ComPacks {
     STOPT_RANSMISSION(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x03}, false, true),
     REBOOT(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x01}, false,false);
 
-    private byte[] data;
-    private boolean DTR, RTS;
+    private final byte[] data;
+    private final boolean DTR;
+    private final boolean RTS;
 
     ComPacks(byte[] data, boolean DTR, boolean RTS) {
         this.data = data;

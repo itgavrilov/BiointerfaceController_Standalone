@@ -1,5 +1,6 @@
 package controllers;
 
+import channel.ChannelGraphic;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,14 +9,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import jssc.SerialPortList;
-import programms.ChannelChart;
-import programms.MyUsbDevice;
 import server.com_port.ComPacks;
 import server.com_port.ComPortHandler;
 import server.com_port.ComPortServer;
 
-import javax.usb.UsbException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,24 +43,24 @@ public class BiointerfaceController implements Initializable{
     @FXML
     private VBox waveformBox;
 
-    private List<ChannelChart> channelCharts = new ArrayList<ChannelChart>();
+    private final List<ChannelGraphic> channelGraphics = new ArrayList<>();
 
-    private MyUsbDevice myUsbDevice;
+    //private MyUsbDevice myUsbDevice;
 
     static public ComPortServer comPortServer;
 
 
     private void buildingWaveform(){
-        channelCharts.add(new ChannelChart(1, channel1checkBox));
-        channelCharts.add(new ChannelChart(2, channel2checkBox));
-        channelCharts.add(new ChannelChart(3, channel3checkBox));
-        channelCharts.add(new ChannelChart(4, channel4checkBox));
-        channelCharts.add(new ChannelChart(5, channel5checkBox));
+        channelGraphics.add(new ChannelGraphic(1, channel1checkBox));
+        channelGraphics.add(new ChannelGraphic(2, channel2checkBox));
+        channelGraphics.add(new ChannelGraphic(3, channel3checkBox));
+        channelGraphics.add(new ChannelGraphic(4, channel4checkBox));
+        channelGraphics.add(new ChannelGraphic(5, channel5checkBox));
 
-        for(ChannelChart o: channelCharts)
+        for(ChannelGraphic o: channelGraphics)
             o.building();
 
-        waveformBox.getChildren().addAll(channelCharts);
+        waveformBox.getChildren().addAll(channelGraphics);
     }
 
     @Override
@@ -72,16 +69,16 @@ public class BiointerfaceController implements Initializable{
         buildingWaveform();
 
         allSliderZoom.setOnMouseReleased(event -> {
-            for (ChannelChart o : channelCharts) {
+            for (ChannelGraphic o : channelGraphics) {
                 o.setSliderZoomValue((int)allSliderZoom.getValue());
             }
         });
 
-        try {
-            myUsbDevice = new MyUsbDevice();
-        } catch (UsbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            myUsbDevice = new MyUsbDevice();
+//        } catch (UsbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void comboBoxComShown(){
@@ -92,7 +89,7 @@ public class BiointerfaceController implements Initializable{
     public void comboBoxComSelect() throws Exception {
         if(numberOfCOM.getValue()!=null) {
             comPortServer = new ComPortServer(numberOfCOM.getValue());
-            comPortServer.handler(new ComPortHandler(channelCharts));
+            comPortServer.handler(new ComPortHandler(channelGraphics));
 
             if(comPortServer.isRunning()){
                 comPortServer.sendPackage(ComPacks.STOPT_RANSMISSION);
@@ -127,7 +124,8 @@ public class BiointerfaceController implements Initializable{
         if(comPortServer.isRunning()) {
             comPortServer.sendPackage(ComPacks.REBOOT);
         }
-        controlInterface(false, false, true);
+        numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
+        controlInterface(false, true, true);
         buttonComOpen.setText("Start");
     }
 

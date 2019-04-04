@@ -1,7 +1,5 @@
-package programms;
+package channel;
 
-import cash.DataCash;
-import cash.Listener;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,35 +14,30 @@ import javafx.scene.layout.AnchorPane;
 import java.util.List;
 
 
-public class ChannelChart extends AnchorPane implements Listener<Integer>{
-    private NumberAxis graphicChartAxisX;
-    private NumberAxis graphicChartAxisY;
-    private LineChart<Integer, Integer> graphic;
-    private Slider graphicsSliderZoom;
-    private CheckBox checkBox;
+public class ChannelGraphic extends AnchorPane implements ChartReady<Integer, Integer> {
+    private final NumberAxis graphicChartAxisX;
+    private final LineChart<Integer, Integer> graphic;
+    private final Slider graphicsSliderZoom;
+    private final CheckBox checkBox;
 
     private ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private int maxPoint = 10;
-    public final DataCash<Integer> dataCash = new DataCash(this);
 
-    public ChannelChart(int i, CheckBox checkBoxOut){
+    public final ChannelData<Integer, Integer> channelData = new ChannelData(this);
+    private Boolean listnenerIsReady = true;
+    private int maxPoint = 1024;
+
+    public ChannelGraphic(int i, CheckBox checkBoxOut){
 
         checkBox = checkBoxOut;
-        checkBox.setOnAction(event -> {
-            setDisable(!checkBox.isSelected());
-        });
+        checkBox.setOnAction(event -> setDisable(!checkBox.isSelected()));
 
         graphicChartAxisX = buildAxisX();
 
-        graphicChartAxisY = buildAxisY();
-
-        graphic = buildLineChart(i, graphicChartAxisX, graphicChartAxisY);
+        graphic = buildLineChart(i, graphicChartAxisX, buildAxisY());
         graphic.getData().add(new XYChart.Series(dataLineGraphic));
 
         graphicsSliderZoom = buildSlider();
-        graphicsSliderZoom.setOnMouseReleased(event -> {
-            setSliderZoomValue((int) graphicsSliderZoom.getValue());
-        });
+        graphicsSliderZoom.setOnMouseReleased(event -> setSliderZoomValue((int) graphicsSliderZoom.getValue()));
 
         setBottomAnchor(graphic, 0.0);
         setLeftAnchor(graphic, 0.0);
@@ -52,6 +45,8 @@ public class ChannelChart extends AnchorPane implements Listener<Integer>{
         setRightAnchor(graphic, 0.0);
         setLeftAnchor(graphicsSliderZoom, 30.0);
         setTopAnchor(graphicsSliderZoom, 10.0);
+
+        setSliderZoomValue(10);
     }
 
     public void building(){
@@ -68,8 +63,8 @@ public class ChannelChart extends AnchorPane implements Listener<Integer>{
         xAxis.setSide(Side.BOTTOM);
         xAxis.setTickLabelGap(1);
         xAxis.setTickLength(5);
-        xAxis.setTickUnit(1 << (maxPoint - 3));
-        xAxis.setUpperBound(1 << maxPoint);
+        xAxis.setTickUnit(maxPoint >> 3);
+        xAxis.setUpperBound(maxPoint);
 
         return xAxis;
     }
@@ -98,7 +93,7 @@ public class ChannelChart extends AnchorPane implements Listener<Integer>{
         lineChart.setLayoutX(10);
         lineChart.setLayoutY(10);
         lineChart.setPickOnBounds(false);
-        lineChart.setTitle("Channel "+number);
+        lineChart.setTitle("channel " +number);
 
         return  lineChart;
     }
@@ -120,41 +115,35 @@ public class ChannelChart extends AnchorPane implements Listener<Integer>{
     }
 
     @Override
-    public void update(List<Integer> dataInDataCash) {
-        //setDataInObservableList(MyMath.rms(dataInDataCash, (1<<maxPoint)/ (1<<(this.maxPoint - 3))));
-        setDataInObservableList(dataInDataCash);
-    }
+    public void update(List<XYChart.Data<Integer, Integer>> data) {
+        listnenerIsReady = false;
 
-    public void setDataInObservableList(List<Integer> data){
         Platform.runLater(() -> {
-            int dataLineChartSize = dataLineGraphic.size();
-            int dataSize = data.size();
 
-            if (dataLineChartSize >= (1 << maxPoint)) {
-                int counterData = 0;
-                for (int i = 0; i < dataLineChartSize; i++) {
-                    if (dataLineGraphic.get(i).getXValue() < dataLineChartSize - dataSize) {
-                        dataLineGraphic.get(i).setYValue(dataLineGraphic.get(i + dataSize).getYValue());
-                    } else {
-                        dataLineGraphic.get(i).setYValue(data.get(counterData++));
-                    }
-                }
-            } else {
-                for (Integer val : data) {
-                    dataLineGraphic.add(new XYChart.Data(dataLineChartSize++, val));
-                }
-            }
+            dataLineGraphic.clear();
+            dataLineGraphic.addAll(data);
             data.clear();
+
+            listnenerIsReady = true;
         });
     }
 
-    public void setSliderZoomValue(int val){
-        if(maxPoint > val) dataLineGraphic.clear();
-        maxPoint = val;
-        graphicsSliderZoom.setValue(maxPoint);
-        dataCash.setUpdateCount(maxPoint - 3);
-        graphicChartAxisX.setUpperBound(1 << maxPoint);
-        graphicChartAxisX.setTickUnit(1 << (maxPoint - 3));
+    @Override
+    public boolean listnenerIsReady() { return listnenerIsReady; }
+
+    public void setSliderZoomValue(int powerOfTwo){
+        if(maxPoint > (1 << powerOfTwo)) dataLineGraphic.clear();
+
+        if(powerOfTwo > 7)
+            maxPoint = 1 << powerOfTwo;
+        else
+            maxPoint = 128;
+
+        channelData.setMaxPoint(powerOfTwo);
+
+        graphicsSliderZoom.setValue(powerOfTwo);
+        graphicChartAxisX.setTickUnit(maxPoint>>3);
+        graphicChartAxisX.setUpperBound(maxPoint);
     }
 
     public boolean paneIsActiv() {

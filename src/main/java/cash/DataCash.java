@@ -1,32 +1,34 @@
 package cash;
 
 import java.util.LinkedList;
-import java.util.List;
 
-public class DataCash<T> {
-    private List<T> dataInDataCash = new LinkedList<>();
-    private Listener<T> listener;
-    private int updateCount = 7;
+public class DataCash<T extends Number> {
+    private final DataReady<T> listener;
 
-    public DataCash(Listener<T> listener) {
+    private final LinkedList<T> dataInDataCash = new LinkedList();
+    private int powerOfTwoForUpdateCount = 5;
+    private int updateCount = 1 << powerOfTwoForUpdateCount;
+
+    public DataCash(DataReady listener) {
         this.listener = listener;
     }
 
-    public void setUpdateCount (int updateCount) {
-        if(updateCount>=3)
-            this.updateCount = updateCount;
-        else
-            this.updateCount = 3;
-        dataInDataCash.clear();
-    }
+    public void add(T val){
+        dataInDataCash.add(val);
 
-    public void add(T item){
-        dataInDataCash.add(item);
-        if(dataInDataCash.size() > (1<<updateCount)) {
-            List<T> clon = new LinkedList();
-            clon.addAll(dataInDataCash.subList(0,1<<updateCount));
-            listener.update(clon);
+        if(dataInDataCash.size() >= updateCount && listener.listnenerIsReady()) {
+            listener.update(new LinkedList<>(dataInDataCash));
             dataInDataCash.clear();
         }
+
+    }
+
+    public void setPowerOfTwoForUpdateCount(int powerOfTwo){
+        if(powerOfTwo > 7)
+            powerOfTwoForUpdateCount = powerOfTwo-5;
+        else
+            powerOfTwoForUpdateCount = 3;
+
+        updateCount = 1 << powerOfTwoForUpdateCount;
     }
 }

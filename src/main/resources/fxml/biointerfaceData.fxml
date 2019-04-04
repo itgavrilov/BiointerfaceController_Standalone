@@ -8,24 +8,18 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="1000.0" prefWidth="1000.0" stylesheets="@../css/biointerfaceData.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BiointerfaceController">
-   <children>
       <AnchorPane prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
             <ComboBox fx:id="numberOfCOM" onAction="#comboBoxComSelect" onShown="#comboBoxComShown" prefHeight="25.0" prefWidth="110.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
             <Button fx:id="buttonComOpen" disable="true" mnemonicParsing="false" onAction="#buttonComOpenPush" prefHeight="25.0" prefWidth="110.0" text="Start" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
-            <CheckBox fx:id="channel1checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="Channel 1" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="160.0" />
-            <CheckBox fx:id="channel2checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="Channel 2" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="180.0" />
-            <CheckBox fx:id="channel3checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="Channel 3" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="200.0" />
-            <CheckBox fx:id="channel4checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="Channel 4" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="220.0" />
-            <CheckBox fx:id="channel5checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="Channel 5" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="240.0" />
+            <CheckBox fx:id="channel1checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 1" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="160.0" />
+            <CheckBox fx:id="channel2checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 2" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="180.0" />
+            <CheckBox fx:id="channel3checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 3" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="200.0" />
+            <CheckBox fx:id="channel4checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 4" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="220.0" />
+            <CheckBox fx:id="channel5checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 5" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="240.0" />
              <Slider fx:id="allSliderZoom" blockIncrement="1.0" majorTickUnit="1.0" max="13.0" min="7.0" minorTickCount="1" prefHeight="14.0" prefWidth="110.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="140.0" />
              <Button fx:id="buttonReboot" disable="true" mnemonicParsing="false" onAction="#buttonPushComReboot" prefHeight="25.0" prefWidth="110.0" text="Reboot controller" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
-         </children>
       </AnchorPane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
             <VBox fx:id="waveformBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-         </children>
       </AnchorPane>
-   </children>
 </AnchorPane>

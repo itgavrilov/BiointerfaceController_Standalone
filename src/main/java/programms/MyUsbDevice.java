@@ -9,15 +9,10 @@ public class MyUsbDevice {
     public static final int VENDOR_ID = 0x483;
     public static final int PRODUCT_ID = 0x1;
 
-    private UsbServices services;
-    private UsbHub usbHub;
     public List<javax.usb.UsbDevice> usbDeviceList;
 
     public MyUsbDevice() throws UsbException {
-        services = UsbHostManager.getUsbServices();
-        usbHub = services.getRootUsbHub();
-
-        usbDeviceList = findUsbDevices(usbHub);
+        usbDeviceList = findUsbDevices(UsbHostManager.getUsbServices().getRootUsbHub());
     }
 
     public List<javax.usb.UsbDevice> findUsbDevices(UsbHub hub) {
