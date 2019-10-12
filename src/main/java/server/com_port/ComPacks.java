@@ -5,7 +5,7 @@ package server.com_port;
  */
 public enum ComPacks {
     START_TRANSMISSION(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x02}, true, true),
-    STOPT_RANSMISSION(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x03}, false, true),
+    STOP_TRANSMISSION(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x03}, false, true),
     REBOOT(new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0x04, (byte) 0x01}, false,false);
 
     private final byte[] data;

@@ -18,6 +18,11 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
     private final CopyOnWriteArrayList<Server.Listener<Input>> listeners = new CopyOnWriteArrayList<>();
     private volatile int writeDelay = 0; //миллисекунды
 
+    public int getSizeSendBuffer() {
+
+        return sendBuffer.size();
+    }
+
     @Override
     public Server<Input, Output, Interface> filter(Filter<Input> filter) {
         if (filter == null) {
@@ -72,6 +77,7 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
 
     @Override
     protected void doStart() throws Exception {
+        super.doStart();
         //Запуск потоков чтения и записи
         Thread writeThread = new WriteThread();
         writeThread.setDaemon(true);
@@ -82,8 +88,6 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
         readThread.setDaemon(true);
         readThread.setName("Server read thread");
         readThread.start();
-
-        super.doStart();
     }
 
     @Override

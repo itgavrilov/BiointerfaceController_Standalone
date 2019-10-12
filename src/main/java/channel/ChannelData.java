@@ -1,72 +1,59 @@
 package channel;
 
-import cash.DataCash;
+import channel.cash.DataCash;
 import javafx.scene.chart.XYChart;
-import cash.DataReady;
+import channel.cash.DataReady;
 import channel.seriesReducer.MyPoint;
 import channel.seriesReducer.SeriesReducer;
 
 import java.util.*;
 
 public class ChannelData<X extends Number,Y extends Number> implements DataReady<Y> {
-
     private final ChartReady<X, Y> listener;
-
-    List<MyPoint<X, Y>> points = new ArrayList<>();
-
-
-    public final DataCash<Y> dataCash = new DataCash(this);
-
-    private Boolean listnenerIsReady = true;
-
     private int powerOfTwoForMaxPoint = 10;
-
     private int maxPoint = 1 << powerOfTwoForMaxPoint;
+    private int reduceEpsilon = (powerOfTwoForMaxPoint - 7)<<2;
+    private LinkedList<MyPoint<X, Y>> points = new LinkedList<>();
 
-    private int reduceEpsilon = 1 << (powerOfTwoForMaxPoint - 8);
+    public final DataCash<Y> dataCash = new DataCash<>(this);
 
+    ChannelData(ChartReady<X, Y> listener){ this.listener = listener; }
 
-
-    public ChannelData (ChartReady<X, Y> listener){ this.listener = listener; }
+    //final LinkedList<XYChart.Data<X, Y>> tmpPoints = new LinkedList<>();
 
     @Override
-    public void update(List<Y> data) {
-        listnenerIsReady = false;
-
-        Integer pointsLastIndex = points.size();
-
-        if (pointsLastIndex < maxPoint) {
-            for(Y o:data){ points.add(new MyPoint<>((X)pointsLastIndex++, o)); }
+    public void update(LinkedList<Y> data) {
+        Integer pointsIndex = points.size();
+        if (pointsIndex < maxPoint) {
+            for (Y o : data) {
+                points.add(new MyPoint<>((X)pointsIndex++, o));
+            }
         } else {
-            for (int i = 0, j=0; i < maxPoint; i++) {
-                if (i < maxPoint - data.size()) {
-                    points.get(i).setY(points.get(i + data.size()).getY());
+            int i = 0;
+            int j = 0;
+            int lastPoint = points.size() - data.size();
+
+            for(MyPoint<X, Y> o: points){
+                if (i < lastPoint) {
+                    o.setY(points.get((i++) + data.size()).getY());
                 } else {
-                    points.get(i).setY(data.get(j++));
+                    o.setY(data.get(j++));
                 }
             }
         }
-
         data.clear();
 
-        if(listener.listnenerIsReady()){
-            List<XYChart.Data<X, Y>> tmpPoints = new ArrayList<>();
+        if(listener.getReady()) {
+            listener.setReady(false);
+            LinkedList<XYChart.Data<X, Y>> tmpPoints = new LinkedList<>();
+            LinkedList<MyPoint<X, Y>> reduced = SeriesReducer.reduce(points, reduceEpsilon);
 
-            List<MyPoint<X, Y>> reduced =  SeriesReducer.reduce(points, reduceEpsilon);
-
-            for(MyPoint o: reduced){
+            for (MyPoint o : reduced) {
                 tmpPoints.add(new XYChart.Data<>((X) o.getX(), (Y) o.getY()));
             }
-
-            listener.update(new ArrayList<>(tmpPoints));
+            reduced.clear();
+            listener.update(tmpPoints);
         }
-
-        listnenerIsReady = true;
-    }
-
-    @Override
-    public boolean listnenerIsReady() {
-        return listnenerIsReady;
     }
 
 //    long t0 = System.nanoTime();
@@ -81,7 +68,8 @@ public class ChannelData<X extends Number,Y extends Number> implements DataReady
             powerOfTwoForMaxPoint = 7;
 
         maxPoint = 1 << powerOfTwoForMaxPoint;
-        reduceEpsilon = 1 << (powerOfTwoForMaxPoint - 7);
+        //reduceEpsilon = 1 << (powerOfTwoForMaxPoint - 7);
+        reduceEpsilon = (powerOfTwoForMaxPoint - 7)<<2;
 
         if(points.size()>maxPoint) {
             while (points.size() > maxPoint) {

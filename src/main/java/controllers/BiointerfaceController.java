@@ -25,6 +25,8 @@ public class BiointerfaceController implements Initializable{
     @FXML
     private Button buttonComOpen;
     @FXML
+    private Button buttonComStart;
+    @FXML
     private Button buttonReboot;
     @FXML
     private Slider allSliderZoom;
@@ -45,6 +47,7 @@ public class BiointerfaceController implements Initializable{
 
     private final List<ChannelGraphic> channelGraphics = new ArrayList<>();
 
+    private boolean receiveFromCOM = false;
     //private MyUsbDevice myUsbDevice;
 
     static public ComPortServer comPortServer;
@@ -86,53 +89,71 @@ public class BiointerfaceController implements Initializable{
         numberOfCOM.getItems().addAll(SerialPortList.getPortNames());
     }
 
-    public void comboBoxComSelect() throws Exception {
+    public void comboBoxComSelect() {
         if(numberOfCOM.getValue()!=null) {
             comPortServer = new ComPortServer(numberOfCOM.getValue());
             comPortServer.handler(new ComPortHandler(channelGraphics));
-
-            if(comPortServer.isRunning()){
-                comPortServer.sendPackage(ComPacks.STOPT_RANSMISSION);
-                comPortServer.stop();
-                numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
-            } else {
-                controlInterface(false, false, true);
-            }
-        } else {
-            controlInterface(false, true, true);
+            controlInterface(true, true, false,false);
         }
     }
 
     public void buttonComOpenPush() throws Exception {
         if(comPortServer.isRunning()){
-            comPortServer.sendPackage(ComPacks.STOPT_RANSMISSION);
             comPortServer.stop();
-            controlInterface(false, false, true);
-            buttonComOpen.setText("Start");
+            controlInterface(true, true, false,false);
+            buttonComOpen.setText("Open");
+            for(ChannelGraphic o: channelGraphics){
+                o.setReady(false);
+            }
         } else {
             comPortServer.start();
-
             if (comPortServer.isStarted()) {
-                controlInterface(true, false, false);
-                buttonComOpen.setText("Stop");
+                controlInterface(false, true, true,true);
+                buttonComOpen.setText("Close");
+                for(ChannelGraphic o: channelGraphics){
+                    o.setReady(true);
+                }
+            }
+        }
+
+    }
+
+    public void buttonComStartPush() {
+        if(comPortServer.isRunning()){
+            if (receiveFromCOM) {
+                comPortServer.sendPackage(ComPacks.STOP_TRANSMISSION);
+                receiveFromCOM = false;
+                controlInterface(false, true, true, true);
+                buttonComStart.setText("Start");
+            } else {
                 comPortServer.sendPackage(ComPacks.START_TRANSMISSION);
-            } else numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
+                receiveFromCOM = true;
+                controlInterface(false, false, true,true);
+                buttonComStart.setText("Stop");
+            }
         }
     }
 
-    public void buttonPushComReboot(){
+    public void buttonPushComReboot() throws Exception {
         if(comPortServer.isRunning()) {
             comPortServer.sendPackage(ComPacks.REBOOT);
         }
         numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
-        controlInterface(false, true, true);
+        controlInterface(true, false, false,false);
+        buttonComOpen.setText("Open");
         buttonComOpen.setText("Start");
+        for(ChannelGraphic o: channelGraphics){
+            o.setReady(false);
+        }
+        while(comPortServer.getSizeSendBuffer() != 0);
+        comPortServer.stop();
     }
 
-    private void controlInterface(boolean disableNumberOfCOM, boolean comOpen,  boolean disableControlReboot){
-        numberOfCOM.setDisable(disableNumberOfCOM);
-        buttonComOpen.setDisable(comOpen);
-        buttonReboot.setDisable(disableControlReboot);
+    private void controlInterface(boolean enableNumberOfCOM, boolean enableComOpen,  boolean enableComStart, boolean enableReboot){
+        numberOfCOM.setDisable(!enableNumberOfCOM);
+        buttonComOpen.setDisable(!enableComOpen);
+        buttonComStart.setDisable(!enableComStart);
+        buttonReboot.setDisable(!enableReboot);
     }
 }
 

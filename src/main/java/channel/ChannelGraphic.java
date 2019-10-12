@@ -11,19 +11,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 
-import java.util.List;
+import java.util.LinkedList;
 
-
-public class ChannelGraphic extends AnchorPane implements ChartReady<Integer, Integer> {
+public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPane implements ChartReady<X, Y> {
     private final NumberAxis graphicChartAxisX;
-    private final LineChart<Integer, Integer> graphic;
+    private final LineChart<X, Y> graphic;
     private final Slider graphicsSliderZoom;
     private final CheckBox checkBox;
 
-    private ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
+    private ObservableList<XYChart.Data<X, Y>> dataLineGraphic = FXCollections.observableArrayList();
 
-    public final ChannelData<Integer, Integer> channelData = new ChannelData(this);
-    private Boolean listnenerIsReady = true;
+    public final ChannelData<X, Y> channelData = new ChannelData(this);
+    private Boolean isReady = false;
     private int maxPoint = 1024;
 
     public ChannelGraphic(int i, CheckBox checkBoxOut){
@@ -86,14 +85,18 @@ public class ChannelGraphic extends AnchorPane implements ChartReady<Integer, In
 
     private LineChart buildLineChart(int number, NumberAxis buildAxisX, NumberAxis buildAxisY) {
         LineChart lineChart = new LineChart(buildAxisX, buildAxisY);
+
         lineChart.setAlternativeRowFillVisible(false);
         lineChart.setAnimated(false);
-        lineChart.setCache(true);
-        lineChart.setDisable(true);
+        lineChart.setCache(false);
+        lineChart.setEffect(null);
+        lineChart.setCreateSymbols(false);
+        lineChart.setPickOnBounds(false);
+        //lineChart.setDisable(true);
+
+        lineChart.setTitle("channel " +number);
         lineChart.setLayoutX(10);
         lineChart.setLayoutY(10);
-        lineChart.setPickOnBounds(false);
-        lineChart.setTitle("channel " +number);
 
         return  lineChart;
     }
@@ -115,21 +118,20 @@ public class ChannelGraphic extends AnchorPane implements ChartReady<Integer, In
     }
 
     @Override
-    public void update(List<XYChart.Data<Integer, Integer>> data) {
-        listnenerIsReady = false;
-
+    public void update(LinkedList<XYChart.Data<X, Y>> data)  {
         Platform.runLater(() -> {
-
             dataLineGraphic.clear();
             dataLineGraphic.addAll(data);
             data.clear();
-
-            listnenerIsReady = true;
+            setReady(true);
         });
     }
 
     @Override
-    public boolean listnenerIsReady() { return listnenerIsReady; }
+    public boolean getReady() { return isReady; }
+
+    @Override
+    public void setReady(boolean Ready) { isReady = Ready; }
 
     public void setSliderZoomValue(int powerOfTwo){
         if(maxPoint > (1 << powerOfTwo)) dataLineGraphic.clear();
