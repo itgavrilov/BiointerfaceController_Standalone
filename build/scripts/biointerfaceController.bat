@@ -63,7 +63,7 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\biointerfaceController-0.2.jar;%APP_HOME%\lib\usb4java-javax-1.3.0.jar;%APP_HOME%\lib\jts-core-1.16.1.jar;%APP_HOME%\lib\commons-math3-3.0.jar;%APP_HOME%\lib\jssc-2.8.0.jar;%APP_HOME%\lib\usb-api-1.0.2.jar;%APP_HOME%\lib\usb4java-1.3.0.jar;%APP_HOME%\lib\commons-lang3-3.8.1.jar;%APP_HOME%\lib\libusb4java-1.3.0-linux-x86.jar;%APP_HOME%\lib\libusb4java-1.3.0-linux-x86-64.jar;%APP_HOME%\lib\libusb4java-1.3.0-win32-x86.jar;%APP_HOME%\lib\libusb4java-1.3.0-win32-x86-64.jar;%APP_HOME%\lib\libusb4java-1.3.0-darwin-x86-64.jar;%APP_HOME%\lib\libusb4java-1.3.0-linux-arm.jar;%APP_HOME%\lib\libusb4java-1.3.0-linux-aarch64.jar
+set CLASSPATH=%APP_HOME%\lib\biointerfaceController-0.2.jar;%APP_HOME%\lib\jts-core-1.16.1.jar;%APP_HOME%\lib\commons-math3-3.0.jar;%APP_HOME%\lib\jssc-2.8.0.jar
 
 @rem Execute biointerfaceController
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BIOINTERFACE_CONTROLLER_OPTS%  -classpath "%CLASSPATH%" programms.Main %CMD_LINE_ARGS%

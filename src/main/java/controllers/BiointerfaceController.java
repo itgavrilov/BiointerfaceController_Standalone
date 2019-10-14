@@ -48,7 +48,6 @@ public class BiointerfaceController implements Initializable{
     private final List<ChannelGraphic> channelGraphics = new ArrayList<>();
 
     private boolean receiveFromCOM = false;
-    //private MyUsbDevice myUsbDevice;
 
     static public ComPortServer comPortServer;
 
@@ -76,12 +75,6 @@ public class BiointerfaceController implements Initializable{
                 o.setSliderZoomValue((int)allSliderZoom.getValue());
             }
         });
-
-//        try {
-//            myUsbDevice = new MyUsbDevice();
-//        } catch (UsbException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void comboBoxComShown(){
