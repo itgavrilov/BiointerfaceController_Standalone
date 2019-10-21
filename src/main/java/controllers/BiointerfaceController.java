@@ -48,6 +48,7 @@ public class BiointerfaceController implements Initializable{
     private final List<ChannelGraphic> channelGraphics = new ArrayList<>();
 
     private boolean receiveFromCOM = false;
+    //private MyUsbDevice myUsbDevice;
 
     static public ComPortServer comPortServer;
 
@@ -71,9 +72,7 @@ public class BiointerfaceController implements Initializable{
         buildingWaveform();
 
         allSliderZoom.setOnMouseReleased(event -> {
-            for (ChannelGraphic o : channelGraphics) {
-                o.setSliderZoomValue((int)allSliderZoom.getValue());
-            }
+            channelGraphics.stream().forEach(o->o.setSliderZoomValue((int)allSliderZoom.getValue()));
         });
     }
 
@@ -92,20 +91,13 @@ public class BiointerfaceController implements Initializable{
 
     public void buttonComOpenPush() throws Exception {
         if(comPortServer.isRunning()){
-            comPortServer.stop();
-            controlInterface(true, true, false,false);
-            buttonComOpen.setText("Open");
-            for(ChannelGraphic o: channelGraphics){
-                o.setReady(false);
-            }
+            buttonPushComReboot();
         } else {
             comPortServer.start();
             if (comPortServer.isStarted()) {
                 controlInterface(false, true, true,true);
                 buttonComOpen.setText("Close");
-                for(ChannelGraphic o: channelGraphics){
-                    o.setReady(true);
-                }
+                channelGraphics.stream().forEach(o->o.setReady(true));
             }
         }
 
@@ -130,16 +122,15 @@ public class BiointerfaceController implements Initializable{
     public void buttonPushComReboot() throws Exception {
         if(comPortServer.isRunning()) {
             comPortServer.sendPackage(ComPacks.REBOOT);
+            comPortServer.stop();
         }
-        numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
+        receiveFromCOM = false;
+        //numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
         controlInterface(true, false, false,false);
         buttonComOpen.setText("Open");
-        buttonComOpen.setText("Start");
-        for(ChannelGraphic o: channelGraphics){
-            o.setReady(false);
-        }
-        while(comPortServer.getSizeSendBuffer() != 0);
-        comPortServer.stop();
+        buttonComStart.setText("Start");
+        channelGraphics.stream().forEach(o->o.setReady(false));
+        numberOfCOM.setValue("");
     }
 
     private void controlInterface(boolean enableNumberOfCOM, boolean enableComOpen,  boolean enableComStart, boolean enableReboot){
