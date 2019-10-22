@@ -48,31 +48,29 @@ public class BiointerfaceController implements Initializable{
     private final List<ChannelGraphic> channelGraphics = new ArrayList<>();
 
     private boolean receiveFromCOM = false;
-    //private MyUsbDevice myUsbDevice;
 
     static public ComPortServer comPortServer;
 
 
-    private void buildingWaveform(){
-        channelGraphics.add(new ChannelGraphic(1, channel1checkBox));
-        channelGraphics.add(new ChannelGraphic(2, channel2checkBox));
-        channelGraphics.add(new ChannelGraphic(3, channel3checkBox));
-        channelGraphics.add(new ChannelGraphic(4, channel4checkBox));
-        channelGraphics.add(new ChannelGraphic(5, channel5checkBox));
-
-        for(ChannelGraphic o: channelGraphics)
-            o.building();
-
+    private void buildingWaveform(Slider sliderZoom){
+        channelGraphics.add(new ChannelGraphic(1, sliderZoom, channel1checkBox));
+        channelGraphics.add(new ChannelGraphic(2, sliderZoom, channel2checkBox));
+        channelGraphics.add(new ChannelGraphic(3, sliderZoom, channel3checkBox));
+        channelGraphics.add(new ChannelGraphic(4, sliderZoom, channel4checkBox));
+        channelGraphics.add(new ChannelGraphic(5, sliderZoom, channel5checkBox));
+        channelGraphics.forEach(ChannelGraphic::building);
         waveformBox.getChildren().addAll(channelGraphics);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        allSliderZoom.setMax(14);
         allSliderZoom.setValue(10);
-        buildingWaveform();
 
-        allSliderZoom.setOnMouseReleased(event -> {
-            channelGraphics.stream().forEach(o->o.setSliderZoomValue((int)allSliderZoom.getValue()));
+        buildingWaveform(allSliderZoom);
+
+        allSliderZoom.setOnMouseReleased(event ->{
+            channelGraphics.forEach(o->o.setSliderZoomValue(allSliderZoom.getValue()));
         });
     }
 
@@ -97,7 +95,7 @@ public class BiointerfaceController implements Initializable{
             if (comPortServer.isStarted()) {
                 controlInterface(false, true, true,true);
                 buttonComOpen.setText("Close");
-                channelGraphics.stream().forEach(o->o.setReady(true));
+                channelGraphics.forEach(o->o.setReady(true));
             }
         }
 
@@ -129,7 +127,7 @@ public class BiointerfaceController implements Initializable{
         controlInterface(true, false, false,false);
         buttonComOpen.setText("Open");
         buttonComStart.setText("Start");
-        channelGraphics.stream().forEach(o->o.setReady(false));
+        channelGraphics.forEach(o->o.setReady(false));
         numberOfCOM.setValue("");
     }
 

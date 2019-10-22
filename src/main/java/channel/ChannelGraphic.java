@@ -23,19 +23,16 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
 
     public final ChannelData<X, Y> channelData = new ChannelData(this);
     private Boolean isReady = false;
-    private int maxPoint = 1024;
+    private int countPoint = 1023;
 
-    public ChannelGraphic(int i, CheckBox checkBoxOut){
-
+    public ChannelGraphic(int i, Slider sliderZoom, CheckBox checkBoxOut){
         checkBox = checkBoxOut;
         checkBox.setOnAction(event -> setDisable(!checkBox.isSelected()));
-
         graphicChartAxisX = buildAxisX();
-
         graphic = buildLineChart(i, graphicChartAxisX, buildAxisY());
         graphic.getData().add(new XYChart.Series(dataLineGraphic));
 
-        graphicsSliderZoom = buildSlider();
+        graphicsSliderZoom = buildSlider(sliderZoom);
         graphicsSliderZoom.setOnMouseReleased(event -> setSliderZoomValue((int) graphicsSliderZoom.getValue()));
 
         setBottomAnchor(graphic, 0.0);
@@ -45,7 +42,7 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
         setLeftAnchor(graphicsSliderZoom, 30.0);
         setTopAnchor(graphicsSliderZoom, 10.0);
 
-        setSliderZoomValue(10);
+        setSliderZoomValue((int)sliderZoom.getValue());
     }
 
     public void building(){
@@ -62,8 +59,8 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
         xAxis.setSide(Side.BOTTOM);
         xAxis.setTickLabelGap(1);
         xAxis.setTickLength(5);
-        xAxis.setTickUnit(maxPoint >> 3);
-        xAxis.setUpperBound(maxPoint);
+        xAxis.setTickUnit(countPoint >> 3);
+        xAxis.setUpperBound(countPoint);
 
         return xAxis;
     }
@@ -85,15 +82,12 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
 
     private LineChart buildLineChart(int number, NumberAxis buildAxisX, NumberAxis buildAxisY) {
         LineChart lineChart = new LineChart(buildAxisX, buildAxisY);
-
         lineChart.setAlternativeRowFillVisible(false);
         lineChart.setAnimated(false);
         lineChart.setCache(false);
         lineChart.setEffect(null);
         lineChart.setCreateSymbols(false);
         lineChart.setPickOnBounds(false);
-        //lineChart.setDisable(true);
-
         lineChart.setTitle("channel " +number);
         lineChart.setLayoutX(10);
         lineChart.setLayoutY(10);
@@ -101,19 +95,18 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
         return  lineChart;
     }
 
-    private Slider buildSlider() {
+    private Slider buildSlider(Slider sliderZoom) {
         Slider slider = new Slider();
-        slider.setValue(10);
-        slider.setBlockIncrement(1);
-        slider.setLayoutX(10);
-        slider.setLayoutY(10);
-        slider.setMajorTickUnit(1);
-        slider.setMax(13);
-        slider.setMin(7);
-        slider.setMinorTickCount(1);
-        slider.setPrefHeight(14);
-        slider.setPrefWidth(110);
-
+        slider.setValue(sliderZoom.getValue());
+        slider.setBlockIncrement(sliderZoom.getBlockIncrement());
+        slider.setLayoutX(sliderZoom.getLayoutX());
+        slider.setLayoutY(sliderZoom.getLayoutY());
+        slider.setMajorTickUnit(sliderZoom.getMajorTickUnit());
+        slider.setMinorTickCount(sliderZoom.getMinorTickCount());
+        slider.setMin(sliderZoom.getMin());
+        slider.setMax(sliderZoom.getMax());
+        slider.setPrefHeight(sliderZoom.getPrefHeight());
+        slider.setPrefWidth(sliderZoom.getPrefWidth());
         return slider;
     }
 
@@ -133,19 +126,18 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
     @Override
     public void setReady(boolean Ready) { isReady = Ready; }
 
-    public void setSliderZoomValue(int powerOfTwo){
-        if(maxPoint > (1 << powerOfTwo)) dataLineGraphic.clear();
+    public void setSliderZoomValue(double countPointInPowerOfTwo){
+        if(countPoint > ((1 << (int)countPointInPowerOfTwo)-1)) dataLineGraphic.clear();
+        if(countPointInPowerOfTwo > 7) countPoint = (1 << (int)countPointInPowerOfTwo)-1;
+        else countPoint = 127;
+        channelData.setMaxPoint((int)countPointInPowerOfTwo);
+        graphicsSliderZoom.setValue(countPointInPowerOfTwo);
+        setGraphicChartAxisXSize(countPoint);
+    }
 
-        if(powerOfTwo > 7)
-            maxPoint = 1 << powerOfTwo;
-        else
-            maxPoint = 128;
-
-        channelData.setMaxPoint(powerOfTwo);
-
-        graphicsSliderZoom.setValue(powerOfTwo);
-        graphicChartAxisX.setTickUnit(maxPoint>>3);
-        graphicChartAxisX.setUpperBound(maxPoint);
+    private void setGraphicChartAxisXSize(int countPoint){
+        graphicChartAxisX.setTickUnit(countPoint>>3);
+        graphicChartAxisX.setUpperBound(countPoint);
     }
 
     public boolean paneIsActiv() {
