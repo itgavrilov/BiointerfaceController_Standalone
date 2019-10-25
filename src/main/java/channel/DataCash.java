@@ -1,30 +1,30 @@
-package channel.cash;
+package channel;
 
 import java.util.LinkedList;
 
-public class DataCash<T extends Number> {
-    private final DataReady<T> listener;
+public class DataCash{
+    private final DataReady listener;
 
     private int powerOfTwoForUpdateCount = 5;
     private int updateCount = 1 << powerOfTwoForUpdateCount;
-    private LinkedList<T> dataInDataCash = new LinkedList<>();
+    private LinkedList<Double> dataInDataCash = new LinkedList<>();
 
-    public DataCash(DataReady<T> listener) {
+    public DataCash(DataReady listener) {
         this.listener = listener;
     }
 
-    public void add(T val){
+    public void add(Double val){
         dataInDataCash.add(val);
 
         if (dataInDataCash.size() >= updateCount) {
             listener.update(dataInDataCash);
-            dataInDataCash = new LinkedList<>();
+            dataInDataCash.clear();
         }
     }
 
-    public void setPowerOfTwoForUpdateCount(int powerOfTwo){
+    public void setCapacityInPowerOfTwo(int powerOfTwo){
         if(powerOfTwo > 7)
-            powerOfTwoForUpdateCount = powerOfTwo-5;
+            powerOfTwoForUpdateCount = powerOfTwo-4;
         else
             powerOfTwoForUpdateCount = 3;
 

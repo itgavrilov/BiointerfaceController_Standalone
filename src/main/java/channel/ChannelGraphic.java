@@ -11,29 +11,31 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
-public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPane implements ChartReady<X, Y> {
+public class ChannelGraphic extends AnchorPane implements ChartReady {
     private final NumberAxis graphicChartAxisX;
-    private final LineChart<X, Y> graphic;
-    private final Slider graphicsSliderZoom;
+    private final NumberAxis graphicChartAxisY;
+    private final LineChart<Integer, Double> graphic;
     private final CheckBox checkBox;
+    public final Slider graphicsSliderZoom;
 
-    private ObservableList<XYChart.Data<X, Y>> dataLineGraphic = FXCollections.observableArrayList();
+    private ObservableList<XYChart.Data<Integer, Double>> dataLineGraphic = FXCollections.observableArrayList();
 
-    public final ChannelData<X, Y> channelData = new ChannelData(this);
+    public final ChannelData channelData = new ChannelData( this, 10);
     private Boolean isReady = false;
-    private int countPoint = 1023;
+    private int capacity = 1024;
 
     public ChannelGraphic(int i, Slider sliderZoom, CheckBox checkBoxOut){
         checkBox = checkBoxOut;
         checkBox.setOnAction(event -> setDisable(!checkBox.isSelected()));
-        graphicChartAxisX = buildAxisX();
-        graphic = buildLineChart(i, graphicChartAxisX, buildAxisY());
-        graphic.getData().add(new XYChart.Series(dataLineGraphic));
-
         graphicsSliderZoom = buildSlider(sliderZoom);
         graphicsSliderZoom.setOnMouseReleased(event -> setSliderZoomValue((int) graphicsSliderZoom.getValue()));
+
+        graphicChartAxisX = buildAxisX();
+        graphicChartAxisY = buildAxisY();
+        graphic = buildLineChart(i, graphicChartAxisX, graphicChartAxisY);
+        graphic.getData().add(new XYChart.Series(dataLineGraphic));
 
         setBottomAnchor(graphic, 0.0);
         setLeftAnchor(graphic, 0.0);
@@ -59,8 +61,8 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
         xAxis.setSide(Side.BOTTOM);
         xAxis.setTickLabelGap(1);
         xAxis.setTickLength(5);
-        xAxis.setTickUnit(countPoint >> 3);
-        xAxis.setUpperBound(countPoint);
+        xAxis.setTickUnit(capacity >> 3);
+        xAxis.setUpperBound(capacity -1);
 
         return xAxis;
     }
@@ -107,15 +109,16 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
         slider.setMax(sliderZoom.getMax());
         slider.setPrefHeight(sliderZoom.getPrefHeight());
         slider.setPrefWidth(sliderZoom.getPrefWidth());
+        slider.setDisable(sliderZoom.isDisable());
         return slider;
     }
 
     @Override
-    public void update(LinkedList<XYChart.Data<X, Y>> data)  {
+    public void update(ArrayList<Double> data)  {
         Platform.runLater(() -> {
-            dataLineGraphic.clear();
-            dataLineGraphic.addAll(data);
-            data.clear();
+            for(int i=0; i<data.size(); i++){
+                dataLineGraphic.get(i).setYValue(data.get(i));
+            }
             setReady(true);
         });
     }
@@ -126,18 +129,30 @@ public class ChannelGraphic<X extends Number,Y extends Number> extends AnchorPan
     @Override
     public void setReady(boolean Ready) { isReady = Ready; }
 
-    public void setSliderZoomValue(double countPointInPowerOfTwo){
-        if(countPoint > ((1 << (int)countPointInPowerOfTwo)-1)) dataLineGraphic.clear();
-        if(countPointInPowerOfTwo > 7) countPoint = (1 << (int)countPointInPowerOfTwo)-1;
-        else countPoint = 127;
-        channelData.setMaxPoint((int)countPointInPowerOfTwo);
-        graphicsSliderZoom.setValue(countPointInPowerOfTwo);
-        setGraphicChartAxisXSize(countPoint);
+    public void setSliderZoomValue(double capacityInPowerOfTwo){
+        int tmp;
+        if(capacityInPowerOfTwo > 7)
+            tmp = (int)capacityInPowerOfTwo;
+        else
+            tmp = 7;
+        capacity = 1 << tmp;
+        if(dataLineGraphic.size() > capacity) {
+            int tmpDelta = dataLineGraphic.size() - capacity -1;
+            for(int i = 0; i < capacity; i++) {
+                dataLineGraphic.get(i).setYValue(dataLineGraphic.get(i+tmpDelta).getYValue());
+            }
+            dataLineGraphic.remove(capacity, dataLineGraphic.size());
+        } else while (dataLineGraphic.size() < capacity){
+            dataLineGraphic.add(new XYChart.Data<>(dataLineGraphic.size()-1, 0.0));
+        }
+        channelData.setCapacity(tmp);
+        graphicsSliderZoom.setValue(tmp);
+        setGraphicChartAxisXSize(capacity);
     }
 
     private void setGraphicChartAxisXSize(int countPoint){
         graphicChartAxisX.setTickUnit(countPoint>>3);
-        graphicChartAxisX.setUpperBound(countPoint);
+        graphicChartAxisX.setUpperBound(countPoint-1);
     }
 
     public boolean paneIsActiv() {

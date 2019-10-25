@@ -83,7 +83,13 @@ public class BiointerfaceController implements Initializable{
         if(numberOfCOM.getValue()!=null) {
             comPortServer = new ComPortServer(numberOfCOM.getValue());
             comPortServer.handler(new ComPortHandler(channelGraphics));
-            controlInterface(true, true, false,false);
+            controlInterface(
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            );
         }
     }
 
@@ -93,7 +99,13 @@ public class BiointerfaceController implements Initializable{
         } else {
             comPortServer.start();
             if (comPortServer.isStarted()) {
-                controlInterface(false, true, true,true);
+                controlInterface(
+                        false,
+                        true,
+                        true,
+                        true,
+                        true
+                );
                 buttonComOpen.setText("Close");
                 channelGraphics.forEach(o->o.setReady(true));
             }
@@ -106,12 +118,23 @@ public class BiointerfaceController implements Initializable{
             if (receiveFromCOM) {
                 comPortServer.sendPackage(ComPacks.STOP_TRANSMISSION);
                 receiveFromCOM = false;
-                controlInterface(false, true, true, true);
+                controlInterface(
+                        false,
+                        true,
+                        true,
+                        true,
+                        true
+                );
                 buttonComStart.setText("Start");
             } else {
                 comPortServer.sendPackage(ComPacks.START_TRANSMISSION);
                 receiveFromCOM = true;
-                controlInterface(false, false, true,true);
+                controlInterface(
+                        false,
+                        false,
+                        true,
+                        true,
+                        false);
                 buttonComStart.setText("Stop");
             }
         }
@@ -123,19 +146,29 @@ public class BiointerfaceController implements Initializable{
             comPortServer.stop();
         }
         receiveFromCOM = false;
-        //numberOfCOM.getItems().remove(0, numberOfCOM.getItems().size());
-        controlInterface(true, false, false,false);
+        controlInterface(
+                true,
+                false,
+                false,
+                false,
+                false);
         buttonComOpen.setText("Open");
         buttonComStart.setText("Start");
         channelGraphics.forEach(o->o.setReady(false));
         numberOfCOM.setValue("");
     }
 
-    private void controlInterface(boolean enableNumberOfCOM, boolean enableComOpen,  boolean enableComStart, boolean enableReboot){
+    private void controlInterface(boolean enableNumberOfCOM,
+                                  boolean enableComOpen,
+                                  boolean enableComStart,
+                                  boolean enableReboot,
+                                  boolean enableSliderZoom){
         numberOfCOM.setDisable(!enableNumberOfCOM);
         buttonComOpen.setDisable(!enableComOpen);
         buttonComStart.setDisable(!enableComStart);
         buttonReboot.setDisable(!enableReboot);
+        allSliderZoom.setDisable(!enableSliderZoom);
+        channelGraphics.forEach(o->o.graphicsSliderZoom.setDisable(!enableSliderZoom));
     }
 }
 

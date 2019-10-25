@@ -17,7 +17,7 @@
             <CheckBox fx:id="channel3checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 3" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="200.0" />
             <CheckBox fx:id="channel4checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 4" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="220.0" />
             <CheckBox fx:id="channel5checkBox" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" selected="true" text="channel 5" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="240.0" />
-             <Slider fx:id="allSliderZoom" blockIncrement="1.0" majorTickUnit="1.0" max="13.0" min="7.0" minorTickCount="1" prefHeight="14.0" prefWidth="110.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="140.0" />
+             <Slider fx:id="allSliderZoom" disable="true" blockIncrement="1.0" majorTickUnit="1.0" max="13.0" min="7.0" minorTickCount="1" prefHeight="14.0" prefWidth="110.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="140.0" />
              <Button fx:id="buttonReboot" disable="true" mnemonicParsing="false" onAction="#buttonPushComReboot" prefHeight="25.0" prefWidth="110.0" text="Reboot controller" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
       </AnchorPane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

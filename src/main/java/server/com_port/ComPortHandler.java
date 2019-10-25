@@ -32,7 +32,7 @@ public class ComPortHandler<T> implements ChannelHandler<Integer[], ComPacks, Se
         int i=0;
         for(ChannelGraphic o: channelGraphics){
             if(o.paneIsActiv()) {
-                o.channelData.dataCash.add(message[i]);
+                o.channelData.dataCash.add(message[i].doubleValue());
             }
             i++;
         }
