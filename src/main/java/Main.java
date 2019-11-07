@@ -1,5 +1,3 @@
-package programms;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +24,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/biointerfaceData.fxml"));
         // создаем сцену с заданными шириной и высотой и содержащую наш корневым контейнером, и связываем ее с окном
-        Scene scene  = new Scene(root,1000,1000);
+        Scene scene  = new Scene(root);
+        primaryStage.setMinHeight(1000);
+        primaryStage.setMinWidth(1000);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Biointerface channel data"); // задаем заголовок окна
         primaryStage.show(); // запускаем окно

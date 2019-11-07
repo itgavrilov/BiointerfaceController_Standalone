@@ -64,7 +64,7 @@ case "`uname`" in
     ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/biointerfaceController-0.2.jar:$APP_HOME/lib/jts-core-1.16.1.jar:$APP_HOME/lib/commons-math3-3.0.jar:$APP_HOME/lib/jssc-2.8.0.jar
+CLASSPATH=$APP_HOME/lib/biointerfaceController-0.3.jar:$APP_HOME/lib/jts-core-1.16.1.jar:$APP_HOME/lib/commons-math3-3.0.jar:$APP_HOME/lib/jssc-2.8.0.jar
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
@@ -162,7 +162,7 @@ save () {
 APP_ARGS=$(save "$@")
 
 # Collect all arguments for the java command, following the shell quoting and substitution rules
-eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $BIOINTERFACE_CONTROLLER_OPTS -classpath "\"$CLASSPATH\"" programms.Main "$APP_ARGS"
+eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $BIOINTERFACE_CONTROLLER_OPTS -classpath "\"$CLASSPATH\"" Main "$APP_ARGS"
 
 # by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
 if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then

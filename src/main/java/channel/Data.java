@@ -1,18 +1,27 @@
 package channel;
 
+import channel.dataCash.DataCash;
+import channel.dataCash.DataCashListener;
+
 import java.util.*;
 
-public class ChannelData implements DataReady {
-    private final ChartReady listener;
+public class Data implements DataCashListener<Double> {
+    private final GUIIsReady listener;
     private LinkedList<Double> arrayOfMeasurements = new LinkedList();
     private int capacity;
-    private int lastIndex = 0;
-    public final DataCash dataCash = new DataCash(this);
+    public final DataCash dataCash;
 
 
-    ChannelData(ChartReady listener, int capacityInPowerOfTwo){
+    Data(GUIIsReady listener, int capacityInPowerOfTwo){
         this.listener = listener;
+        dataCash = new DataCash(this, capacityInPowerOfTwo);
         setCapacity(capacityInPowerOfTwo);
+    }
+
+    private void add(Double y){
+        arrayOfMeasurements.add(y);
+        if(arrayOfMeasurements.size() > capacity)
+            arrayOfMeasurements.pollFirst();
     }
 
     @Override
@@ -24,22 +33,11 @@ public class ChannelData implements DataReady {
         }
     }
 
-    private void add(Double y){
-        arrayOfMeasurements.set(lastIndex, y);
-        if(lastIndex < capacity-1)
-            lastIndex++;
-        else
-            lastIndex = 0;
-    }
-
     public void setCapacity(int capacityInPowerOfTwo){
-        int tmpCapacityInPowerOfTwo;
-        if(capacityInPowerOfTwo > 7)
-            tmpCapacityInPowerOfTwo = capacityInPowerOfTwo;
-        else
-            tmpCapacityInPowerOfTwo = 7;
+        if(capacityInPowerOfTwo < 7)
+            capacityInPowerOfTwo = 7;
 
-        capacity = 1 << tmpCapacityInPowerOfTwo;
+        capacity = 1 << capacityInPowerOfTwo;
         if(arrayOfMeasurements.size() > capacity) {
             while (arrayOfMeasurements.size() > capacity){
                 arrayOfMeasurements.pollFirst();
@@ -47,7 +45,8 @@ public class ChannelData implements DataReady {
         } else while (arrayOfMeasurements.size() < capacity){
             arrayOfMeasurements.add(0.0);
         }
-        dataCash.setCapacityInPowerOfTwo(tmpCapacityInPowerOfTwo);
+
+        dataCash.setCapacityInPowerOfTwo(capacityInPowerOfTwo);
     }
 
 //    long t0 = System.nanoTime();

@@ -63,10 +63,10 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\biointerfaceController-0.2.jar;%APP_HOME%\lib\jts-core-1.16.1.jar;%APP_HOME%\lib\commons-math3-3.0.jar;%APP_HOME%\lib\jssc-2.8.0.jar
+set CLASSPATH=%APP_HOME%\lib\biointerfaceController-0.3.jar;%APP_HOME%\lib\jts-core-1.16.1.jar;%APP_HOME%\lib\commons-math3-3.0.jar;%APP_HOME%\lib\jssc-2.8.0.jar
 
 @rem Execute biointerfaceController
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BIOINTERFACE_CONTROLLER_OPTS%  -classpath "%CLASSPATH%" programms.Main %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BIOINTERFACE_CONTROLLER_OPTS%  -classpath "%CLASSPATH%" Main %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
