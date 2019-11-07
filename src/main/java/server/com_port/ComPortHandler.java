@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Пучков Константин on 12.03.2019.
  * Modified by Gavrilov Stepan on 07.11.2019.
  */
-public class ComPortHandler<T> implements ChannelHandler<byte[], ComPacks, SerialPort> {
+public class ComPortHandler<T> implements ChannelHandler<int[], ComPacks, SerialPort> {
     private final List<Channel> channel;
     private final List<Servo> servo;
 
@@ -32,7 +32,7 @@ public class ComPortHandler<T> implements ChannelHandler<byte[], ComPacks, Seria
     }
 
     @Override
-    public void channelRead(LinkedBlockingQueue<ComPacks> sendBuffer, byte[] message, SerialPort context) {
+    public void channelRead(LinkedBlockingQueue<ComPacks> sendBuffer, int[] message, SerialPort context) {
         switch (message[0]) {
             case 1: {
                 for(int i = 0;i<channel.size();i++){

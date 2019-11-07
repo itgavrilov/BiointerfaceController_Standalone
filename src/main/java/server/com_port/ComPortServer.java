@@ -14,7 +14,7 @@ import static jssc.SerialPort.PURGE_TXCLEAR;
 /**
  * Created by Пучков Константин on 12.03.2019.
  */
-public class ComPortServer extends AbstractServer<byte[], ComPacks, SerialPort> implements SerialPortEventListener {
+public class ComPortServer extends AbstractServer<int[], ComPacks, SerialPort> implements SerialPortEventListener {
     private final SerialPort serialPort;
 
     public ComPortServer(String name) {
@@ -80,7 +80,9 @@ public class ComPortServer extends AbstractServer<byte[], ComPacks, SerialPort> 
             try {
                 while (serialPort.isOpened() && event.getEventValue()>0) {
                      if(serialPort.readBytes(1)[0] == -1 && serialPort.readBytes(1)[0] == -1 ) {
-                        byte[] message = serialPort.readBytes(serialPort.readBytes(1)[0]);
+                        int lenMassage = serialPort.readBytes(1)[0];
+                        int message[] = serialPort.readIntArray(lenMassage);
+
                         if(serialPort.isOpened()) {
                             readBuffer.put(message);
                         }
