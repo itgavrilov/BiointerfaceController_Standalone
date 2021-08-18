@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: ru.gsa.biointerfaceController_standalone.Main
+Implementation-Title: biointerfaceController_standalone
+Implementation-Version: 1.0-SNAPSHOT
+Build-Revision: 1.0-SNAPSHOT
+Created-By: itgavrilov@gmail.com
+

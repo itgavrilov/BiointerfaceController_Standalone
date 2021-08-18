@@ -5,8 +5,12 @@ plugins {
     id 'org.beryx.jlink' version '2.24.1'
 }
 
-group 'ru.gsa.biointerfaceControllerStandalone'
-mainClassName = 'ru.gsa.biointerfaceControllerStandalone.Main'
+
+//sourceCompatibility = '16'
+//targetCompatibility = '16'
+
+group 'ru.gsa.biointerfaceController_standalone'
+mainClassName = 'ru.gsa.biointerfaceController_standalone.Main'
 version '1.0-SNAPSHOT'
 
 javafx {
@@ -17,8 +21,8 @@ javafx {
 jlink {
     addExtraDependencies("javafx")
     launcher {
-        name = 'biointerfaceControllerStandalone'
-        mainClass = 'ru.gsa.biointerfaceControllerStandalone.Main'
+        name = 'biointerfaceController_standalone'
+        mainClass = 'ru.gsa.biointerfaceController_standalone.Main'
     }
 }
 
@@ -26,6 +30,10 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
+
+//ext {
+//    junitVersion = '5.7.1'
+//}
 
 def defaultEncoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding
@@ -47,7 +55,7 @@ tasks.getByName('jar') {
                 'Implementation-Title': project.name,
                 'Implementation-Version': version,
                 'Build-Revision': version,
-                //'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+//                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
                 'Created-By': "itgavrilov@gmail.com"
         )
     }
