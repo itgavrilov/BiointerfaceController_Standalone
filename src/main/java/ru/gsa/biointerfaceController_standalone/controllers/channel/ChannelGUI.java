@@ -22,7 +22,7 @@ public final class ChannelGUI<T extends Number> extends AnchorPane implements Ch
 
     private final Separator separator;
     private final NumberAxis graphicChartAxisX;
-    private final LineChart<Integer,T> graphic;
+    private final LineChart<Integer, T> graphic;
     private final ObservableList<XYChart.Data<Integer, T>> dataLineGraphic = FXCollections.observableArrayList();
 
     private Boolean isReady = false;
@@ -103,8 +103,8 @@ public final class ChannelGUI<T extends Number> extends AnchorPane implements Ch
         return axis;
     }
 
-    private LineChart<Integer,T> buildLineChart(int number, NumberAxis buildAxisX, NumberAxis buildAxisY, ObservableList<XYChart.Data<Integer, T>> chart) {
-        LineChart<Integer,T> lineChart = new LineChart(buildAxisX, buildAxisY);
+    private LineChart<Integer, T> buildLineChart(int number, NumberAxis buildAxisX, NumberAxis buildAxisY, ObservableList<XYChart.Data<Integer, T>> chart) {
+        LineChart<Integer, T> lineChart = new LineChart(buildAxisX, buildAxisY);
         lineChart.setAlternativeRowFillVisible(false);
         lineChart.setAnimated(false);
         lineChart.setCache(false);
@@ -199,7 +199,7 @@ public final class ChannelGUI<T extends Number> extends AnchorPane implements Ch
 
     @Override
     public int hashCode() {
-        return Objects.hash(index+1);
+        return Objects.hash(index + 1);
     }
 
     @Override

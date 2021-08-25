@@ -29,7 +29,7 @@ public class CheckBoxOfChannelGUI extends CheckBox implements Comparable<CheckBo
 
     @Override
     public int hashCode() {
-        return Objects.hash(index+1);
+        return Objects.hash(index + 1);
     }
 
     @Override

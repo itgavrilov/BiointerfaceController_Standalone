@@ -9,21 +9,25 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.gsa.biointerfaceController_standalone.connection.Connection;
 import ru.gsa.biointerfaceController_standalone.controllers.channel.ChannelGUI;
-import ru.gsa.biointerfaceController_standalone.devace.Devise;
 import ru.gsa.biointerfaceController_standalone.controllers.channel.CheckBoxOfChannelGUI;
+import ru.gsa.biointerfaceController_standalone.connection.ConnectionFactory;
 
 import java.net.URL;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class BiointerfaceController implements Initializable {
-    static public Devise devise;
-    private final Set<ChannelGUI<Integer>> channelGUI = new TreeSet<>();
-    private final Set<CheckBoxOfChannelGUI> checkBoxOfChannel = new TreeSet<>();
+    static public Connection connection;
+    private final Set<ChannelGUI<Integer>> channelGUIs = new TreeSet<>();
+    private final Set<CheckBoxOfChannelGUI> checkBoxesOfChannel = new TreeSet<>();
 
     @FXML
     private AnchorPane anchorPaneRoot;
@@ -77,10 +81,8 @@ public class BiointerfaceController implements Initializable {
     }
 
     public void buttonScanningSerialPortsPush() {
-        if (devise != null && devise.isConected())
-            devise.stop();
         clearInterface();
-        Devise.scanningSerialPort();
+        ConnectionFactory.scanningSerialPort();
         controlInterface(
                 false,
                 true,
@@ -90,42 +92,39 @@ public class BiointerfaceController implements Initializable {
     }
 
     public void comboBoxComShowing() {
-        if (devise != null && devise.isConected())
-            devise.stop();
         clearInterface();
-
         controlInterface(
                 true,
                 true,
                 false,
                 false
         );
-        availableSerialPorts.getItems().addAll(Devise.getSerialPortNames());
+        availableSerialPorts.getItems().addAll(ConnectionFactory.getSerialPortNames());
     }
 
     public void comboBoxComSelect() {
         if (availableSerialPorts.getValue() != null && !"".equals(availableSerialPorts.getValue())) {
-            devise = Devise.getInstance(availableSerialPorts.getValue());
-            devise.buildingGUIChannels(channelGUI);
-            devise.buildingCheckBoxOfChannelGUI(checkBoxOfChannel);
+            connection = ConnectionFactory.getInstance(availableSerialPorts.getValue());
+            buildingChannelsGUI();
+            buildingCheckBoxOfChannelGUI(checkBoxesOfChannel);
 
-            checkBoxOfChannel.forEach(o -> {
-                channelGUI.stream()
+            checkBoxesOfChannel.forEach(o -> {
+                channelGUIs.stream()
                         .filter(c -> c.getIndex() == o.getIndex())
                         .findFirst()
                         .orElseThrow(NoSuchElementException::new).setVisible(o.isSelected());
 
                 o.setOnAction(event -> {
-                    channelGUI.stream()
+                    channelGUIs.stream()
                             .filter(c -> c.getIndex() == o.getIndex())
                             .findFirst()
                             .orElseThrow(NoSuchElementException::new).setVisible(o.isSelected());
 
-                    devise.setEnableChannel(o.getIndex(), o.isSelected());
+                    connection.setEnableChannel(o.getIndex(), o.isSelected());
 
                     channelVBox.getChildren().clear();
                     channelVBox.getChildren().addAll(
-                            channelGUI.stream()
+                            channelGUIs.stream()
                                     .filter(Node::isVisible)
                                     .collect(Collectors.toSet())
                     );
@@ -133,26 +132,44 @@ public class BiointerfaceController implements Initializable {
                 });
             });
 
-            allSliderZoom.setOnMouseReleased(e -> devise.setCapacity((int) allSliderZoom.getValue()));
-            channelVBox.getChildren().addAll(channelGUI.stream()
+            allSliderZoom.setOnMouseReleased(e -> connection.setCapacity((int) allSliderZoom.getValue()));
+            channelVBox.getChildren().addAll(channelGUIs.stream()
                     .filter(Node::isVisible)
                     .collect(Collectors.toSet())
             );
-            checkBoxOfChannelVBox.getChildren().addAll(checkBoxOfChannel);
+            checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
             onZoomFinished();
-            if (devise.isConected()) {
+
+            if (connection.isConnected()) {
                 controlInterface(
                         true,
                         true,
                         true,
                         true
                 );
-                channelGUI.forEach(o -> o.setReady(true));
+                channelGUIs.forEach(o -> o.setReady(true));
             }
         }
     }
 
-    private void clearInterface(){
+    public void buildingChannelsGUI() {
+        channelGUIs.clear();
+
+        for (char i = 0; i < connection.getCountOfChannels(); i++) {
+            channelGUIs.add(new ChannelGUI<>(i));
+        }
+        connection.setSamplesOfChannels(channelGUIs);
+    }
+
+    public void buildingCheckBoxOfChannelGUI(Set<CheckBoxOfChannelGUI> checkBoxOfChannel) {
+        checkBoxOfChannel.clear();
+
+        for (char i = 0; i < connection.getCountOfChannels(); i++) {
+            checkBoxOfChannel.add(new CheckBoxOfChannelGUI(i, connection.isEnableChannel(i)));
+        }
+    }
+
+    private void clearInterface() {
         channelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().clear();
         availableSerialPorts.getItems().clear();
@@ -161,9 +178,9 @@ public class BiointerfaceController implements Initializable {
     }
 
     public void buttonComStartPush() {
-        if (devise.isConected()) {
-            if (devise.isTransmission()) {
-                devise.stopTransmission();
+        if (connection.isConnected()) {
+            if (connection.isTransmission()) {
+                connection.stopTransmission();
                 controlInterface(
                         true,
                         true,
@@ -172,7 +189,7 @@ public class BiointerfaceController implements Initializable {
                 );
                 buttonComStart.setText("Start");
             } else {
-                devise.startTransmission();
+                connection.startTransmission();
                 controlInterface(
                         false,
                         false,
@@ -184,8 +201,8 @@ public class BiointerfaceController implements Initializable {
     }
 
     public void buttonPushComReboot() {
-        if (devise.isConected())
-            devise.reboot();
+        if (connection.isConnected())
+            connection.reboot();
         clearInterface();
         controlInterface(
                 true,
@@ -204,7 +221,7 @@ public class BiointerfaceController implements Initializable {
         buttonComStart.setDisable(!enableComStart);
         buttonReboot.setDisable(!enableComStart);
         allSliderZoom.setDisable(!enableSliderZoom);
-        checkBoxOfChannel.forEach(o -> o.setDisable(!enableSliderZoom));
+        checkBoxesOfChannel.forEach(o -> o.setDisable(!enableSliderZoom));
     }
 
     public void onZoomFinished() {
@@ -221,8 +238,8 @@ public class BiointerfaceController implements Initializable {
     }
 
     private void onZoomFinishedChannelGUI() {
-        channelGUI.forEach(o -> {
-            o.setPrefHeight(channelVBox.getPrefHeight() / channelGUI.stream().filter(Node::isVisible).count());
+        channelGUIs.forEach(o -> {
+            o.setPrefHeight(channelVBox.getPrefHeight() / channelGUIs.stream().filter(Node::isVisible).count());
             o.setPrefWidth(channelVBox.getPrefWidth());
             o.resizeWindow();
         });

@@ -5,124 +5,90 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d61a140e-bcf0-4c6f-97df-249ebd7a98a7" name="Changes" comment="- не все файлы добавились в предыдущий commit">
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/dependencies-accessors/dependencies-accessors.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/dependencies-accessors/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileChanges/last-build.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fazecast_jSerialComm_2_7_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__net_synedra_validatorfx_0_1_13.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_base_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_base_win_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_controls_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_controls_win_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_fxml_win_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_graphics_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_openjfx_javafx_graphics_win_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/biointerfaceController_standalone.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/module-info.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUIUpdater.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/Devise.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/Samples.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/Cash.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/DataCashListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/SampleCash.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ConfigMessages.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ControlMessages.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/DeviseConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/AbstractPacket.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ChennalPacket.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ConfigPacket.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ControlPacket.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/Packet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/PacketType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer$ReadThread.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer$WriteThread.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/ChannelHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Filter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server$Listener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle$AbstractLifeCycleListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle$Listener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime$DefaultImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime$Impl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/tmp/jar/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUIUpdater.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/DataCashListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/SampleCash.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/ChannelHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Filter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/css/biointerfaceData.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/controllers/channel/CheckBoxOfChannelGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/Devise.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/Devise.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/channel/Samples.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/Samples.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/channel/dataCash/Cash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/Cash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/ConfigMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ConfigMessages.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/ControlMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ControlMessages.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/DeviseConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/DeviseConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/AbstractPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/AbstractPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/ChennalPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ChennalPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/ConfigPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ConfigPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/ControlPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ControlPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/Packet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/Packet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceControllerStandalone/devace/serialPortServer/packets/PacketType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/PacketType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_annotations_20_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/Connection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/DataCollector.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/devace/Device.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/devace/DeviseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/Devise.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/Samples.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/Cash.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/DataCashListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/SampleCash.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ConfigMessages.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ControlMessages.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/DeviseConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/AbstractPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ChennalPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ConfigPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ControlPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/Packet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/PacketType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer$ReadThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer$WriteThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/ChannelHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Filter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server$Listener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle$AbstractLifeCycleListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle$Listener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime$DefaultImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime$Impl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/Devise.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/Samples.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/Cash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/Cash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/DataCashListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/DataCashListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/channel/dataCash/SampleCash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/SampleCash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ConfigMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ConfigMessages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/ControlMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ControlMessages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/DeviseConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/Server.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/AbstractPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/AbstractPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ChennalPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ConfigPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/ControlPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ControlPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/Packet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/Packet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/packets/PacketType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/PacketType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/AbstractServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/AbstractServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/ChannelHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/ChannelHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Filter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/AbstractLifeCycle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/AbstractLifeCycle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/LifeCycle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/LifeCycle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/devace/serialPortServer/serverByPuchkov/util/Uptime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/Uptime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,9 +140,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
         <option value="Interface" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -203,10 +169,11 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.26675427" />
     <property name="project.structure.side.proportion" value="0.30963972" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
+    <property name="settings.editor.selected.configurable" value="proofread" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -349,7 +316,21 @@
       <option name="project" value="LOCAL" />
       <updated>1629267614811</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="- не все файлы добавились в предыдущий commit">
+      <created>1629273902340</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1629273902341</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- не все файлы добавились в предыдущий commit">
+      <created>1629273922030</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1629273922030</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import static ru.gsa.biointerfaceController_standalone.controllers.BiointerfaceController.devise;
+import static ru.gsa.biointerfaceController_standalone.controllers.BiointerfaceController.connection;
 
 
 /**
@@ -17,7 +17,7 @@ public class Main extends Application {
      * @param event
      */
     private static void handle(javafx.stage.WindowEvent event) {
-        if (devise != null) devise.stop();
+        if (connection != null) connection.disconnect();
         Platform.exit();
         System.exit(0);
     }

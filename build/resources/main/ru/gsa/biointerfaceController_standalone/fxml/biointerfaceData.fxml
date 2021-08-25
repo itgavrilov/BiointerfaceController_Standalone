@@ -2,7 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="480.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="480.0"
             minWidth="640.0" prefHeight="1000.0" prefWidth="1000.0"
             xmlns="http://javafx.com/javafx/11.0.2"
             fx:controller="ru.gsa.biointerfaceController_standalone.controllers.BiointerfaceController">
