@@ -35,7 +35,7 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
         serialPort.setParity(SerialPort.NO_PARITY);
         serialPort.setNumStopBits(SerialPort.ONE_STOP_BIT);
         serialPort.setNumDataBits(8);
-        serialPort.setBaudRate(256000);
+        serialPort.setBaudRate(512000);
         serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
 
         serialPort.openPort();

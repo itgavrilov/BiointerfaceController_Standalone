@@ -1,7 +1,7 @@
 package ru.gsa.biointerfaceController_standalone.connection.channel;
 
 
-import ru.gsa.biointerfaceController_standalone.controllers.channel.ChannelGUIUpdater;
+import ru.gsa.biointerfaceController_standalone.controllers.channel.ChannelUpdater;
 import ru.gsa.biointerfaceController_standalone.connection.channel.dataCash.Cash;
 import ru.gsa.biointerfaceController_standalone.connection.channel.dataCash.DataCashListener;
 import ru.gsa.biointerfaceController_standalone.connection.channel.dataCash.SampleCash;
@@ -14,12 +14,12 @@ import java.util.LinkedList;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class Samples<T extends Number> implements DataCashListener<T> {
-    private final ChannelGUIUpdater<T> listener;
+    private final ChannelUpdater<T> listener;
     private final Deque<T> sampleDeque = new LinkedList<>();
     private final Cash<T> cash;
     private int capacity = 0;
 
-    public Samples(ChannelGUIUpdater<T> listener) {
+    public Samples(ChannelUpdater<T> listener) {
         this.listener = listener;
         cash = new SampleCash<>(this);
     }

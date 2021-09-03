@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" snapToPixel="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.gsa.biointerfaceController_standalone.controllers.channel.Channel">
+  <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+  <LineChart fx:id="graphic" alternativeRowFillVisible="false" animated="false" cacheShape="false" createSymbols="false" depthTest="DISABLE" legendVisible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" snapToPixel="false" verticalZeroLineVisible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <xAxis>
+      <NumberAxis fx:id="axisX" animated="false" autoRanging="false" forceZeroInRange="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" minorTickLength="1.0" side="BOTTOM" snapToPixel="false" tickLabelGap="0.0" tickLabelsVisible="false" tickLength="1.0" tickUnit="1.0" />
+    </xAxis>
+    <yAxis>
+      <NumberAxis fx:id="axisY" animated="false" autoRanging="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="1" minorTickLength="1.0" side="LEFT" snapToPixel="false" tickLabelGap="0.0" tickLabelsVisible="false" tickLength="1.0" tickUnit="1.0" />
+    </yAxis>
+  </LineChart>
+</AnchorPane>

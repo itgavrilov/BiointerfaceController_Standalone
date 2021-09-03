@@ -10,11 +10,7 @@ public interface DataCollector {
 
     void setAvailableDevice(boolean available);
 
-    DeviseConfig getDevice();
-
     void setDevice(DeviseConfig devise);
 
     List<Samples<Integer>> getSamplesOfChannels();
-
-    void setEnableChannels(List<Boolean> enableChannels);
 }

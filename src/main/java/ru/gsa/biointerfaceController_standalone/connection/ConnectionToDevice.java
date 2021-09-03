@@ -1,12 +1,10 @@
 package ru.gsa.biointerfaceController_standalone.connection;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerfaceController_standalone.controllers.channel.ChannelGUI;
-import ru.gsa.biointerfaceController_standalone.controllers.channel.CheckBoxOfChannelGUI;
+import ru.gsa.biointerfaceController_standalone.controllers.channel.Channel;
 import ru.gsa.biointerfaceController_standalone.connection.devace.Device;
 import ru.gsa.biointerfaceController_standalone.connection.devace.DeviseConfig;
 import ru.gsa.biointerfaceController_standalone.connection.channel.Samples;
-import ru.gsa.biointerfaceController_standalone.connection.serialPortHost.ConfigMessages;
 import ru.gsa.biointerfaceController_standalone.connection.serialPortHost.ControlMessages;
 import ru.gsa.biointerfaceController_standalone.connection.serialPortHost.Handler;
 import ru.gsa.biointerfaceController_standalone.connection.serialPortHost.SerialPortHost;
@@ -17,7 +15,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
     private final SerialPortHost serialPortHost;
     private final List<Samples<Integer>> samplesOfChannels = new LinkedList<>();
     private Device device;
-    private List<Boolean> enableChannels;
     private boolean flagTransmission = false;
     private boolean available = false;
 
@@ -52,11 +49,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public DeviseConfig getDevice() {
-        return device;
-    }
-
-    @Override
     public void setDevice(DeviseConfig device) {
         this.device = (Device) device;
     }
@@ -71,17 +63,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public void setEnableChannels(List<Boolean> enableChannels) {
-        if (enableChannels == null)
-            throw new NullPointerException("enableChannels is null");
-        if (device == null)
-            throw new NullPointerException("Device configuration empty");
-
-        this.enableChannels = enableChannels;
-    }
-
-    @Override
-    public void setSamplesOfChannels(Set<ChannelGUI<Integer>> channelGUIs){
+    public void setSamplesOfChannels(Set<Channel> channelGUIs){
         if(channelGUIs == null)
             throw new NullPointerException("channelGUIs is null");
         if(channelGUIs.size() < getCountOfChannels())
@@ -90,23 +72,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
         samplesOfChannels.clear();
         channelGUIs.forEach(o -> samplesOfChannels.add(new Samples<>(o)));
         setCapacity(10);
-    }
-
-    @Override
-    public void setEnableChannel(int index, boolean enableChannel) {
-        if (device == null)
-            throw new NullPointerException("Device configuration empty");
-
-        enableChannels.set(index, enableChannel);
-        serialPortHost.sendPackage(ConfigMessages.SET_ENABLE_CHANNELS.setEnableChannels(enableChannels));
-    }
-
-    @Override
-    public boolean isEnableChannel(int index){
-        if (device == null)
-            throw new NullPointerException("Device configuration empty");
-
-        return enableChannels.get(index);
     }
 
     @Override

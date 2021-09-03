@@ -35,23 +35,20 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
             case CONFIG -> {
                 ConfigPacket msg = (ConfigPacket) message;
                 dataCollector.setDevice(new Device(msg.getSerialNumber(), msg.getCountOfChannels()));
-
-                List<Boolean> enableChannels = new LinkedList<>();
-                for (int i = 0; i < dataCollector.getDevice().getCountOfChannels(); i++) {
-                    enableChannels.add(msg.getEnableChannels(i));
-                }
-
-                dataCollector.setEnableChannels(enableChannels);
             }
             case CONTROL -> {
 
             }
             case DATA -> {
-                if (dataCollector.getSamplesOfChannels() != null) {
+                if (dataCollector.getSamplesOfChannels() != null && dataCollector.getSamplesOfChannels().size() > 0) {
                     ChannelPacket msg = (ChannelPacket) message;
                     for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
-                        if (dataCollector.getSamplesOfChannels().get(msg.getIndex(i)) != null)
-                            dataCollector.getSamplesOfChannels().get(msg.getIndex(i)).add(msg.getSample(i));
+                        int scale = msg.getScale(i);
+                        int simple = msg.getSample(i);
+
+                        if (dataCollector.getSamplesOfChannels().get(i) != null) {
+                            dataCollector.getSamplesOfChannels().get(i).add(simple);
+                        }
                     }
                 }
             }
