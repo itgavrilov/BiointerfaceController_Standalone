@@ -4,76 +4,157 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d61a140e-bcf0-4c6f-97df-249ebd7a98a7" name="Changes" comment="- рефакторинг интерфейса&#10;- немного изменил пакеты и урезал размер трафика по COM-порту">
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceData.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/Content.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/ProxyGUI.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/Channel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelUpdater.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CompositeNode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ContentComparable.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/BiointerfaceData.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/Channel.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/ProxyGUI.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/start.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/Content.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/ProxyGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/Channel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CompositeNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ContentComparable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/BiointerfaceData.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/Channel.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/ProxyGUI.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/start.fxml" afterDir="false" />
+    <list default="true" id="d61a140e-bcf0-4c6f-97df-249ebd7a98a7" name="Changes" comment="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель">
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_apiguardian_apiguardian_api_1_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_jupiter_junit_jupiter_api_5_7_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_jupiter_junit_jupiter_engine_5_7_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_platform_junit_platform_commons_1_7_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_platform_junit_platform_engine_1_7_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_opentest4j_opentest4j_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_xerial_sqlite_jdbc_3_36_0_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BCsqLite.s3db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/ResourceSource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/BusinessException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/Examination.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/Icd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/PatientRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/dataCash/Cash.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/DeviseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/Packet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/DAOException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/DB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/DBHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/AbstractDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/DAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/DeviceDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/ExaminationDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/IcdDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/daoLayer/dao/PatientRecordDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/TransitionGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/UIException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/channel/ContentComparable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/AbstractWindow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/IcdAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/Icds.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/PatientRecordAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/PatientRecordOpen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/PatientRecords.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/WindowController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/WindowControllerWithProperty.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/IcdAdd.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/Icds.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/PatientRecordAdd.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/PatientRecordOpen.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/PatientRecords.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_annotations_20_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/biointerfaceController_standalone.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/module-info.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/module-info.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/Connection.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/Connection.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/DataCollector.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/DataCollector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ConfigMessages.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUIUpdater.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone" beforeDir="false" afterPath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/module-info.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/Connection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/ConnectionFactory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/DataCollector.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/Cash.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/DataCashListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/SampleCash.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/devace/Device.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/devace/DeviseConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ControlMessages.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/AbstractPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ControlPacket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/Packet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/PacketType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/AbstractServer$ReadThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/AbstractServer$WriteThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/AbstractServer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/ChannelHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/Server$Listener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/Server.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/AbstractLifeCycle$AbstractLifeCycleListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/AbstractLifeCycle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/LifeCycle$Listener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/LifeCycle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/Uptime$DefaultImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/Uptime$Impl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/Uptime.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/Content.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/ProxyGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/Channel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelUpdater.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/CompositeNode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/gsa/biointerfaceController_standalone/controllers/channel/ContentComparable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.tar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/distributions/biointerfaceController_standalone-1.0-SNAPSHOT.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/libs/biointerfaceController_standalone-1.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/BiointerfaceData.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/Channel.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/ProxyGUI.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/css/biointerfaceData.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/ru/gsa/biointerfaceController_standalone/start.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/scripts/biointerfaceController_standalone.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/jar/MANIFEST.MF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/Connection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/DataCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/DataCollector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ConfigMessages.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelGUIUpdater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelUpdater.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannelGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/fxml/biointerfaceData.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/ConnectionFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/ConnectionToDevice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/ConnectionToDevice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/DataCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/DataCollector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/Samples.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/Samples.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/Cash.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/DataCashListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/dataCash/DataCashListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/channel/dataCash/SampleCash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/dataCash/SampleCash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/devace/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/Device.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/devace/DeviseConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/ControlMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/ControlMessages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/SerialPortHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/SerialPortHost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/AbstractPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/AbstractPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ChannelPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/ChannelPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ConfigPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/ConfigPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/ControlPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/ControlPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/Packet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/packets/PacketType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/packets/PacketType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/AbstractServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/AbstractServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/ChannelHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/ChannelHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/AbstractLifeCycle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/util/AbstractLifeCycle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/LifeCycle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/util/LifeCycle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/connection/serialPortHost/serverByPuchkov/util/Uptime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/businessLayer/serialPortConnection/serialPortHost/serverByPuchkov/util/Uptime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/BiointerfaceData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/window/BiointerfaceData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/Content.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/ProxyGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/ProxyGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/Channel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/channel/Channel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ChannelUpdater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/channel/ChannelUpdater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CheckBoxOfChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/channel/CheckBoxOfChannel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/CompositeNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/uiLayer/channel/CompositeNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/controllers/channel/ContentComparable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/BiointerfaceData.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/BiointerfaceData.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/Channel.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/Channel.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/ProxyGUI.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/ProxyGUI.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ru/gsa/biointerfaceController_standalone/start.fxml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,8 +208,8 @@
       <list>
         <option value="Enum" />
         <option value="FxmlFile" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -146,13 +227,16 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/ru/gsa/biointerfaceController_standalone/Main.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1wPZQbypHzLXvlHsOoyREKq4tFy" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -160,25 +244,31 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.26675427" />
     <property name="project.structure.side.proportion" value="0.30963972" />
-    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\itGavrilov\Documents\Project\BiointerfaceController\Device\Software Standalone\src\main\resources\ru\gsa\biointerfaceController_standalone" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\itGavrilov\Documents\Project\BiointerfaceController\Device\Software Standalone\src" />
       <recent name="D:\itGavrilov\Documents\Project\BiointerfaceController\Device\Software Standalone\src\main\resources\ru\gsa\biointerfaceController_standalone" />
       <recent name="D:\itGavrilov\Documents\Project\BiointerfaceController\BiointerfaceController\Software\biointerfaceController\src\main" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ru.gsa.biointerfaceController_standalone" />
       <recent name="ru.gsa.biointerfaceController.devace" />
       <recent name="ru.gsa.biointerfaceController" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ru.gsa.biointerfaceController_standalone.uiLayer.window" />
+      <recent name="ru.gsa.biointerfaceController_standalone.businessLayer" />
+      <recent name="ru.gsa.biointerfaceController_standalone.daoLayer.dao" />
+      <recent name="ru.gsa.biointerfaceController_standalone.uiLayer" />
       <recent name="ru.gsa.biointerfaceController_standalone.controllers" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Software Standalone [run]">
+  <component name="RunManager" selected="Gradle.Software Standalone [clean]">
     <configuration name="Software Standalone [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -221,7 +311,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="Software Standalone [jlink]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="Software Standalone [jpackageImage]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -232,7 +322,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="jlink" />
+            <option value="jpackageImage" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -286,11 +376,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Software Standalone [clean]" />
         <item itemvalue="Gradle.Software Standalone [run]" />
         <item itemvalue="Gradle.Software Standalone [build]" />
-        <item itemvalue="Gradle.Software Standalone [clean]" />
+        <item itemvalue="Gradle.Software Standalone [jpackageImage]" />
         <item itemvalue="Gradle.Software Standalone [jpackage]" />
-        <item itemvalue="Gradle.Software Standalone [jlink]" />
       </list>
     </recent_temporary>
   </component>
@@ -324,7 +414,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629273922030</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- рефакторинг интерфейса&#10;- немного изменил пакеты и урезал размер трафика по COM-порту">
+      <created>1630663671297</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1630663671297</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -352,10 +449,12 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="- переехали с Java 1.8 на 16&#10;- переехали с библиотеки последовательного порта jssc на jSerialComm&#10;- оптимизация интерфейса и его работы&#10;- переработка протокола последовательного порта" />
     <MESSAGE value="- не все файлы добавились в предыдущий commit" />
     <MESSAGE value="- рефакторинг интерфейса&#10;- немного изменил пакеты и урезал размер трафика по COM-порту" />
-    <option name="LAST_COMMIT_MESSAGE" value="- рефакторинг интерфейса&#10;- немного изменил пакеты и урезал размер трафика по COM-порту" />
+    <MESSAGE value="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель" />
+    <option name="LAST_COMMIT_MESSAGE" value="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

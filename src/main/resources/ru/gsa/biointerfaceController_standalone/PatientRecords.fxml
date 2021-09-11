@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308" maxWidth="665.0"
+            minHeight="400.0" minWidth="665.0" prefHeight="400.0" prefWidth="665.0"
+            xmlns="http://javafx.com/javafx/11.0.2"
+            fx:controller="ru.gsa.biointerfaceController_standalone.uiLayer.window.PatientRecords">
+    <TableView fx:id="tableView" editable="true" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity"
+               maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="125.0"
+               AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <TableColumn prefWidth="75.0" text="id"/>
+        <TableColumn prefWidth="75.0" text="C2"/>
+        <columns>
+            <TableColumn fx:id="idCol" maxWidth="80.0" minWidth="80.0" text="id"/>
+            <TableColumn fx:id="secondNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="secondName"/>
+            <TableColumn fx:id="firstNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="firstName"/>
+            <TableColumn fx:id="middleNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="middleName"/>
+            <TableColumn fx:id="birthdayCol" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" resizable="false"
+                         text="birthday"/>
+            <TableColumn fx:id="icdCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="ICD"/>
+        </columns>
+    </TableView>
+    <Text layoutX="3.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to patient record:"
+          AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="10.0"/>
+    <TextArea fx:id="commentField" disable="true" layoutX="14.0" layoutY="283.0" onKeyReleased="#commentFieldChange"
+              prefHeight="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0"
+              AnchorPane.rightAnchor="5.0"/>
+    <Button layoutX="14.0" layoutY="28.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" mnemonicParsing="false" onAction="#createNewPatientRecord" prefHeight="25.0"
+            prefWidth="60.0" text="add &gt;" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
+    <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0"
+            layoutY="364.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#onDelete" prefHeight="25.0" prefWidth="60.0" text="delete"
+            textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="100.0"/>
+</AnchorPane>

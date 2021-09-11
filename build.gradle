@@ -6,15 +6,15 @@ plugins {
 }
 
 
-//sourceCompatibility = '16'
-//targetCompatibility = '16'
+sourceCompatibility = '16'
+targetCompatibility = '16'
 
 group 'ru.gsa.biointerfaceController_standalone'
 mainClassName = 'ru.gsa.biointerfaceController_standalone.Main'
 version '1.0-SNAPSHOT'
 
 javafx {
-    version = '16'
+    version = sourceCompatibility
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }
 
@@ -31,9 +31,9 @@ repositories {
     mavenCentral()
 }
 
-//ext {
-//    junitVersion = '5.7.1'
-//}
+ext {
+    junitVersion = '5.7.2'
+}
 
 def defaultEncoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding
@@ -69,10 +69,11 @@ dependencies {
         exclude(group: 'org.openjfx')
     }
 
-//    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.2'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
-//test {
-//    useJUnitPlatform()
-//}
+test {
+    useJUnitPlatform()
+}

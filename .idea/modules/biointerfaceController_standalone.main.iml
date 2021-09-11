@@ -23,5 +23,6 @@
     <orderEntry type="library" name="Gradle: org.openjfx:javafx-base:win:16" level="project" />
     <orderEntry type="library" name="Gradle: com.fazecast:jSerialComm:2.7.0" level="project" />
     <orderEntry type="library" name="Gradle: net.synedra:validatorfx:0.1.13" level="project" />
+    <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.36.0.2" level="project" />
   </component>
 </module>
