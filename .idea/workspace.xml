@@ -4,17 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d61a140e-bcf0-4c6f-97df-249ebd7a98a7" name="Changes" comment="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель">
-      <change afterPath="$PROJECT_DIR$/.gitignor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d61a140e-bcf0-4c6f-97df-249ebd7a98a7" name="Changes" comment="- добавил gitignore">
       <change afterPath="$PROJECT_DIR$/BCsqLite.s3db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +67,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Refactoring" />
+        <entry key="$PROJECT_DIR$" value="expansion_of_functionality" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -288,7 +279,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631369639355</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="- добавил gitignore">
+      <created>1631370490975</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1631370490975</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -321,7 +319,8 @@
     <MESSAGE value="- не все файлы добавились в предыдущий commit" />
     <MESSAGE value="- рефакторинг интерфейса&#10;- немного изменил пакеты и урезал размер трафика по COM-порту" />
     <MESSAGE value="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель" />
-    <option name="LAST_COMMIT_MESSAGE" value="- переработал архитектуру интерфейса под предметную область&#10;- переработал архитектуру проекта&#10;- подключил базу данных SQLite&#10;- реализовал DAO-модель" />
+    <MESSAGE value="- добавил gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="- добавил gitignore" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
