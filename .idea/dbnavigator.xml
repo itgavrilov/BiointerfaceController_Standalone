@@ -43,6 +43,9 @@ SELECT * FROM PatientRecord;]]></console>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="086f8395-546a-495f-b9a9-539f50b242f6" />
   </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="086f8395-546a-495f-b9a9-539f50b242f6" dataset="main.SQLITEADMIN_QUERIES" active-filter-id="" />
+  </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
   </component>
