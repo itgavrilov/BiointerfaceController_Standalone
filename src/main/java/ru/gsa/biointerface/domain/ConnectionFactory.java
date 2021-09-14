@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain;
 
 import com.fazecast.jSerialComm.SerialPort;
+import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 
 import java.util.*;
@@ -27,25 +28,25 @@ public class ConnectionFactory {
                 });
     }
 
-    public static List<String> getSerialPortNames() {
+    public static List<String> getSerialNumbers() {
         connectionsToDevice = connectionsToDevice.stream()
                 .filter(ConnectionToDevice::isAvailable)
                 .collect(Collectors.toSet());
 
         return connectionsToDevice.stream()
-                .map(ConnectionToDevice::getSerialPort)
-                .map(SerialPort::getSystemPortName)
+                .map(ConnectionToDevice::getDevice)
+                .map(o-> String.valueOf(o.getId()))
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public static Connection getInstance(String serialPortName) {
+    public static Connection getInstance(String serialNumber) {
         return connectionsToDevice.stream()
                 .peek(o -> {
-                    if (!o.getSerialPort().getSystemPortName().equals(serialPortName))
+                    if (!String.valueOf(o.getDevice().getId()).equals(serialNumber))
                         o.disconnect();
                 })
-                .filter(o -> o.getSerialPort().getSystemPortName().equals(serialPortName))
+                .filter(o -> String.valueOf(o.getDevice().getId()).equals(serialNumber))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }

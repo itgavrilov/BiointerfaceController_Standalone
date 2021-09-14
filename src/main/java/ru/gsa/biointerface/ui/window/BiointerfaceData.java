@@ -52,7 +52,7 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
     @FXML
     private Button scanningSerialPortsButton;
     @FXML
-    private ComboBox<String> availableConnectionsToDevice;
+    private ComboBox<String> availableDevices;
     @FXML
     private Button startButton;
     @FXML
@@ -126,12 +126,12 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
                 false,
                 false
         );
-        availableConnectionsToDevice.getItems().addAll(ConnectionFactory.getSerialPortNames());
+        availableDevices.getItems().addAll(ConnectionFactory.getSerialNumbers());
     }
 
     public void comboBoxComSelect() {
-        if (availableConnectionsToDevice.getValue() != null && !"".equals(availableConnectionsToDevice.getValue())) {
-            connection = ConnectionFactory.getInstance(availableConnectionsToDevice.getValue());
+        if (availableDevices.getValue() != null && !"".equals(availableDevices.getValue())) {
+            connection = ConnectionFactory.getInstance(availableDevices.getValue());
 
             buildingChannelsGUIs();
             buildingCheckBoxesOfChannelGUIs();
@@ -204,8 +204,8 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
     private void clearInterface() {
         channelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().clear();
-        availableConnectionsToDevice.getItems().clear();
-        availableConnectionsToDevice.setValue(null);
+        availableDevices.getItems().clear();
+        availableDevices.setValue(null);
         startButton.setText("Start");
         recordingButton.setText("recording");
     }
@@ -280,7 +280,7 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
                                   boolean enableButtonRecording) {
 
         scanningSerialPortsButton.setDisable(!enableButtonScanning);
-        availableConnectionsToDevice.setDisable(!enableNumberOfCOM);
+        availableDevices.setDisable(!enableNumberOfCOM);
         startButton.setDisable(!enableComStart);
         rebootButton.setDisable(!enableComStart);
         allSliderZoom.setDisable(!enableSliderZoom);
