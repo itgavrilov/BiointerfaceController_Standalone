@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308" maxWidth="400.0"
+            minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.IcdsController">
+    <TableView fx:id="tableView" layoutX="22.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity"
+               minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClickedTableView" prefWidth="202.0"
+               AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="99.0" AnchorPane.topAnchor="5.0">
+        <columns>
+            <TableColumn fx:id="icdCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false"
+                         text="ICD"/>
+            <TableColumn fx:id="versionCol" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false"
+                         text="version"/>
+        </columns>
+    </TableView>
+    <Text layoutX="3.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment:"
+          AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="10.0"/>
+    <TextArea fx:id="commentField" disable="true" layoutX="14.0" layoutY="283.0" onKeyReleased="#commentFieldChange"
+              prefHeight="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0"
+              AnchorPane.rightAnchor="5.0"/>
+    <Button layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#onBack" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
+            textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
+    <Button layoutX="534.0" layoutY="365.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" mnemonicParsing="false" onAction="#onAdd" prefHeight="25.0" prefWidth="60.0"
+            text="add &gt;" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
+    <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0"
+            layoutY="364.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#onDelete" prefHeight="25.0" prefWidth="60.0" text="delete"
+            textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="80.0"/>
+</AnchorPane>

@@ -1,4 +1,4 @@
-module ru.gsa.biointerfaceController_standalone {
+module ru.gsa.biointerface {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
@@ -8,13 +8,14 @@ module ru.gsa.biointerfaceController_standalone {
     requires com.fazecast.jSerialComm;
     requires org.xerial.sqlitejdbc;
 
-    exports ru.gsa.biointerfaceController_standalone;
-    exports ru.gsa.biointerfaceController_standalone.daoLayer;
-    exports ru.gsa.biointerfaceController_standalone.daoLayer.dao;
-    exports ru.gsa.biointerfaceController_standalone.businessLayer;
-    exports ru.gsa.biointerfaceController_standalone.uiLayer.channel;
-    opens ru.gsa.biointerfaceController_standalone.uiLayer to javafx.fxml;
-    opens ru.gsa.biointerfaceController_standalone.uiLayer.window to javafx.fxml;
-    opens ru.gsa.biointerfaceController_standalone.uiLayer.channel to javafx.fxml;
-    opens ru.gsa.biointerfaceController_standalone to javafx.fxml;
+    exports ru.gsa.biointerface;
+    exports ru.gsa.biointerface.persistence;
+    exports ru.gsa.biointerface.persistence.dao;
+    exports ru.gsa.biointerface.domain;
+    exports ru.gsa.biointerface.ui.window.channel;
+    opens ru.gsa.biointerface.ui to javafx.fxml;
+    opens ru.gsa.biointerface.ui.window to javafx.fxml;
+    opens ru.gsa.biointerface.ui.window.channel to javafx.fxml;
+    opens ru.gsa.biointerface to javafx.fxml;
+    exports ru.gsa.biointerface.domain.entity;
 }
