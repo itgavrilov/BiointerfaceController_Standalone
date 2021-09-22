@@ -12,7 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.Connection;
 import ru.gsa.biointerface.domain.ConnectionFactory;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.channel.Channel;
 import ru.gsa.biointerface.ui.window.channel.CheckBoxOfChannel;
@@ -170,14 +171,22 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
             node.getController().setId(i);
             channelGUIs.add(node);
         }
-        connection.setSamplesOfChannels(
-                channelGUIs.stream()
-                        .map(CompositeNode::getController)
-                        .collect(Collectors.toSet())
-        );
+        try {
+            connection.registerChannelGUIs(
+                    channelGUIs.stream()
+                            .map(CompositeNode::getController)
+                            .collect(Collectors.toSet())
+            );
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
         allSliderZoom.setOnMouseReleased(e -> {
             int capacity = (int) allSliderZoom.getValue();
-            connection.setCapacity(capacity);
+            try {
+                connection.setCapacity(capacity);
+            } catch (DomainException ex) {
+                ex.printStackTrace();
+            }
         });
 
         drawChannelsGUI();
@@ -193,7 +202,11 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
 
     public void drawChannelsGUI() {
         channelVBox.getChildren().clear();
-        connection.setCapacity((int) allSliderZoom.getValue());
+        try {
+            connection.setCapacity((int) allSliderZoom.getValue());
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
         channelGUIs.forEach(n -> {
             if (n.getNode().isVisible())
                 channelVBox.getChildren().add(n.getNode());
@@ -213,7 +226,11 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
     public void buttonComStartPush() {
         if (connection.isConnected()) {
             if (connection.isControllerTransmission()) {
-                connection.controllerTransmissionStop();
+                try {
+                    connection.controllerTransmissionStop();
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
                 controlInterface(
                         true,
                         true,
@@ -223,7 +240,11 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
                 );
                 startButton.setText("Start");
             } else {
-                connection.controllerTransmissionStart();
+                try {
+                    connection.controllerTransmissionStart();
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
                 controlInterface(
                         false,
                         false,

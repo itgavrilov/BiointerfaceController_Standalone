@@ -1,23 +1,19 @@
 package ru.gsa.biointerface.ui.window;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Examinations;
-import ru.gsa.biointerface.domain.PatientRecords;
-import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDateTime;
@@ -46,6 +42,8 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     private TableColumn<Examination, String> dateTimeCol;
     @FXML
     private TableColumn<Examination, Integer> deviceIdCol;
+    @FXML
+    private Button deleteButton;
 
     public WindowWithProperty<PatientRecord> setProperty(PatientRecord patientRecord) {
         if (patientRecord == null)
@@ -88,7 +86,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         ObservableList<Examination> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Examinations.getSetByPatientRecordId(patientRecord));
+            list.addAll(Examination.getSetByPatientRecordId(patientRecord));
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -110,7 +108,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         if (!commentField.getText().equals(patientRecord.getComment())) {
             patientRecord.setComment(commentField.getText());
             try {
-                PatientRecords.update(patientRecord);
+                patientRecord.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }
@@ -136,13 +134,25 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         }
     }
 
+    public void onDelete() {
+        Examination examination = tableView.getItems().get(idSelectedRow);
+        try {
+            examination.delete();
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
+        commentField.setText("");
+        tableView.getItems().remove(idSelectedRow);
+        idSelectedRow = -1;
+    }
+
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
         if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
             idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
             commentField.setText(
                     tableView.getItems().get(idSelectedRow).getComment()
             );
-            //deleteButton.setDisable(false);
+            deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
 

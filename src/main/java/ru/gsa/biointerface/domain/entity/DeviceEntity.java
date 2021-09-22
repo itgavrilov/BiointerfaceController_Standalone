@@ -1,31 +1,22 @@
 package ru.gsa.biointerface.domain.entity;
 
-import ru.gsa.biointerface.domain.serialPortHost.DeviceConfig;
-
 import java.util.Objects;
 
-public class Device implements DeviceConfig, Comparable<Device> {
+public class DeviceEntity implements Comparable<DeviceEntity> {
     private final int id;
     private final int amountChannels;
     private String comment;
 
-    public Device(int id, int amountChannels, String comment) {
-        if (id == 0)
-            throw new IllegalArgumentException("Serial number is '0'");
-        if (amountChannels == 0)
-            throw new IllegalArgumentException("Amount channels is '0'");
-
+    public DeviceEntity(int id, int amountChannels, String comment) {
         this.id = id;
         this.amountChannels = amountChannels;
         this.comment = comment;
     }
 
-    @Override
     public int getId() {
         return id;
     }
 
-    @Override
     public int getAmountChannels() {
         return amountChannels;
     }
@@ -42,7 +33,7 @@ public class Device implements DeviceConfig, Comparable<Device> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Device device = (Device) o;
+        DeviceEntity device = (DeviceEntity) o;
         return id == device.id;
     }
 
@@ -52,7 +43,7 @@ public class Device implements DeviceConfig, Comparable<Device> {
     }
 
     @Override
-    public int compareTo(Device o) {
+    public int compareTo(DeviceEntity o) {
         return id - o.id;
     }
 }

@@ -8,9 +8,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.Devices;
+import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.ui.UIException;
 
 public class DevicesController extends AbstractWindow {
@@ -49,7 +48,7 @@ public class DevicesController extends AbstractWindow {
         amountChannelsCol.setStyle("-fx-alignment: center;");
         ObservableList<Device> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Devices.getSetAll());
+            list.addAll(Device.getSetAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -74,7 +73,7 @@ public class DevicesController extends AbstractWindow {
             Device device = tableView.getItems().get(idSelectedRow);
             device.setComment(commentField.getText());
             try {
-                ru.gsa.biointerface.domain.Devices.update(device);
+                device.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }
@@ -92,7 +91,7 @@ public class DevicesController extends AbstractWindow {
     public void onDelete() {
         Device device = tableView.getItems().get(idSelectedRow);
         try {
-            ru.gsa.biointerface.domain.Devices.delete(device);
+            device.delete();
         } catch (DomainException e) {
             e.printStackTrace();
         }

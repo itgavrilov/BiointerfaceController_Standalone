@@ -1,17 +1,17 @@
 package ru.gsa.biointerface.persistence;
 
 import org.sqlite.JDBC;
+import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
 
 public class DBHandler implements DB {
-
     private final static String url = "jdbc:sqlite:./BCsqLite.s3db";
     private static DBHandler instance = null;
     private static Connection connection = null;
 
-
     private DBHandler() throws DAOException {
+
         try {
             DriverManager.registerDriver(new JDBC());
         } catch (SQLException e) {
@@ -50,20 +50,34 @@ public class DBHandler implements DB {
         }
 
         try (Statement statement = connection.createStatement()) {
-            if (patientRecordIsNotPresent)
-                statement.execute(SQL.CREATE_TABLE_PATIENT_RECORD.QUERY);
-
-            if (deviceIsNotPresent)
-                statement.execute(SQL.CREATE_TABLE_DEVICE.QUERY);
-
-            if (examinationIsNotPresent)
-                statement.execute(SQL.CREATE_TABLE_EXAMINATION.QUERY);
-
-            if (samplesIsNotPresent)
-                statement.execute(SQL.CREATE_TABLE_SAMPLES.QUERY);
-
             if (IcdIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
                 statement.execute(SQL.CREATE_TABLE_ICD.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
+            if (patientRecordIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_PATIENT_RECORD.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
+            if (deviceIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_DEVICE.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
+            if (examinationIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_EXAMINATION.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
+            if (samplesIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_SAMPLES.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -79,8 +93,10 @@ public class DBHandler implements DB {
     @Override
     public Connection getConnection() throws DAOException {
         if (connection == null) {
+            SQLiteConfig config = new SQLiteConfig();
+            config.enforceForeignKeys(true);
             try {
-                connection = DriverManager.getConnection(url);
+                connection = DriverManager.getConnection(url, config.toProperties());
             } catch (SQLException e) {
                 e.printStackTrace();
                 throw new DAOException("database connection error", e);
@@ -99,48 +115,61 @@ public class DBHandler implements DB {
     }
 
     private enum SQL {
-        SHOW_TABLES("SELECT name FROM sqlite_master " +
-                "WHERE type IN ('table') " +
-                "AND name NOT LIKE 'sqlite_%';"),
-        CREATE_TABLE_PATIENT_RECORD("CREATE TABLE PatientRecord (" +
-                "id INTEGER PRIMARY KEY UNIQUE NOT NULL," +
-                "secondName VARCHAR(35)  NOT NULL," +
-                "firstName VARCHAR(35)  NOT NULL," +
-                "middleName VARCHAR(35)  NULL," +
-                "birthday DATE  NOT NULL," +
-                "Icd_id INTEGER NULL," +
-                "comment TEXT  NULL," +
-                "FOREIGN KEY (Icd_id) REFERENCES Icd (id)" +
-                ");"),
-        CREATE_TABLE_ICD("CREATE TABLE Icd (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                "ICD VARCHAR(35) NOT NULL," +
-                "version INTEGER NOT NULL," +
-                "comment TEXT NULL" +
-                ");"),
-        CREATE_TABLE_DEVICE("CREATE TABLE Device (" +
-                "id INTEGER PRIMARY KEY NOT NULL," +
-                "amountChannels INTEGER DEFAULT '8' NOT NULL," +
-                "comment TEXT NULL" +
-                ");"),
-        CREATE_TABLE_EXAMINATION("CREATE TABLE Examination (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
-                "patientRecord_id INTEGER NOT NULL," +
-                "device_id INTEGER NOT NULL," +
-                "comment TEXT NULL," +
-                "FOREIGN KEY (patientRecord_id) REFERENCES PatientRecord (id)," +
-                "FOREIGN KEY (device_id) REFERENCES Device (id)" +
-                ");"),
-        CREATE_TABLE_SAMPLES("CREATE TABLE Samples (" +
-                "id INTEGER NOT NULL," +
-                "Examination_id INTEGER NOT NULL," +
-                "channel_id INTEGER NOT NULL," +
-                "value INTEGER NOT NULL," +
-                "PRIMARY KEY (id, Examination_id, channel_id)," +
-                "FOREIGN KEY (Examination_id) REFERENCES Examination (id)" +
-                ");");
-
+        SHOW_TABLES("""
+                SELECT name FROM sqlite_master
+                WHERE type IN ('table')
+                AND name NOT LIKE 'sqlite_%';
+                """),
+        CREATE_TABLE_PATIENT_RECORD("""
+                CREATE TABLE PatientRecord (
+                id INTEGER PRIMARY KEY UNIQUE NOT NULL,
+                secondName VARCHAR(35)  NOT NULL,
+                firstName VARCHAR(35)  NOT NULL,
+                middleName VARCHAR(35)  NULL,
+                birthday DATE  NOT NULL,
+                Icd_id INTEGER NULL,
+                comment TEXT  NULL,
+                CONSTRAINT fk_icd FOREIGN KEY (Icd_id) REFERENCES Icd (id)
+                );
+                """),
+        CREATE_TABLE_ICD("""
+                CREATE TABLE Icd (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                ICD VARCHAR(35) NOT NULL,
+                version INTEGER NOT NULL,
+                comment TEXT NULL
+                );
+                """),
+        CREATE_TABLE_DEVICE("""
+                CREATE TABLE Device (
+                id INTEGER PRIMARY KEY NOT NULL,
+                amountChannels INTEGER DEFAULT '8' NOT NULL,
+                comment TEXT NULL
+                );
+                """),
+        CREATE_TABLE_EXAMINATION("""
+                CREATE TABLE Examination (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                patientRecord_id INTEGER NOT NULL,
+                device_id INTEGER NOT NULL,
+                comment TEXT NULL,
+                CONSTRAINT fk_patientRecord FOREIGN KEY (patientRecord_id) REFERENCES PatientRecord(id) ON DELETE CASCADE,
+                CONSTRAINT fk_device FOREIGN KEY (device_id) REFERENCES Device(id) ON DELETE CASCADE
+                );
+                """),
+        CREATE_TABLE_SAMPLES("""
+                CREATE TABLE Samples (
+                id INTEGER NOT NULL,
+                examination_id INTEGER NOT NULL,
+                channel_id INTEGER NOT NULL,
+                value INTEGER NOT NULL,
+                PRIMARY KEY (id, Examination_id, channel_id),
+                CONSTRAINT fk_Examination FOREIGN KEY (Examination_id) REFERENCES Examination(id) ON DELETE CASCADE
+                );
+                """),
+        FOREIGN_KEYS_ON("PRAGMA foreign_keys=on;"),
+        FOREIGN_KEYS_OFF("PRAGMA foreign_keys=off;");
         final String QUERY;
 
         SQL(String query) {

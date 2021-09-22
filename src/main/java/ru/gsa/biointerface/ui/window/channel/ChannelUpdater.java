@@ -1,14 +1,14 @@
 package ru.gsa.biointerface.ui.window.channel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public interface ChannelUpdater<T extends Number> {
+public interface ChannelUpdater {
     int getId();
 
-    void update(ArrayList<T> data);
+    void update(List<Integer> data);
 
     void setCapacity(int capacity);
 

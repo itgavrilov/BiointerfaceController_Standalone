@@ -1,5 +1,7 @@
 package ru.gsa.biointerface.domain.serialPortHost.dataCash;
 
+import ru.gsa.biointerface.domain.DomainException;
+
 import java.util.LinkedList;
 
 /**
@@ -7,16 +9,16 @@ import java.util.LinkedList;
  * Class for caching input data before output.
  */
 
-public final class SampleCash<T extends Number> implements Cash<T> {
-    private final DataCashListener<T> dataCashListener;
-    private final LinkedList<T> dataInDataCash = new LinkedList<>();
+public final class SampleCash implements Cash {
+    private final DataCashListener dataCashListener;
+    private final LinkedList<Integer> dataInDataCash = new LinkedList<>();
 
-    public SampleCash(DataCashListener<T> dataCashListener) {
+    public SampleCash(DataCashListener dataCashListener) {
         this.dataCashListener = dataCashListener;
     }
 
     @Override
-    public void add(T val) {
+    public void add(int val) throws DomainException {
         dataInDataCash.add(val);
         if (dataInDataCash.size() >= 15) {
             dataCashListener.update(dataInDataCash);

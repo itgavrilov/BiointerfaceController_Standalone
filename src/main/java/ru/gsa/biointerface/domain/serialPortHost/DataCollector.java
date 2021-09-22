@@ -1,16 +1,14 @@
 package ru.gsa.biointerface.domain.serialPortHost;
 
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Samples;
+import ru.gsa.biointerface.domain.Device;
+import ru.gsa.biointerface.domain.Samples;
 
 import java.util.List;
 
 public interface DataCollector {
-    boolean isAvailable();
-
-    void setAvailableDevice(boolean available);
+    boolean isAvailableDevice();
 
     void setDevice(Device devise);
 
-    List<Samples<Integer>> getSamplesOfChannels();
+    List<Samples> getSamplesOfChannels();
 }

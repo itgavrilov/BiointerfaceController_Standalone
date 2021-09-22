@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Examination;
+import ru.gsa.biointerface.domain.entity.DeviceEntity;
 import ru.gsa.biointerface.persistence.DAOException;
 
 import java.sql.PreparedStatement;
@@ -11,14 +10,14 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class DeviceDAO extends AbstractDAO<Device> {
+public class DeviceDAO extends AbstractDAO<DeviceEntity> {
     protected static DeviceDAO dao;
 
     private DeviceDAO() throws DAOException {
         super();
     }
 
-    public static DAO<Device> getInstance() throws DAOException {
+    public static DAO<DeviceEntity> getInstance() throws DAOException {
         if (dao == null)
             dao = new DeviceDAO();
 
@@ -26,7 +25,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     @Override
-    public Device insert(Device device) throws DAOException {
+    public DeviceEntity insert(DeviceEntity device) throws DAOException {
         if (device == null)
             throw new NullPointerException("device is null");
 
@@ -46,14 +45,14 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     @Override
-    public Device getById(int key) throws DAOException {
-        Device device = null;
+    public DeviceEntity getById(int key) throws DAOException {
+        DeviceEntity device = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
             statement.setInt(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    device = new Device(
+                    device = new DeviceEntity(
                             resultSet.getInt("id"),
                             resultSet.getInt("amountChannels"),
                             resultSet.getString("comment")
@@ -72,7 +71,7 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     @Override
-    public boolean update(Device device) throws DAOException {
+    public boolean update(DeviceEntity device) throws DAOException {
         if (device == null)
             throw new NullPointerException("patientRecord is null");
 
@@ -93,21 +92,11 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     @Override
-    public boolean delete(Device device) throws DAOException {
+    public boolean delete(DeviceEntity device) throws DAOException {
         if (device == null)
             throw new NullPointerException("patientRecord is null");
 
         boolean result;
-
-        Set<Examination> examinations = ExaminationDAO.getInstance().getByDevice(device);
-
-        examinations.forEach(o -> {
-            try {
-                ExaminationDAO.getInstance().delete(o);
-            } catch (DAOException e) {
-                e.printStackTrace();
-            }
-        });
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
             statement.setInt(1, device.getId());
@@ -122,13 +111,13 @@ public class DeviceDAO extends AbstractDAO<Device> {
     }
 
     @Override
-    public Set<Device> getAll() throws DAOException {
-        Set<Device> devices = new TreeSet<>();
+    public Set<DeviceEntity> getAll() throws DAOException {
+        Set<DeviceEntity> devices = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
             while (resultSet.next()) {
-                Device device = new Device(
+                DeviceEntity device = new DeviceEntity(
                         resultSet.getInt("id"),
                         resultSet.getInt("amountChannels"),
                         resultSet.getString("comment")

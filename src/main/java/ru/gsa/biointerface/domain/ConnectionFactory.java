@@ -1,8 +1,6 @@
 package ru.gsa.biointerface.domain;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,12 +28,12 @@ public class ConnectionFactory {
 
     public static List<String> getSerialNumbers() {
         connectionsToDevice = connectionsToDevice.stream()
-                .filter(ConnectionToDevice::isAvailable)
+                .filter(ConnectionToDevice::isAvailableDevice)
                 .collect(Collectors.toSet());
 
         return connectionsToDevice.stream()
                 .map(ConnectionToDevice::getDevice)
-                .map(o-> String.valueOf(o.getId()))
+                .map(o -> String.valueOf(o.getId()))
                 .sorted()
                 .collect(Collectors.toList());
     }

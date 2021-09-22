@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.persistence.DAOException;
 
 import java.sql.PreparedStatement;
@@ -10,14 +10,14 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class IcdDAO extends AbstractDAO<Icd> {
+public class IcdDAO extends AbstractDAO<IcdEntity> {
     protected static IcdDAO dao;
 
     private IcdDAO() throws DAOException {
         super();
     }
 
-    public static DAO<Icd> getInstance() throws DAOException {
+    public static DAO<IcdEntity> getInstance() throws DAOException {
         if (dao == null)
             dao = new IcdDAO();
 
@@ -25,24 +25,24 @@ public class IcdDAO extends AbstractDAO<Icd> {
     }
 
     @Override
-    public Icd insert(Icd icd) throws DAOException {
-        if (icd == null)
+    public IcdEntity insert(IcdEntity icdEntity) throws DAOException {
+        if (icdEntity == null)
             throw new NullPointerException("patientRecord is null");
 
-        Icd result = null;
+        IcdEntity result = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
-            statement.setString(1, icd.getICD());
-            statement.setInt(2, icd.getVersion());
-            if (icd.getComment() != null) statement.setString(3, icd.getComment());
+            statement.setString(1, icdEntity.getICD());
+            statement.setInt(2, icdEntity.getVersion());
+            if (icdEntity.getComment() != null) statement.setString(3, icdEntity.getComment());
             else statement.setNull(3, java.sql.Types.NULL);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    result = new Icd(
+                    result = new IcdEntity(
                             resultSet.getInt("id"),
-                            icd.getICD(),
-                            icd.getVersion(),
-                            icd.getComment()
+                            icdEntity.getICD(),
+                            icdEntity.getVersion(),
+                            icdEntity.getComment()
                     );
                 }
             } catch (SQLException e) {
@@ -58,14 +58,14 @@ public class IcdDAO extends AbstractDAO<Icd> {
     }
 
     @Override
-    public Icd getById(int key) throws DAOException {
-        Icd icd = null;
+    public IcdEntity getById(int key) throws DAOException {
+        IcdEntity icdEntity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
             statement.setInt(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    icd = new Icd(
+                    icdEntity = new IcdEntity(
                             resultSet.getInt("id"),
                             resultSet.getString("ICD"),
                             resultSet.getInt("version"),
@@ -81,20 +81,20 @@ public class IcdDAO extends AbstractDAO<Icd> {
             throw new DAOException("statement error", e);
         }
 
-        return icd;
+        return icdEntity;
     }
 
     @Override
-    public boolean update(Icd icd) throws DAOException {
-        if (icd == null)
+    public boolean update(IcdEntity icdEntity) throws DAOException {
+        if (icdEntity == null)
             throw new NullPointerException("patientRecord is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (icd.getComment() != null) statement.setString(1, icd.getComment());
+            if (icdEntity.getComment() != null) statement.setString(1, icdEntity.getComment());
             else statement.setNull(1, java.sql.Types.NULL);
-            statement.setInt(2, icd.getId());
+            statement.setInt(2, icdEntity.getId());
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,14 +105,14 @@ public class IcdDAO extends AbstractDAO<Icd> {
     }
 
     @Override
-    public boolean delete(Icd icd) throws DAOException {
-        if (icd == null)
+    public boolean delete(IcdEntity icdEntity) throws DAOException {
+        if (icdEntity == null)
             throw new NullPointerException("patientRecord is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
-            statement.setInt(1, icd.getId());
+            statement.setInt(1, icdEntity.getId());
 
             result = statement.execute();
         } catch (SQLException e) {
@@ -124,26 +124,26 @@ public class IcdDAO extends AbstractDAO<Icd> {
     }
 
     @Override
-    public Set<Icd> getAll() throws DAOException {
-        Set<Icd> icds = new TreeSet<>();
+    public Set<IcdEntity> getAll() throws DAOException {
+        Set<IcdEntity> icdEntities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
             while (resultSet.next()) {
-                Icd icd = new Icd(
+                IcdEntity icdEntity = new IcdEntity(
                         resultSet.getInt("id"),
                         resultSet.getString("ICD"),
                         resultSet.getInt("version"),
                         resultSet.getString("comment")
                 );
-                icds.add(icd);
+                icdEntities.add(icdEntity);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException("statement error", e);
         }
 
-        return icds;
+        return icdEntities;
     }
 
     private enum SQL {

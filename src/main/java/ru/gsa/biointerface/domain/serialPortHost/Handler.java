@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.domain.serialPortHost;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.domain.entity.Device;
+import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.serialPortHost.packets.ChannelPacket;
 import ru.gsa.biointerface.domain.serialPortHost.packets.ConfigPacket;
 import ru.gsa.biointerface.domain.serialPortHost.packets.Packet;
@@ -26,8 +26,6 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
 
     @Override
     public void channelRead(Packet message, LinkedBlockingQueue<Packet> sendBuffer, SerialPort context) {
-        dataCollector.setAvailableDevice(true);
-
         switch (message.getPackageType()) {
             case CONFIG -> {
                 ConfigPacket msg = (ConfigPacket) message;

@@ -9,8 +9,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icds;
-import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.ui.UIException;
 
 
@@ -51,7 +50,7 @@ public class IcdsController extends AbstractWindow {
 
         ObservableList<Icd> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Icds.getSetAll());
+            list.addAll(Icd.getSetAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -75,7 +74,7 @@ public class IcdsController extends AbstractWindow {
             Icd icd = tableView.getItems().get(idSelectedRow);
             icd.setComment(commentField.getText());
             try {
-                Icds.update(icd);
+                icd.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }
@@ -101,7 +100,7 @@ public class IcdsController extends AbstractWindow {
     public void onDelete() {
         Icd icd = tableView.getItems().get(idSelectedRow);
         try {
-            Icds.delete(icd);
+            icd.delete();
         } catch (DomainException e) {
             e.printStackTrace();
         }

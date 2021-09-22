@@ -1,11 +1,12 @@
 package ru.gsa.biointerface.domain;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.domain.entity.Samples;
-import ru.gsa.biointerface.domain.serialPortHost.*;
+import ru.gsa.biointerface.domain.serialPortHost.ControlMessages;
+import ru.gsa.biointerface.domain.serialPortHost.DataCollector;
+import ru.gsa.biointerface.domain.serialPortHost.Handler;
+import ru.gsa.biointerface.domain.serialPortHost.SerialPortHost;
+import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.dao.SampleDAO;
 import ru.gsa.biointerface.ui.window.channel.Channel;
 
 import java.time.LocalDateTime;
@@ -17,12 +18,10 @@ import java.util.Set;
 public class ConnectionToDevice implements DataCollector, Connection {
     private final PatientRecord patientRecord;
     private final SerialPortHost serialPortHost;
-    private final List<Samples<Integer>> samplesOfChannels = new LinkedList<>();
-    private Device device;
-    private Examination examination;
+    private final List<Samples> samplesOfChannels = new LinkedList<>();
+    private Device device = null;
+    private Examination examination = null;
     private boolean flagTransmission = false;
-    private boolean available = false;
-    private boolean recording = false;
 
     public ConnectionToDevice(PatientRecord patientRecord, SerialPort serialPort) throws DomainException {
         if (serialPort == null)
@@ -48,10 +47,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
         return patientRecord;
     }
 
-    public SerialPort getSerialPort() {
-        return serialPortHost.getSerialPort();
-    }
-
     @Override
     public Device getDevice() {
         return device;
@@ -59,55 +54,52 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public void setDevice(Device device) {
-        if(device == null)
+        if (device == null)
             throw new NullPointerException("device is null");
 
         this.device = device;
     }
 
     @Override
-    public boolean isAvailable() {
-        return available;
+    public boolean isAvailableDevice() {
+        return device != null;
     }
 
     @Override
-    public void setAvailableDevice(boolean available) {
-        this.available = available;
-    }
-
-    @Override
-    public List<Samples<Integer>> getSamplesOfChannels() {
+    public List<Samples> getSamplesOfChannels() {
         return samplesOfChannels;
     }
 
     @Override
-    public void setSamplesOfChannels(Set<Channel> channelGUIs) {
+    public void registerChannelGUIs(Set<Channel> channelGUIs) throws DomainException {
         if (channelGUIs == null)
             throw new NullPointerException("channelGUIs is null");
         if (channelGUIs.size() < device.getAmountChannels())
-            throw new RuntimeException("count of channelGUIs less than count of channels");
+            throw new DomainException("count of channelGUIs less than count of channels");
 
         samplesOfChannels.clear();
-        channelGUIs.forEach(o -> samplesOfChannels.add(new Samples<>(o)));
+        channelGUIs.forEach(o -> samplesOfChannels.add(new Samples(o)));
         setCapacity(10);
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(int capacity) throws DomainException {
         if (device == null)
-            throw new NullPointerException("Device configuration empty");
+            throw new DomainException("Device configuration empty");
         if (capacity == 0)
-            throw new IllegalArgumentException("capacity is '0'");
+            throw new DomainException("capacity is '0'");
 
         samplesOfChannels.forEach(o -> o.setCapacity(capacity));
     }
 
     @Override
     public boolean isConnected() {
-        if (serialPortHost == null)
-            throw new NullPointerException("server is not initialized (null)");
+        boolean result = false;
 
-        return serialPortHost.isRunning();
+        if (serialPortHost != null)
+            result = serialPortHost.isRunning();
+
+        return result;
     }
 
     @Override
@@ -116,9 +108,8 @@ public class ConnectionToDevice implements DataCollector, Connection {
             device = null;
 
         if (serialPortHost != null) {
-            controllerTransmissionStop();
-
             try {
+                controllerTransmissionStop();
                 serialPortHost.stop();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -127,20 +118,20 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public void controllerTransmissionStart() {
+    public void controllerTransmissionStart() throws DomainException {
         if (serialPortHost == null)
-            throw new NullPointerException("server is not initialized (null)");
+            throw new DomainException("server is not initialized (null)");
         if (!serialPortHost.isRunning())
-            throw new RuntimeException("Server is not running");
+            throw new DomainException("Server is not running");
 
         flagTransmission = true;
         serialPortHost.sendPackage(ControlMessages.START_TRANSMISSION);
     }
 
     @Override
-    public void controllerTransmissionStop() {
+    public void controllerTransmissionStop() throws DomainException {
         if (serialPortHost == null)
-            throw new NullPointerException("server is not initialized (null)");
+            throw new DomainException("server is not initialized (null)");
 
         flagTransmission = false;
         serialPortHost.sendPackage(ControlMessages.STOP_TRANSMISSION);
@@ -154,29 +145,36 @@ public class ConnectionToDevice implements DataCollector, Connection {
     @Override
     public void recordingStart(String comment) {
         try {
-            Devices.insert(device);
-            examination = Examinations.insert(new Examination(
+            device.insert();
+
+            examination = new Examination(
                     -1,
-                    LocalDateTime.now(),
-                    patientRecord,
-                    device,
-                    comment
-            ));
-        } catch (DomainException e) {
+                    patientRecord.getEntity(),
+                    device.getEntity(),
+                    comment);
+            examination.insert();
+
+            samplesOfChannels.forEach(o -> o.setExamination(examination));
+            SampleDAO.getInstance().beginTransaction();
+        } catch (DomainException | DAOException e) {
             e.printStackTrace();
         }
-
-        recording = true;
     }
 
     @Override
     public void recordingStop() {
-        recording = false;
+        examination = null;
+        samplesOfChannels.forEach(o -> o.setExamination(examination));
+        try {
+            SampleDAO.getInstance().endTransaction();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean isRecording() {
-        return recording;
+        return flagTransmission && examination != null;
     }
 
     @Override
@@ -196,7 +194,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (examination != null && !comment.equals(examination.getComment())) {
             examination.setComment(comment);
             try {
-                Examinations.update(examination);
+                examination.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }

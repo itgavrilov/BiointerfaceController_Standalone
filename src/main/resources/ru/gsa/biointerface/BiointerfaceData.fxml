@@ -51,37 +51,37 @@
         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
                     AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
                     AnchorPane.topAnchor="120.0">
-                <Button fx:id="scanningSerialPortsButton" maxHeight="25.0" minHeight="25.0" mnemonicParsing="false"
-                        onAction="#buttonScanningSerialPortsPush" prefHeight="25.0" text="Scanning devises"
-                        textAlignment="CENTER" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
-                        AnchorPane.topAnchor="0.0"/>
-                <AnchorPane maxHeight="170.0" maxWidth="-Infinity" minHeight="170.0" minWidth="-Infinity"
-                            prefHeight="170.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="120.0"
-                            AnchorPane.topAnchor="45.0">
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Serial number" textAlignment="CENTER"
-                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                        <ComboBox fx:id="availableDevices" disable="true" maxHeight="25.0" minHeight="25.0"
-                                  onAction="#comboBoxComSelect" onShowing="#comboBoxComShowing" prefHeight="25.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0"/>
-                        <Button fx:id="startButton" disable="true" maxHeight="25.0" minHeight="25.0"
-                                mnemonicParsing="false" onAction="#buttonComStartPush" prefHeight="25.0" text="Start"
-                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0"/>
-                        <Button fx:id="rebootButton" disable="true" maxHeight="25.0" minHeight="25.0"
-                                mnemonicParsing="false" onAction="#buttonPushComReboot" prefHeight="25.0" text="Reboot"
-                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0"/>
-                        <Button fx:id="recordingButton" disable="true" maxHeight="40.0" minHeight="40.0"
-                                mnemonicParsing="false" onAction="#onRecording" prefHeight="40.0" text="recording"
-                                textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                AnchorPane.topAnchor="120.0"/>
-                </AnchorPane>
-                <VBox fx:id="checkBoxOfChannelVBox" fillWidth="false" maxHeight="170.0" maxWidth="-Infinity"
-                      minHeight="170.0" minWidth="-Infinity" prefHeight="170.0" AnchorPane.leftAnchor="115.0"
-                      AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="45.0"/>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to examination:" textAlignment="RIGHT"
-                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="220.0"/>
-                <TextArea fx:id="commentField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                          minWidth="-Infinity" onKeyReleased="#commentFieldChange" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="235.0"/>
+            <Button fx:id="scanningSerialPortsButton" maxHeight="25.0" minHeight="25.0" mnemonicParsing="false"
+                    onAction="#buttonScanningSerialPortsPush" prefHeight="25.0" text="Scanning devises"
+                    textAlignment="CENTER" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+                    AnchorPane.topAnchor="0.0"/>
+            <AnchorPane maxHeight="170.0" maxWidth="-Infinity" minHeight="170.0" minWidth="-Infinity"
+                        prefHeight="170.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="120.0"
+                        AnchorPane.topAnchor="45.0">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Serial number" textAlignment="CENTER"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                <ComboBox fx:id="availableDevices" disable="true" maxHeight="25.0" minHeight="25.0"
+                          onAction="#comboBoxComSelect" onShowing="#comboBoxComShowing" prefHeight="25.0"
+                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0"/>
+                <Button fx:id="startButton" disable="true" maxHeight="25.0" minHeight="25.0"
+                        mnemonicParsing="false" onAction="#buttonComStartPush" prefHeight="25.0" text="Start"
+                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0"/>
+                <Button fx:id="rebootButton" disable="true" maxHeight="25.0" minHeight="25.0"
+                        mnemonicParsing="false" onAction="#buttonPushComReboot" prefHeight="25.0" text="Reboot"
+                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0"/>
+                <Button fx:id="recordingButton" disable="true" maxHeight="40.0" minHeight="40.0"
+                        mnemonicParsing="false" onAction="#onRecording" prefHeight="40.0" text="recording"
+                        textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                        AnchorPane.topAnchor="120.0"/>
+            </AnchorPane>
+            <VBox fx:id="checkBoxOfChannelVBox" fillWidth="false" maxHeight="170.0" maxWidth="-Infinity"
+                  minHeight="170.0" minWidth="-Infinity" prefHeight="170.0" AnchorPane.leftAnchor="115.0"
+                  AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="45.0"/>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to examination:" textAlignment="RIGHT"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="220.0"/>
+            <TextArea fx:id="commentField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" onKeyReleased="#commentFieldChange" AnchorPane.bottomAnchor="0.0"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="235.0"/>
         </AnchorPane>
         <Button maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false"
                 onAction="#onBack" prefHeight="25.0" prefWidth="60.0" text="&lt; back" textAlignment="CENTER"

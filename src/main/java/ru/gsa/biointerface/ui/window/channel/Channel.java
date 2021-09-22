@@ -12,10 +12,11 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public final class Channel implements ChannelUpdater<Integer>, ContentComparable {
+public final class Channel implements ChannelUpdater, ContentComparable {
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private int id;
     private Boolean isReady = false;
@@ -32,7 +33,6 @@ public final class Channel implements ChannelUpdater<Integer>, ContentComparable
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //int min = Integer.MIN_VALUE, max = Integer.MAX_VALUE;
         int min = -2048,
                 max = 2047,
                 tickUnit = max / 4,
@@ -54,11 +54,11 @@ public final class Channel implements ChannelUpdater<Integer>, ContentComparable
 
     public void setId(int id) {
         this.id = id;
-        title.setText("Channel " + (id + 1));
+        title.setText("Channel ".concat(String.valueOf(id + 1)));
     }
 
     @Override
-    public void update(ArrayList<Integer> data) {
+    public void update(List<Integer> data) {
         Platform.runLater(() -> {
             for (int i = 0; i < data.size(); i++) {
                 dataLineGraphic.get(i).setYValue(data.get(i));

@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308" maxWidth="400.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308"
+            maxWidth="400.0"
             minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.DevicesController">
     <TableView fx:id="tableView" layoutX="22.0" layoutY="14.0" maxWidth="172.0" minWidth="172.0"

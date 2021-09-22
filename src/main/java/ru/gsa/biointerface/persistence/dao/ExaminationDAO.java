@@ -1,16 +1,16 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.DeviceEntity;
+import ru.gsa.biointerface.domain.entity.ExaminationEntity;
+import ru.gsa.biointerface.domain.entity.IcdEntity;
+import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.DAOException;
 
 import java.sql.*;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class ExaminationDAO extends AbstractDAO<Examination> {
+public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
     protected static ExaminationDAO dao;
 
     private ExaminationDAO() throws DAOException {
@@ -25,11 +25,11 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
     @Override
-    public Examination insert(Examination examination) throws DAOException {
+    public ExaminationEntity insert(ExaminationEntity examination) throws DAOException {
         if (examination == null)
             throw new NullPointerException("examination is null");
 
-        Examination result = null;
+        ExaminationEntity result = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
             statement.setTimestamp(1, Timestamp.valueOf(examination.getDateTime()));
@@ -39,7 +39,7 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    result = new Examination(
+                    result = new ExaminationEntity(
                             resultSet.getInt("id"),
                             examination.getDateTime(),
                             examination.getPatientRecord(),
@@ -60,14 +60,14 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
     @Override
-    public Examination getById(int key) throws DAOException {
-        Examination examination = null;
+    public ExaminationEntity getById(int key) throws DAOException {
+        ExaminationEntity examination = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_ID.QUERY)) {
             statement.setInt(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    examination = new Examination(
+                    examination = new ExaminationEntity(
                             resultSet.getInt("id"),
                             resultSet.getTimestamp("timestamp").toLocalDateTime(),
                             null,
@@ -88,14 +88,14 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
 
-    public Set<Examination> getByDevice(Device device) throws DAOException {
-        Set<Examination> examinations = new TreeSet<>();
+    public Set<ExaminationEntity> getByDevice(DeviceEntity device) throws DAOException {
+        Set<ExaminationEntity> examinations = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_DEVICE_ID.QUERY)) {
             statement.setInt(1, device.getId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Examination examination = new Examination(
+                    ExaminationEntity examination = new ExaminationEntity(
                             resultSet.getInt("id"),
                             resultSet.getTimestamp("timestamp").toLocalDateTime(),
                             getPatientRecordFromResult(resultSet),
@@ -116,18 +116,18 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
         return examinations;
     }
 
-    public Set<Examination> getByPatientRecord(PatientRecord patientRecord) throws DAOException {
-        Set<Examination> examinations = new TreeSet<>();
+    public Set<ExaminationEntity> getByPatientRecord(PatientRecordEntity patientRecordEntity) throws DAOException {
+        Set<ExaminationEntity> examinations = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_PATIENT_RECORD_ID.QUERY)) {
-            statement.setInt(1, patientRecord.getId());
+            statement.setInt(1, patientRecordEntity.getId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Examination examination = new Examination(
+                    ExaminationEntity examination = new ExaminationEntity(
                             resultSet.getInt("id"),
                             resultSet.getTimestamp("timestamp").toLocalDateTime(),
-                            patientRecord,
-                            new Device(
+                            patientRecordEntity,
+                            new DeviceEntity(
                                     resultSet.getInt("device_id"),
                                     resultSet.getInt("amountChannels"),
                                     resultSet.getString("deviceComment")
@@ -149,7 +149,7 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
     @Override
-    public boolean update(Examination examination) throws DAOException {
+    public boolean update(ExaminationEntity examination) throws DAOException {
         if (examination == null)
             throw new NullPointerException("patientRecord is null");
 
@@ -169,7 +169,7 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
     @Override
-    public boolean delete(Examination examination) throws DAOException {
+    public boolean delete(ExaminationEntity examination) throws DAOException {
         if (examination == null)
             throw new NullPointerException("patientRecord is null");
 
@@ -188,17 +188,17 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
     }
 
     @Override
-    public Set<Examination> getAll() throws DAOException {
-        Set<Examination> examinations = new TreeSet<>();
+    public Set<ExaminationEntity> getAll() throws DAOException {
+        Set<ExaminationEntity> examinations = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
             while (resultSet.next()) {
-                Examination examination = new Examination(
+                ExaminationEntity examination = new ExaminationEntity(
                         resultSet.getInt("id"),
                         resultSet.getTimestamp("timestamp").toLocalDateTime(),
                         getPatientRecordFromResult(resultSet),
-                        new Device(
+                        new DeviceEntity(
                                 resultSet.getInt("device_id"),
                                 resultSet.getInt("amountChannels"),
                                 resultSet.getString("deviceComment")
@@ -215,21 +215,21 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
         return examinations;
     }
 
-    private PatientRecord getPatientRecordFromResult(ResultSet resultSet) throws SQLException {
-        Icd icd = null;
+    private PatientRecordEntity getPatientRecordFromResult(ResultSet resultSet) throws SQLException {
+        IcdEntity icdEntity = null;
         if (resultSet.getInt("Icd_id") > 0)
-            icd = new Icd(resultSet.getInt("Icd_id"),
+            icdEntity = new IcdEntity(resultSet.getInt("Icd_id"),
                     resultSet.getString("ICD"),
                     resultSet.getInt("version"),
                     resultSet.getString("icdComment")
             );
-        return new PatientRecord(
+        return new PatientRecordEntity(
                 resultSet.getInt("patientRecord_id"),
                 resultSet.getString("secondName"),
                 resultSet.getString("firstName"),
                 resultSet.getString("middleName"),
                 resultSet.getDate("birthday").toLocalDate(),
-                icd,
+                icdEntity,
                 resultSet.getString("patientRecordComment")
         );
     }
@@ -241,7 +241,7 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
         SELECT_BY_ID("SELECT * FROM Examination WHERE id = (?);"),
         SELECT_BY_DEVICE_ID("SELECT e.*, " +
                 "pr.secondName, pr.firstName, pr.middleName, pr.birthday, pr.icd_id, pr.comment AS patientRecordComment, " +
-                "i.ICD, i.version, i.comment AS icdComment, " +
+                "i.ICD, i.version, i.comment AS icdComment " +
                 "FROM Examination AS e " +
                 "LEFT JOIN PatientRecord pr ON pr.id = e.patientRecord_id " +
                 "LEFT JOIN Icd i ON i.id = pr.icd_id " +
@@ -254,6 +254,7 @@ public class ExaminationDAO extends AbstractDAO<Examination> {
                 ";"),
 
         UPDATE("UPDATE Examination SET comment = (?) WHERE id = (?)"),
+
         DELETE("DELETE FROM Examination WHERE id = (?);"),
 
         SELECT_ALL("SELECT e.*, " +

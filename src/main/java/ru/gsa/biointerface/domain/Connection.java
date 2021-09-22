@@ -1,6 +1,5 @@
 package ru.gsa.biointerface.domain;
 
-import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.ui.window.channel.Channel;
 
 import java.util.Set;
@@ -8,17 +7,17 @@ import java.util.Set;
 public interface Connection {
     Device getDevice();
 
-    void setSamplesOfChannels(Set<Channel> channelGUIs);
+    void registerChannelGUIs(Set<Channel> channelGUIs) throws DomainException;
 
-    void setCapacity(int capacity);
+    void setCapacity(int capacity) throws DomainException;
 
     boolean isConnected();
 
     void disconnect();
 
-    void controllerTransmissionStart();
+    void controllerTransmissionStart() throws DomainException;
 
-    void controllerTransmissionStop();
+    void controllerTransmissionStop() throws DomainException;
 
     boolean isControllerTransmission();
 

@@ -119,7 +119,7 @@ public class ProxyGUI implements TransitionGUI {
             setLeftAnchor(node, 0.0);
             setRightAnchor(node, 0.0);
 
-            stage.setTitle("BiointerfaceController(standalone)" + controller.getTitleWindow());
+            stage.setTitle("BiointerfaceController(standalone)".concat(controller.getTitleWindow()));
             stage.setMinHeight(node.getMinHeight() + toolbar.getPrefHeight() + 36);
             stage.setHeight(node.getPrefHeight() + toolbar.getPrefHeight() + 36);
             stage.setMaxHeight(node.getMaxHeight() + toolbar.getPrefHeight() + 36);

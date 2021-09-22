@@ -1,5 +1,7 @@
 package ru.gsa.biointerface.domain.serialPortHost.dataCash;
 
-public interface Cash<T extends Number> {
-    void add(T val);
+import ru.gsa.biointerface.domain.DomainException;
+
+public interface Cash {
+    void add(int val) throws DomainException;
 }

@@ -1,22 +1,17 @@
 package ru.gsa.biointerface.ui.window;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icds;
-import ru.gsa.biointerface.domain.PatientRecords;
-import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
@@ -76,7 +71,8 @@ public class PatientRecordsController extends AbstractWindow {
         });
         try {
             ObservableList<Icd> list = FXCollections.observableArrayList();
-            list.addAll(Icds.getSetAll());
+            list.add(null);
+            list.addAll(Icd.getSetAll());
             icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(list));
         } catch (DomainException e) {
             e.printStackTrace();
@@ -94,7 +90,7 @@ public class PatientRecordsController extends AbstractWindow {
                     || patientRecord.getIcd() != null && (!patientRecord.getIcd().equals(newIcd))) {
                 patientRecord.setIcd(newIcd);
                 try {
-                    PatientRecords.update(patientRecord);
+                    patientRecord.update();
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
@@ -103,7 +99,7 @@ public class PatientRecordsController extends AbstractWindow {
 
         ObservableList<PatientRecord> list = FXCollections.observableArrayList();
         try {
-            list.addAll(PatientRecords.getSetAll());
+            list.addAll(PatientRecord.getSetAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -156,7 +152,7 @@ public class PatientRecordsController extends AbstractWindow {
             PatientRecord patientRecord = tableView.getItems().get(idSelectedRow);
             patientRecord.setComment(commentField.getText());
             try {
-                PatientRecords.update(patientRecord);
+                patientRecord.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }
@@ -166,7 +162,7 @@ public class PatientRecordsController extends AbstractWindow {
     public void onDelete() {
         PatientRecord patientRecord = tableView.getItems().get(idSelectedRow);
         try {
-            PatientRecords.delete(patientRecord);
+            patientRecord.delete();
         } catch (DomainException e) {
             e.printStackTrace();
         }

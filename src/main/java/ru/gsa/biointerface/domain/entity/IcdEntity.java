@@ -1,37 +1,15 @@
 package ru.gsa.biointerface.domain.entity;
 
-import javafx.util.StringConverter;
-
 import java.util.Objects;
 
-public class Icd implements Comparable<Icd> {
-
-    public static StringConverter<Icd> converter = new StringConverter<>() {
-        @Override
-        public String toString(Icd icd) {
-            String str = "";
-            if (icd != null)
-                str = icd.toString();
-            return str;
-        }
-
-        @Override
-        public Icd fromString(String string) {
-            return null;
-        }
-    };
+public class IcdEntity implements Comparable<IcdEntity> {
 
     private final int id;
     private final String ICD;
     private final int version;
     private String comment;
 
-    public Icd(int id, String ICD, int version, String comment) {
-        if (ICD == null)
-            throw new NullPointerException("ICD is null");
-        if (version <= 0)
-            throw new IllegalArgumentException("version is null");
-
+    public IcdEntity(int id, String ICD, int version, String comment) {
         this.id = id;
         this.ICD = ICD;
         this.version = version;
@@ -62,8 +40,8 @@ public class Icd implements Comparable<Icd> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Icd icd = (Icd) o;
-        return id == icd.id;
+        IcdEntity icdEntity = (IcdEntity) o;
+        return id == icdEntity.id;
     }
 
     @Override
@@ -72,12 +50,7 @@ public class Icd implements Comparable<Icd> {
     }
 
     @Override
-    public int compareTo(Icd o) {
+    public int compareTo(IcdEntity o) {
         return id - o.id;
-    }
-
-    @Override
-    public String toString() {
-        return getICD() + " (ICD-" + getVersion() + ")";
     }
 }

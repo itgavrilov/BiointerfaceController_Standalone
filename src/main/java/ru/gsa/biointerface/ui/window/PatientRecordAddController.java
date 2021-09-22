@@ -4,17 +4,31 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icds;
-import ru.gsa.biointerface.domain.PatientRecords;
-import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.PatientRecord;
+import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class PatientRecordAddController extends AbstractWindow {
+    private final StringConverter<Icd> converter = new StringConverter<>() {
+        @Override
+        public String toString(Icd icd) {
+            String str = "";
+            if (icd != null)
+                str = icd.toString();
+            return str;
+        }
+
+        @Override
+        public Icd fromString(String string) {
+            return null;
+        }
+    };
     @FXML
     private TextField externalIDField;
     @FXML
@@ -36,7 +50,7 @@ public class PatientRecordAddController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        icdComboBox.setConverter(Icd.converter);
+        icdComboBox.setConverter(converter);
 
         transitionGUI.show();
     }
@@ -182,6 +196,9 @@ public class PatientRecordAddController extends AbstractWindow {
                 .replaceAll("[^0-9.\\-:_]", "")
                 .replaceAll("[-:_]+", ".");
 
+        if(str.length() == 2 || str.length() == 5)
+            str = str + ".";
+
         if (!birthdayField.getEditor().getText().equals(str)) {
             birthdayField.getEditor().setText(str);
             birthdayField.getEditor().positionCaret(str.length());
@@ -204,8 +221,9 @@ public class PatientRecordAddController extends AbstractWindow {
 
     private void setIcdComboBox() {
         ObservableList<Icd> list = FXCollections.observableArrayList();
+        list.add(null);
         try {
-            list.addAll(Icds.getSetAll());
+            list.addAll(Icd.getSetAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -219,17 +237,22 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     public void onAdd() {
+        IcdEntity icdEntity = null;
+
+        if(icdComboBox.getValue() != null)
+            icdEntity = icdComboBox.getValue().getEntity();
+
         PatientRecord patientRecord = new PatientRecord(
                 Integer.parseInt(externalIDField.getText()),
                 secondNameField.getText(),
                 firstNameField.getText(),
                 middleNameField.getText(),
                 birthdayField.getValue(),
-                icdComboBox.getValue(),
+                icdEntity,
                 commentField.getText()
         );
         try {
-            PatientRecords.insert(patientRecord);
+            patientRecord.insert();
         } catch (DomainException e) {
             e.printStackTrace();
         }

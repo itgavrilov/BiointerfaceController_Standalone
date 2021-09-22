@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.ui.window;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,12 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.util.Callback;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Examinations;
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDateTime;
@@ -73,7 +69,7 @@ public class ExaminationsController extends AbstractWindow {
 
         ObservableList<Examination> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Examinations.getSetAll());
+            list.addAll(Examination.getSetAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -98,7 +94,7 @@ public class ExaminationsController extends AbstractWindow {
             Examination examination = tableView.getItems().get(idSelectedRow);
             examination.setComment(commentField.getText());
             try {
-                Examinations.update(examination);
+                examination.update();
             } catch (DomainException e) {
                 e.printStackTrace();
             }
@@ -116,7 +112,7 @@ public class ExaminationsController extends AbstractWindow {
     public void onDelete() {
         Examination examination = tableView.getItems().get(idSelectedRow);
         try {
-            Examinations.delete(examination);
+            examination.delete();
         } catch (DomainException e) {
             e.printStackTrace();
         }

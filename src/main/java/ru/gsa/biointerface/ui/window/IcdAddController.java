@@ -5,8 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icds;
-import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.ui.UIException;
 
 public class IcdAddController extends AbstractWindow {
@@ -88,7 +87,7 @@ public class IcdAddController extends AbstractWindow {
         );
 
         try {
-            Icds.insert(icd);
+            icd.insert();
         } catch (DomainException e) {
             e.printStackTrace();
         }
