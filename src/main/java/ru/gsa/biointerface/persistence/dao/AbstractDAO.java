@@ -4,6 +4,9 @@ import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.DB;
 import ru.gsa.biointerface.persistence.DBHandler;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public abstract class AbstractDAO<Entity> implements DAO<Entity> {
     protected final DB db;
 

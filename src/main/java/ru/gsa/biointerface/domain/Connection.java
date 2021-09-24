@@ -4,6 +4,9 @@ import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController;
 
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public interface Connection {
     Device getDevice();
 

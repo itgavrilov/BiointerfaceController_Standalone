@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class SampleDAO extends AbstractDAO<SampleEntity> {
     protected static SampleDAO dao;
 

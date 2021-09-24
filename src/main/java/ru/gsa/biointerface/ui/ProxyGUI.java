@@ -15,6 +15,9 @@ import java.util.ResourceBundle;
 
 import static javafx.scene.layout.AnchorPane.*;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ProxyGUI implements TransitionGUI {
     private Stage stage;
     private ResourceSource resourceSource;

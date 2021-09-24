@@ -1,3 +1,6 @@
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 module ru.gsa.biointerface {
     requires javafx.base;
     requires javafx.controls;

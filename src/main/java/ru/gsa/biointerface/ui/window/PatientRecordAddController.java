@@ -14,6 +14,9 @@ import ru.gsa.biointerface.ui.UIException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class PatientRecordAddController extends AbstractWindow {
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override

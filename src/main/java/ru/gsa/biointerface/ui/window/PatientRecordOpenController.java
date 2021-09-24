@@ -19,6 +19,9 @@ import ru.gsa.biointerface.ui.UIException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class PatientRecordOpenController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
     int idSelectedRow = -1;
     private PatientRecord patientRecord;

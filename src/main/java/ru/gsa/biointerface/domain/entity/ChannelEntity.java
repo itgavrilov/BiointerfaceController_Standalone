@@ -3,6 +3,9 @@ package ru.gsa.biointerface.domain.entity;
 
 import java.util.Objects;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ChannelEntity implements Comparable<ChannelEntity> {
     private int id;
     private ExaminationEntity examinationEntity;

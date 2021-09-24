@@ -8,6 +8,9 @@ import java.sql.*;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
     protected static PatientRecordDAO dao;
 

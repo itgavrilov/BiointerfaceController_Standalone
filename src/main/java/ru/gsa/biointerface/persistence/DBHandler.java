@@ -5,6 +5,9 @@ import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class DBHandler implements DB {
     private final static String url = "jdbc:sqlite:./BCsqLite.s3db";
     private static DBHandler instance = null;

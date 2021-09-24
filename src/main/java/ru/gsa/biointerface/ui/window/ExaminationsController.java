@@ -16,6 +16,9 @@ import ru.gsa.biointerface.ui.UIException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ExaminationsController extends AbstractWindow {
     int idSelectedRow = -1;
 

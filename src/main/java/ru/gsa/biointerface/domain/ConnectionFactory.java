@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ConnectionFactory {
     private static Set<ConnectionToDevice> connectionsToDevice = new LinkedHashSet<>();
 

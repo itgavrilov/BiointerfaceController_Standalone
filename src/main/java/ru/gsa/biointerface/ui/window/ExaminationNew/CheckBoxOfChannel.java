@@ -5,6 +5,9 @@ import javafx.scene.control.CheckBox;
 
 import java.util.Objects;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class CheckBoxOfChannel extends CheckBox implements Comparable<CheckBoxOfChannel> {
     private final char index;
 

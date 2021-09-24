@@ -12,6 +12,9 @@ import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.ui.UIException;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class DevicesController extends AbstractWindow {
     int idSelectedRow = -1;
 

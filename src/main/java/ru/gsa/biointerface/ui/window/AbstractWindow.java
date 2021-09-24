@@ -10,6 +10,9 @@ import ru.gsa.biointerface.ui.UIException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public abstract class AbstractWindow implements Window {
     protected ResourceSource resourceSource;
     protected TransitionGUI transitionGUI;

@@ -3,6 +3,9 @@ package ru.gsa.biointerface.domain.entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ExaminationEntity implements Comparable<ExaminationEntity> {
     private int id;
     private LocalDateTime dateTime;

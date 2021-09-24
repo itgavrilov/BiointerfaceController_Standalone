@@ -15,6 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ConnectionToDevice implements DataCollector, Connection {
     private final SerialPortHost serialPortHost;
     private final List<Channel> channels = new LinkedList<>();

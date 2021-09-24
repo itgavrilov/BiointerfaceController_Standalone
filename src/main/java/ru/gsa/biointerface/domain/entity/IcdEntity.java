@@ -2,6 +2,9 @@ package ru.gsa.biointerface.domain.entity;
 
 import java.util.Objects;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class IcdEntity implements Comparable<IcdEntity> {
 
     private final String ICD;

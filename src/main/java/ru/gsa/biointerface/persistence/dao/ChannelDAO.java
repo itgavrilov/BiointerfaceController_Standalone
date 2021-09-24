@@ -11,6 +11,9 @@ import java.sql.Types;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ */
 public class ChannelDAO extends AbstractDAO<ChannelEntity> {
     protected static ChannelDAO dao;
 
