@@ -11,6 +11,10 @@ import java.util.TreeSet;
 public class Icd implements Comparable<Icd> {
     private IcdEntity entity;
 
+    public Icd(int id, String ICD, int version, String comment) {
+        this(new IcdEntity(id, ICD, version, comment));
+    }
+
     public Icd(IcdEntity entity) {
         if (entity.getICD() == null)
             throw new NullPointerException("ICD is null");
@@ -18,15 +22,6 @@ public class Icd implements Comparable<Icd> {
             throw new IllegalArgumentException("version is null");
 
         this.entity = entity;
-    }
-
-    public Icd(int id, String ICD, int version, String comment) {
-        if (ICD == null)
-            throw new NullPointerException("ICD is null");
-        if (version <= 0)
-            throw new IllegalArgumentException("version is null");
-
-        entity = new IcdEntity(id, ICD, version, comment);
     }
 
     static public Set<Icd> getSetAll() throws DomainException {

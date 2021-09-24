@@ -42,7 +42,7 @@ public class PatientRecordEntity implements Comparable<PatientRecordEntity> {
         return birthday;
     }
 
-    public IcdEntity getIcd() {
+    public IcdEntity getIcdEntity() {
         return icdEntity;
     }
 

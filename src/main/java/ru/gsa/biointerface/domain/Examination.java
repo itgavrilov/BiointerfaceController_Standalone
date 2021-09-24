@@ -13,26 +13,16 @@ import java.util.TreeSet;
 
 public class Examination implements Comparable<Examination> {
     private ExaminationEntity entity;
-    private PatientRecord patientRecord;
-    private Device device;
+
+    public Examination(int id, PatientRecordEntity patientRecordEntity, DeviceEntity deviceEntity, String comment) {
+        this(new ExaminationEntity(id, LocalDateTime.now(), patientRecordEntity, deviceEntity, comment));
+    }
 
     public Examination(ExaminationEntity examinationEntity) {
         if (examinationEntity.getDateTime() == null)
             throw new NullPointerException("dateTime is null");
 
         entity = examinationEntity;
-
-        if (entity.getPatientRecord() != null)
-            this.patientRecord = new PatientRecord(entity.getPatientRecord());
-
-        if (entity.getDeviceEntity() != null)
-            this.device = new Device(entity.getDeviceEntity());
-    }
-
-    public Examination(int id, PatientRecordEntity patientRecordEntity, DeviceEntity deviceEntity, String comment) {
-        entity = new ExaminationEntity(id, LocalDateTime.now(), patientRecordEntity, deviceEntity, comment);
-        this.patientRecord = new PatientRecord(entity.getPatientRecord());
-        this.device = new Device(entity.getDeviceEntity());
     }
 
     static public Set<Examination> getSetAll() throws DomainException {
@@ -60,26 +50,50 @@ public class Examination implements Comparable<Examination> {
     }
 
     public void insert() throws DomainException {
-        device.insert();
-        try {
-            entity.setPatientRecordEntity(patientRecord.getEntity());
-            entity.setDeviceEntity(device.getEntity());
-            entity.setDateTime(LocalDateTime.now());
-            entity = ExaminationDAO.getInstance().insert(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao insert examination error");
+        if(entity.getDeviceEntity() != null) {
+            Device device = new Device(entity.getDeviceEntity());
+            device.insert();
+
+            if(entity.getPatientRecord() != null) {
+                PatientRecord patientRecord = new PatientRecord(entity.getPatientRecord());
+
+                try {
+                    entity.setPatientRecordEntity(patientRecord.getEntity());
+                    entity.setDeviceEntity(device.getEntity());
+                    entity.setDateTime(LocalDateTime.now());
+                    entity = ExaminationDAO.getInstance().insert(entity);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                    throw new DomainException("dao insert examination error");
+                }
+            } else {
+                throw new DomainException("patientRecordEntity is null");
+            }
+        } else {
+            throw new DomainException("deviceEntity is null");
         }
     }
 
     public void update() throws DomainException {
-        try {
-            entity.setPatientRecordEntity(patientRecord.getEntity());
-            entity.setDeviceEntity(device.getEntity());
-            ExaminationDAO.getInstance().update(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao update examination error");
+        if(entity.getDeviceEntity() != null) {
+            Device device = new Device(entity.getDeviceEntity());
+
+            if(entity.getPatientRecord() != null) {
+                PatientRecord patientRecord = new PatientRecord(entity.getPatientRecord());
+
+                try {
+                    entity.setPatientRecordEntity(patientRecord.getEntity());
+                    entity.setDeviceEntity(device.getEntity());
+                    ExaminationDAO.getInstance().update(entity);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                    throw new DomainException("dao update examination error");
+                }
+            } else {
+                throw new DomainException("patientRecordEntity is null");
+            }
+        } else {
+            throw new DomainException("deviceEntity is null");
         }
     }
 
@@ -108,32 +122,39 @@ public class Examination implements Comparable<Examination> {
         return entity.getDateTime();
     }
 
-    public PatientRecord getPatientRecord() {
-        return patientRecord;
-    }
-
     public void setPatientRecord(PatientRecord patientRecord) {
         if (patientRecord == null)
             throw new NullPointerException("patientRecord is null");
 
-        this.patientRecord = patientRecord;
         entity.setPatientRecordEntity(patientRecord.getEntity());
     }
 
-    public Device getDevice() {
-        return device;
+    public PatientRecord getPatientRecord() {
+        PatientRecord patientRecord = null;
+
+        if(entity.getPatientRecord() != null)
+            patientRecord = new PatientRecord(entity.getPatientRecord());
+
+        return patientRecord;
     }
 
     public void setDevice(Device device) {
         if (device == null)
             throw new NullPointerException("device is null");
 
-        this.device = device;
         entity.setDeviceEntity(device.getEntity());
     }
 
+    public Device getDevice() {
+        Device device = null;
+        if(entity.getDeviceEntity() != null)
+            device = new Device(entity.getDeviceEntity());
+
+        return device;
+    }
+
     public int getAmountChannels() {
-        return device.getAmountChannels();
+        return entity.getDeviceEntity().getAmountChannels();
     }
 
     public String getComment() {

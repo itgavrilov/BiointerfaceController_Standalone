@@ -12,6 +12,10 @@ import java.util.TreeSet;
 public class Device implements DeviceConfig, Comparable<Device> {
     private final DeviceEntity entity;
 
+    public Device(int id, int amountChannels, String comment) {
+        this(new DeviceEntity(id, amountChannels, comment));
+    }
+
     public Device(DeviceEntity deviceEntity) {
         if (deviceEntity.getId() == 0)
             throw new IllegalArgumentException("Serial number is '0'");
@@ -19,15 +23,6 @@ public class Device implements DeviceConfig, Comparable<Device> {
             throw new IllegalArgumentException("Amount channels is '0'");
 
         this.entity = deviceEntity;
-    }
-
-    public Device(int id, int amountChannels, String comment) {
-        if (id == 0)
-            throw new IllegalArgumentException("Serial number is '0'");
-        if (amountChannels == 0)
-            throw new IllegalArgumentException("Amount channels is '0'");
-
-        entity = new DeviceEntity(id, amountChannels, comment);
     }
 
     static public Set<Device> getSetAll() throws DomainException {

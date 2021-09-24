@@ -12,7 +12,10 @@ import java.util.TreeSet;
 
 public class PatientRecord implements Comparable<PatientRecord> {
     private final PatientRecordEntity entity;
-    private Icd icd;
+
+    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) {
+        this(new PatientRecordEntity(id, secondName, firstName, middleName, birthday, icdEntity, comment));
+    }
 
     public PatientRecord(PatientRecordEntity patientRecordEntity) {
         if (patientRecordEntity.getId() == 0)
@@ -27,28 +30,6 @@ public class PatientRecord implements Comparable<PatientRecord> {
             throw new NullPointerException("birthday is null");
 
         entity = patientRecordEntity;
-
-        if (entity.getIcd() != null)
-            icd = new Icd(entity.getIcd());
-    }
-
-    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) {
-        if (id == 0)
-            throw new NullPointerException("id is null");
-        if (secondName == null)
-            throw new NullPointerException("secondName is null");
-        if (firstName == null)
-            throw new NullPointerException("firstName is null");
-        if (middleName == null)
-            throw new NullPointerException("middleName is null");
-        if (birthday == null)
-            throw new NullPointerException("birthday is null");
-
-        entity = new PatientRecordEntity(id, secondName, firstName, middleName, birthday, icdEntity, comment);
-//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-//        entity.getBirthday().format(dateFormatter);
-        if (entity.getIcd() != null)
-            icd = new Icd(entity.getIcd());
     }
 
     static public Set<PatientRecord> getSetAll() throws DomainException {
@@ -114,25 +95,27 @@ public class PatientRecord implements Comparable<PatientRecord> {
         return entity.getBirthday();
     }
 
-    public Icd getIcd() {
-        return icd;
-    }
-
     public void setIcd(Icd icd) {
         if (icd != null)
             entity.setIcd(icd.getEntity());
         else
             entity.setIcd(null);
-
-        this.icd = icd;
     }
 
-    public String getComment() {
-        return entity.getComment();
+    public Icd getIcd() {
+        Icd icd = null;
+        if(entity.getIcdEntity() != null)
+            icd = new Icd(entity.getIcdEntity());
+
+        return icd;
     }
 
     public void setComment(String comment) {
         entity.setComment(comment);
+    }
+
+    public String getComment() {
+        return entity.getComment();
     }
 
     @Override

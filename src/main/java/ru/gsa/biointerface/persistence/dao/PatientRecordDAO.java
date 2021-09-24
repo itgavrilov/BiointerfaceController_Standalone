@@ -33,7 +33,7 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
             statement.setString(3, patientRecordEntity.getFirstName());
             statement.setString(4, patientRecordEntity.getMiddleName());
             statement.setDate(5, Date.valueOf(patientRecordEntity.getBirthday()));
-            if (patientRecordEntity.getIcd() != null) statement.setInt(6, patientRecordEntity.getIcd().getId());
+            if (patientRecordEntity.getIcdEntity() != null) statement.setInt(6, patientRecordEntity.getIcdEntity().getId());
             else statement.setNull(6, java.sql.Types.NULL);
             if (patientRecordEntity.getComment() != null) statement.setString(7, patientRecordEntity.getComment());
             else statement.setNull(7, java.sql.Types.NULL);
@@ -95,8 +95,8 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (patientRecordEntity.getIcd() != null)
-                statement.setInt(1, patientRecordEntity.getIcd().getId());
+            if (patientRecordEntity.getIcdEntity() != null)
+                statement.setInt(1, patientRecordEntity.getIcdEntity().getId());
             else
                 statement.setNull(1, Types.NULL);
 
