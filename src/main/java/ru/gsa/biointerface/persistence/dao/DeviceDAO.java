@@ -25,14 +25,14 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
     }
 
     @Override
-    public DeviceEntity insert(DeviceEntity device) throws DAOException {
-        if (device == null)
-            throw new NullPointerException("device is null");
+    public DeviceEntity insert(DeviceEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
-            statement.setInt(1, device.getId());
-            statement.setInt(2, device.getAmountChannels());
-            if (device.getComment() != null) statement.setString(3, device.getComment());
+            statement.setInt(1, entity.getId());
+            statement.setInt(2, entity.getAmountChannels());
+            if (entity.getComment() != null) statement.setString(3, entity.getComment());
             else statement.setNull(3, java.sql.Types.NULL);
 
             statement.execute();
@@ -41,18 +41,18 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
             throw new DAOException("statement error", e);
         }
 
-        return device;
+        return entity;
     }
 
     @Override
     public DeviceEntity getById(int key) throws DAOException {
-        DeviceEntity device = null;
+        DeviceEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
             statement.setInt(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    device = new DeviceEntity(
+                    entity = new DeviceEntity(
                             resultSet.getInt("id"),
                             resultSet.getInt("amountChannels"),
                             resultSet.getString("comment")
@@ -67,20 +67,20 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
             throw new DAOException("statement error", e);
         }
 
-        return device;
+        return entity;
     }
 
     @Override
-    public boolean update(DeviceEntity device) throws DAOException {
-        if (device == null)
-            throw new NullPointerException("patientRecord is null");
+    public boolean update(DeviceEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (device.getComment() != null) statement.setString(1, device.getComment());
+            if (entity.getComment() != null) statement.setString(1, entity.getComment());
             else statement.setNull(1, java.sql.Types.NULL);
-            statement.setInt(2, device.getId());
+            statement.setInt(2, entity.getId());
 
             result = statement.execute();
         } catch (SQLException e) {
@@ -92,14 +92,14 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
     }
 
     @Override
-    public boolean delete(DeviceEntity device) throws DAOException {
-        if (device == null)
-            throw new NullPointerException("patientRecord is null");
+    public boolean delete(DeviceEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
-            statement.setInt(1, device.getId());
+            statement.setInt(1, entity.getId());
 
             result = statement.execute();
         } catch (SQLException e) {
@@ -112,24 +112,24 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
 
     @Override
     public Set<DeviceEntity> getAll() throws DAOException {
-        Set<DeviceEntity> devices = new TreeSet<>();
+        Set<DeviceEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
             while (resultSet.next()) {
-                DeviceEntity device = new DeviceEntity(
+                DeviceEntity entity = new DeviceEntity(
                         resultSet.getInt("id"),
                         resultSet.getInt("amountChannels"),
                         resultSet.getString("comment")
                 );
-                devices.add(device);
+                entities.add(entity);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException("statement error", e);
         }
 
-        return devices;
+        return entities;
     }
 
     private enum SQL {

@@ -21,14 +21,18 @@ public class Examination implements Comparable<Examination> {
             throw new NullPointerException("dateTime is null");
 
         entity = examinationEntity;
-        this.patientRecord = new PatientRecord(entity.getPatientRecord());
-        this.device = new Device(entity.getDevice());
+
+        if (entity.getPatientRecord() != null)
+            this.patientRecord = new PatientRecord(entity.getPatientRecord());
+
+        if (entity.getDeviceEntity() != null)
+            this.device = new Device(entity.getDeviceEntity());
     }
 
     public Examination(int id, PatientRecordEntity patientRecordEntity, DeviceEntity deviceEntity, String comment) {
         entity = new ExaminationEntity(id, LocalDateTime.now(), patientRecordEntity, deviceEntity, comment);
         this.patientRecord = new PatientRecord(entity.getPatientRecord());
-        this.device = new Device(entity.getDevice());
+        this.device = new Device(entity.getDeviceEntity());
     }
 
     static public Set<Examination> getSetAll() throws DomainException {
@@ -56,7 +60,11 @@ public class Examination implements Comparable<Examination> {
     }
 
     public void insert() throws DomainException {
+        device.insert();
         try {
+            entity.setPatientRecordEntity(patientRecord.getEntity());
+            entity.setDeviceEntity(device.getEntity());
+            entity.setDateTime(LocalDateTime.now());
             entity = ExaminationDAO.getInstance().insert(entity);
         } catch (DAOException e) {
             e.printStackTrace();
@@ -66,6 +74,8 @@ public class Examination implements Comparable<Examination> {
 
     public void update() throws DomainException {
         try {
+            entity.setPatientRecordEntity(patientRecord.getEntity());
+            entity.setDeviceEntity(device.getEntity());
             ExaminationDAO.getInstance().update(entity);
         } catch (DAOException e) {
             e.printStackTrace();
@@ -86,6 +96,10 @@ public class Examination implements Comparable<Examination> {
         return entity;
     }
 
+    public void reset() {
+        entity.setId(-1);
+    }
+
     public int getId() {
         return entity.getId();
     }
@@ -103,7 +117,7 @@ public class Examination implements Comparable<Examination> {
             throw new NullPointerException("patientRecord is null");
 
         this.patientRecord = patientRecord;
-        entity.setPatientRecord(patientRecord.getEntity());
+        entity.setPatientRecordEntity(patientRecord.getEntity());
     }
 
     public Device getDevice() {
@@ -115,7 +129,11 @@ public class Examination implements Comparable<Examination> {
             throw new NullPointerException("device is null");
 
         this.device = device;
-        entity.setDevice(device.getEntity());
+        entity.setDeviceEntity(device.getEntity());
+    }
+
+    public int getAmountChannels() {
+        return device.getAmountChannels();
     }
 
     public String getComment() {

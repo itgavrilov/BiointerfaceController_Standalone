@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ExaminationEntity implements Comparable<ExaminationEntity> {
-    private final int id;
-    private final LocalDateTime dateTime;
+    private int id;
+    private LocalDateTime dateTime;
     private PatientRecordEntity patientRecordEntity;
-    private DeviceEntity device;
+    private DeviceEntity deviceEntity;
     private String comment;
 
-    public ExaminationEntity(){
+    public ExaminationEntity() {
         this.id = -1;
         this.dateTime = LocalDateTime.now();
         this.patientRecordEntity = null;
-        this.device = null;
+        this.deviceEntity = null;
         this.comment = null;
     }
 
@@ -25,7 +25,7 @@ public class ExaminationEntity implements Comparable<ExaminationEntity> {
         this.id = id;
         this.dateTime = dateTime;
         this.patientRecordEntity = patientRecordEntity;
-        this.device = device;
+        this.deviceEntity = device;
         this.comment = comment;
     }
 
@@ -33,24 +33,32 @@ public class ExaminationEntity implements Comparable<ExaminationEntity> {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setPatientRecordEntity(PatientRecordEntity patientRecordEntity) {
+        this.patientRecordEntity = patientRecordEntity;
     }
 
     public PatientRecordEntity getPatientRecord() {
         return patientRecordEntity;
     }
 
-    public void setPatientRecord(PatientRecordEntity patientRecordEntity) {
-        this.patientRecordEntity = patientRecordEntity;
+    public DeviceEntity getDeviceEntity() {
+        return deviceEntity;
     }
 
-    public DeviceEntity getDevice() {
-        return device;
-    }
-
-    public void setDevice(DeviceEntity device) {
-        this.device = device;
+    public void setDeviceEntity(DeviceEntity deviceEntity) {
+        this.deviceEntity = deviceEntity;
     }
 
     public String getComment() {
@@ -66,12 +74,12 @@ public class ExaminationEntity implements Comparable<ExaminationEntity> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExaminationEntity that = (ExaminationEntity) o;
-        return dateTime.equals(that.dateTime) && patientRecordEntity.equals(that.patientRecordEntity) && device.equals(that.device);
+        return dateTime.equals(that.dateTime) && patientRecordEntity.equals(that.patientRecordEntity) && deviceEntity.equals(that.deviceEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dateTime, patientRecordEntity, device);
+        return Objects.hash(dateTime, patientRecordEntity, deviceEntity);
     }
 
     @Override

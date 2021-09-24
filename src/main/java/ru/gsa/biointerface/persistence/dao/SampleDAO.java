@@ -27,7 +27,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     @Override
     public SampleEntity insert(SampleEntity entity) throws DAOException {
         if (entity == null)
-            throw new NullPointerException("patientRecord is null");
+            throw new NullPointerException("entity is null");
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
             statement.setInt(1, entity.getId());
@@ -67,7 +67,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     public Set<SampleEntity> getAllByExamination(Examination examination) throws DAOException {
         Set<SampleEntity> entities = new TreeSet<>();
 
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_EXAMINATION.QUERY)){
+        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_EXAMINATION.QUERY)) {
             statement.setInt(1, examination.getId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -106,7 +106,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
 
     public void endTransaction() throws DAOException {
         try {
-            if (!db.getConnection().getAutoCommit()){
+            if (!db.getConnection().getAutoCommit()) {
                 db.getConnection().commit();
                 db.getConnection().setAutoCommit(true);
             }
@@ -119,9 +119,9 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     }
 
     private enum SQL {
-        INSERT("INSERT INTO Samples (id,examination_id,channel_id,value)" +
+        INSERT("INSERT INTO Sample (id,examination_id,channel_id,value)" +
                 "VALUES ((?),(?),(?),(?))"),
-        SELECT_BY_EXAMINATION("SELECT * FROM Samples WHERE examination_id = (?);");
+        SELECT_BY_EXAMINATION("SELECT * FROM Sample WHERE examination_id = (?);");
 
         final String QUERY;
 

@@ -9,7 +9,7 @@ import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.DBHandler;
 import ru.gsa.biointerface.ui.ProxyGUI;
 import ru.gsa.biointerface.ui.UIException;
-import ru.gsa.biointerface.ui.window.BiointerfaceData;
+import ru.gsa.biointerface.ui.window.ExaminationNew.ExaminationNewController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,7 +20,7 @@ import java.net.URL;
 public class Main extends Application implements ResourceSource {
 
     private static void handle(javafx.stage.WindowEvent event) {
-        BiointerfaceData.disconnect();
+        ExaminationNewController.disconnect();
         try {
             DBHandler.getInstance().disconnect();
         } catch (DAOException e) {

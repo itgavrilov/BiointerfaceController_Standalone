@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.channel;
+package ru.gsa.biointerface.ui.window.ExaminationNew;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
@@ -9,14 +9,10 @@ public class CheckBoxOfChannel extends CheckBox implements Comparable<CheckBoxOf
     private final char index;
 
     public CheckBoxOfChannel(char index) {
-        super("Channel " + (index + 1));
         this.index = index;
-        this.setSelected(true);
-        this.setPadding(new Insets(2, 5, 2, 5));
-    }
 
-    public int getIndex() {
-        return index;
+        this.setSelected(true);
+        this.setPadding(new Insets(0, 0, 3, 0));
     }
 
     @Override

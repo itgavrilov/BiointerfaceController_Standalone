@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.channel;
+package ru.gsa.biointerface.ui.window.ExaminationNew;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,8 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
+import ru.gsa.biointerface.domain.Channel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,14 +17,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public final class Channel implements ChannelUpdater, ContentComparable {
+public final class ChannelController implements ChannelUpdater, ContentForWindow {
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private int id;
+    private Channel channel;
+    private CheckBoxOfChannel checkBox;
     private Boolean isReady = false;
     @FXML
     private AnchorPane anchorPaneRoot;
     @FXML
-    private Text title;
+    private TextField nameField;
     @FXML
     private NumberAxis axisX;
     @FXML
@@ -47,14 +49,17 @@ public final class Channel implements ChannelUpdater, ContentComparable {
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
     }
 
-    @Override
-    public int getId() {
-        return id;
+    public void setCheckBox(CheckBoxOfChannel checkBox) {
+        if (checkBox == null)
+            throw new NullPointerException("checkBox is null");
+
+        this.checkBox = checkBox;
     }
 
-    public void setId(int id) {
-        this.id = id;
-        title.setText("Channel ".concat(String.valueOf(id + 1)));
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+        nameField.setText(channel.getName());
+        checkBox.setText(channel.getName());
     }
 
     @Override
@@ -111,31 +116,32 @@ public final class Channel implements ChannelUpdater, ContentComparable {
         isReady = Ready;
     }
 
+    @Override
     public void resizeWindow(double height, double width) {
         anchorPaneRoot.setPrefHeight(height);
         anchorPaneRoot.setPrefWidth(width);
 
         graphic.setPrefHeight(height);
         graphic.setPrefWidth(width);
+    }
 
-        title.setWrappingWidth(width);
+    public void nameFieldChange() {
+        if (!nameField.getText().equals(channel.getName())) {
+            checkBox.setText(nameField.getText());
+            channel.setName(nameField.getText());
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Channel that = (Channel) o;
-        return id + 1 == that.id + 1;
+        ChannelController channelController = (ChannelController) o;
+        return Objects.equals(channel, channelController.channel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id + 1);
-    }
-
-    @Override
-    public int compareTo(ContentComparable o) {
-        return (id + 1) - (o.getId() + 1);
+        return Objects.hash(channel);
     }
 }

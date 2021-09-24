@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class IcdEntity implements Comparable<IcdEntity> {
 
-    private final int id;
     private final String ICD;
     private final int version;
+    private int id;
     private String comment;
 
     public IcdEntity(int id, String ICD, int version, String comment) {
@@ -18,6 +18,10 @@ public class IcdEntity implements Comparable<IcdEntity> {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getICD() {

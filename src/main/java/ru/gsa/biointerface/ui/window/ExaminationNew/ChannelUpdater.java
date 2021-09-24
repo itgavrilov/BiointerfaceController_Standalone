@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.channel;
+package ru.gsa.biointerface.ui.window.ExaminationNew;
 
 import java.util.List;
 
@@ -6,8 +6,6 @@ import java.util.List;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public interface ChannelUpdater {
-    int getId();
-
     void update(List<Integer> data);
 
     void setCapacity(int capacity);

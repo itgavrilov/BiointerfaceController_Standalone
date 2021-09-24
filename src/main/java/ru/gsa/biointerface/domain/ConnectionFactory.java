@@ -26,25 +26,24 @@ public class ConnectionFactory {
                 });
     }
 
-    public static List<String> getSerialNumbers() {
+    public static List<Device> getListDevices() {
         connectionsToDevice = connectionsToDevice.stream()
                 .filter(ConnectionToDevice::isAvailableDevice)
                 .collect(Collectors.toSet());
 
         return connectionsToDevice.stream()
                 .map(ConnectionToDevice::getDevice)
-                .map(o -> String.valueOf(o.getId()))
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public static Connection getInstance(String serialNumber) {
+    public static Connection getInstance(Device device) {
         return connectionsToDevice.stream()
                 .peek(o -> {
-                    if (!String.valueOf(o.getDevice().getId()).equals(serialNumber))
+                    if (!device.equals(o.getDevice()))
                         o.disconnect();
                 })
-                .filter(o -> String.valueOf(o.getDevice().getId()).equals(serialNumber))
+                .filter(o -> device.equals(o.getDevice()))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }

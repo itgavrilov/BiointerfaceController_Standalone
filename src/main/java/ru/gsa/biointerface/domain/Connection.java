@@ -1,13 +1,13 @@
 package ru.gsa.biointerface.domain;
 
-import ru.gsa.biointerface.ui.window.channel.Channel;
+import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController;
 
-import java.util.Set;
+import java.util.List;
 
 public interface Connection {
     Device getDevice();
 
-    void registerChannelGUIs(Set<Channel> channelGUIs) throws DomainException;
+    void registerChannelGUIs(List<ChannelController> channelControllerGUIS) throws DomainException;
 
     void setCapacity(int capacity) throws DomainException;
 

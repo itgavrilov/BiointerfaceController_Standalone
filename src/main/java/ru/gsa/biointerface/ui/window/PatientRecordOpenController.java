@@ -126,7 +126,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void onAdd() {
         try {
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("BiointerfaceData.fxml"))
+            ((WindowWithProperty<PatientRecord>) generateNewWindow("ExaminationNew.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (UIException e) {

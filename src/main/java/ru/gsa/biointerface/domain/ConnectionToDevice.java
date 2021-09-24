@@ -1,26 +1,24 @@
 package ru.gsa.biointerface.domain;
 
 import com.fazecast.jSerialComm.SerialPort;
+import ru.gsa.biointerface.domain.entity.ChannelEntity;
+import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.serialPortHost.ControlMessages;
 import ru.gsa.biointerface.domain.serialPortHost.DataCollector;
 import ru.gsa.biointerface.domain.serialPortHost.Handler;
 import ru.gsa.biointerface.domain.serialPortHost.SerialPortHost;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.channel.Channel;
+import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController;
 
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ConnectionToDevice implements DataCollector, Connection {
-    private final PatientRecord patientRecord;
     private final SerialPortHost serialPortHost;
-    private final List<Samples> samplesOfChannels = new LinkedList<>();
-    private Device device = null;
-    private Examination examination = null;
+    private final List<Channel> channels = new LinkedList<>();
+    private Examination examination = new Examination(new ExaminationEntity());
     private boolean flagTransmission = false;
 
     public ConnectionToDevice(PatientRecord patientRecord, SerialPort serialPort) throws DomainException {
@@ -29,7 +27,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (patientRecord == null)
             throw new NullPointerException("examination is null");
 
-        this.patientRecord = patientRecord;
+        examination.setPatientRecord(patientRecord);
         serialPortHost = new SerialPortHost(serialPort);
         serialPortHost.handler(new Handler(this));
 
@@ -44,12 +42,12 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     public PatientRecord getPatientRecord() {
-        return patientRecord;
+        return examination.getPatientRecord();
     }
 
     @Override
     public Device getDevice() {
-        return device;
+        return examination.getDevice();
     }
 
     @Override
@@ -57,39 +55,50 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (device == null)
             throw new NullPointerException("device is null");
 
-        this.device = device;
+        examination.setDevice(device);
+
     }
 
     @Override
     public boolean isAvailableDevice() {
-        return device != null;
+        return examination.getDevice() != null;
     }
 
     @Override
-    public List<Samples> getSamplesOfChannels() {
-        return samplesOfChannels;
+    public List<Channel> getSamplesOfChannels() {
+        return channels;
     }
 
     @Override
-    public void registerChannelGUIs(Set<Channel> channelGUIs) throws DomainException {
-        if (channelGUIs == null)
+    public void registerChannelGUIs(List<ChannelController> channelControllerGUIS) throws DomainException {
+        if (channelControllerGUIS == null)
             throw new NullPointerException("channelGUIs is null");
-        if (channelGUIs.size() < device.getAmountChannels())
+        if (channelControllerGUIS.size() < examination.getAmountChannels())
             throw new DomainException("count of channelGUIs less than count of channels");
 
-        samplesOfChannels.clear();
-        channelGUIs.forEach(o -> samplesOfChannels.add(new Samples(o)));
+        channels.clear();
+
+        for (int i = 0; i < examination.getAmountChannels(); i++) {
+            String channelName = "Channel ".concat(String.valueOf(channels.size() + 1));
+            Channel channel = new Channel(new ChannelEntity(channels.size(), examination.getEntity(), channelName));
+            channels.add(channel);
+        }
+
+        for (int i = 0; i < examination.getAmountChannels(); i++) {
+            channelControllerGUIS.get(i).setChannel(channels.get(i));
+            channels.get(i).setListener(channelControllerGUIS.get(i));
+        }
         setCapacity(10);
     }
 
     @Override
     public void setCapacity(int capacity) throws DomainException {
-        if (device == null)
+        if (examination.getDevice() == null)
             throw new DomainException("Device configuration empty");
         if (capacity == 0)
             throw new DomainException("capacity is '0'");
 
-        samplesOfChannels.forEach(o -> o.setCapacity(capacity));
+        channels.forEach(o -> o.setCapacity(capacity));
     }
 
     @Override
@@ -104,9 +113,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public void disconnect() {
-        if (device != null)
-            device = null;
-
         if (serialPortHost != null) {
             try {
                 controllerTransmissionStop();
@@ -145,16 +151,16 @@ public class ConnectionToDevice implements DataCollector, Connection {
     @Override
     public void recordingStart(String comment) {
         try {
-            device.insert();
-
-            examination = new Examination(
-                    -1,
-                    patientRecord.getEntity(),
-                    device.getEntity(),
-                    comment);
+            examination.setComment(comment);
             examination.insert();
 
-            samplesOfChannels.forEach(o -> o.setExamination(examination));
+            channels.forEach(o -> {
+                try {
+                    o.setExaminationEntity(examination.getEntity());
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
+            });
             SampleDAO.getInstance().beginTransaction();
         } catch (DomainException | DAOException e) {
             e.printStackTrace();
@@ -163,8 +169,15 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public void recordingStop() {
-        examination = null;
-        samplesOfChannels.forEach(o -> o.setExamination(examination));
+        examination.reset();
+
+        channels.forEach(o -> {
+            try {
+                o.setExaminationEntity(examination.getEntity());
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
+        });
         try {
             SampleDAO.getInstance().endTransaction();
         } catch (DAOException e) {
@@ -174,7 +187,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public boolean isRecording() {
-        return flagTransmission && examination != null;
+        return examination.getId() > 0;
     }
 
     @Override

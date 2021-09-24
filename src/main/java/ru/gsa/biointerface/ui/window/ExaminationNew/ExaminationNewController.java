@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window;
+package ru.gsa.biointerface.ui.window.ExaminationNew;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,28 +10,38 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.Connection;
-import ru.gsa.biointerface.domain.ConnectionFactory;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.PatientRecord;
+import javafx.util.StringConverter;
+import ru.gsa.biointerface.domain.*;
 import ru.gsa.biointerface.ui.UIException;
-import ru.gsa.biointerface.ui.window.channel.Channel;
-import ru.gsa.biointerface.ui.window.channel.CheckBoxOfChannel;
-import ru.gsa.biointerface.ui.window.channel.CompositeNode;
+import ru.gsa.biointerface.ui.window.AbstractWindow;
+import ru.gsa.biointerface.ui.window.WindowWithProperty;
 
 import java.time.format.DateTimeFormatter;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public class BiointerfaceData extends AbstractWindow implements WindowWithProperty<PatientRecord> {
-    static private BiointerfaceData instants;
-    private final Set<CompositeNode<AnchorPane, Channel>> channelGUIs = new TreeSet<>();
-    private final Set<CheckBoxOfChannel> checkBoxesOfChannel = new TreeSet<>();
+public class ExaminationNewController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
+    static private ExaminationNewController instants;
+    private final List<CompositeNode<AnchorPane, ChannelController>> channelGUIs = new LinkedList<>();
+    private final List<CheckBoxOfChannel> checkBoxesOfChannel = new LinkedList<>();
+    private final StringConverter<Device> converter = new StringConverter<>() {
+        @Override
+        public String toString(Device device) {
+            String str = "";
+            if (device != null)
+                str = String.valueOf(device.getId());
+            return str;
+        }
+
+        @Override
+        public Device fromString(String string) {
+            return null;
+        }
+    };
     private Connection connection;
     private PatientRecord patientRecord;
     @FXML
@@ -53,7 +63,7 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
     @FXML
     private Button scanningSerialPortsButton;
     @FXML
-    private ComboBox<String> availableDevices;
+    private ComboBox<Device> availableDevices;
     @FXML
     private Button startButton;
     @FXML
@@ -103,6 +113,8 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
         allSliderZoom.valueProperty().addListener((obs, oldval, newVal) ->
                 allSliderZoom.setValue(newVal.intValue()));
 
+        availableDevices.setConverter(converter);
+
         transitionGUI.show();
     }
 
@@ -127,26 +139,14 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
                 false,
                 false
         );
-        availableDevices.getItems().addAll(ConnectionFactory.getSerialNumbers());
+        availableDevices.getItems().addAll(ConnectionFactory.getListDevices());
     }
 
     public void comboBoxComSelect() {
-        if (availableDevices.getValue() != null && !"".equals(availableDevices.getValue())) {
+        if (availableDevices.getValue() != null) {
             connection = ConnectionFactory.getInstance(availableDevices.getValue());
 
             buildingChannelsGUIs();
-            buildingCheckBoxesOfChannelGUIs();
-
-            checkBoxesOfChannel.forEach(o -> o.setOnAction(event -> {
-                channelGUIs.stream()
-                        .filter(c -> c.getController().getId() == o.getIndex())
-                        .findFirst()
-                        .orElseThrow(NoSuchElementException::new).getNode().setVisible(o.isSelected());
-
-                drawChannelsGUI();
-            }));
-
-            checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
 
             if (connection.isConnected()) {
                 controlInterface(
@@ -163,23 +163,35 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
 
     public void buildingChannelsGUIs() {
         channelGUIs.clear();
+        checkBoxesOfChannel.clear();
 
         for (char i = 0; i < connection.getDevice().getAmountChannels(); i++) {
-            CompositeNode<AnchorPane, Channel> node =
+            CompositeNode<AnchorPane, ChannelController> node =
                     new CompositeNode<>(new FXMLLoader(resourceSource.getResource("Channel.fxml")));
+            CheckBoxOfChannel checkBox = new CheckBoxOfChannel(i);
 
-            node.getController().setId(i);
+            node.getController().setCheckBox(checkBox);
+            checkBox.setOnAction(event -> {
+                node.getNode().setVisible(checkBox.isSelected());
+                drawChannelsGUI();
+            });
+
+            checkBoxesOfChannel.add(checkBox);
             channelGUIs.add(node);
         }
+
         try {
             connection.registerChannelGUIs(
                     channelGUIs.stream()
                             .map(CompositeNode::getController)
-                            .collect(Collectors.toSet())
+                            .collect(Collectors.toList())
             );
         } catch (DomainException e) {
             e.printStackTrace();
         }
+
+        drawChannelsGUI();
+
         allSliderZoom.setOnMouseReleased(e -> {
             int capacity = (int) allSliderZoom.getValue();
             try {
@@ -188,29 +200,24 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
                 ex.printStackTrace();
             }
         });
-
-        drawChannelsGUI();
-    }
-
-    public void buildingCheckBoxesOfChannelGUIs() {
-        checkBoxesOfChannel.clear();
-
-        for (char i = 0; i < connection.getDevice().getAmountChannels(); i++) {
-            checkBoxesOfChannel.add(new CheckBoxOfChannel(i));
-        }
     }
 
     public void drawChannelsGUI() {
         channelVBox.getChildren().clear();
+        checkBoxOfChannelVBox.getChildren().clear();
+
         try {
             connection.setCapacity((int) allSliderZoom.getValue());
         } catch (DomainException e) {
             e.printStackTrace();
         }
+
         channelGUIs.forEach(n -> {
             if (n.getNode().isVisible())
                 channelVBox.getChildren().add(n.getNode());
         });
+        checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
+
         resizeWindow(anchorPaneRoot.getHeight(), anchorPaneRoot.getWidth());
     }
 
@@ -324,7 +331,7 @@ public class BiointerfaceData extends AbstractWindow implements WindowWithProper
         channelVBox.setPrefHeight(heightChannelGUIs);
         channelVBox.setPrefWidth(width - anchorPaneControl.getWidth());
 
-        for (CompositeNode<AnchorPane, Channel> o : channelGUIs) {
+        for (CompositeNode<AnchorPane, ChannelController> o : channelGUIs) {
             o.getController().resizeWindow(heightChannelGUIs, width - anchorPaneControl.getWidth() + 13);
         }
 

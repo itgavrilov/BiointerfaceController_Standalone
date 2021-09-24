@@ -27,10 +27,8 @@ public class PatientRecord implements Comparable<PatientRecord> {
             throw new NullPointerException("birthday is null");
 
         entity = patientRecordEntity;
-//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-//        entity.getBirthday().format(dateFormatter);
 
-        if(entity.getIcd() != null)
+        if (entity.getIcd() != null)
             icd = new Icd(entity.getIcd());
     }
 
@@ -49,7 +47,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
         entity = new PatientRecordEntity(id, secondName, firstName, middleName, birthday, icdEntity, comment);
 //        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 //        entity.getBirthday().format(dateFormatter);
-        if(entity.getIcd() != null)
+        if (entity.getIcd() != null)
             icd = new Icd(entity.getIcd());
     }
 
@@ -121,7 +119,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     }
 
     public void setIcd(Icd icd) {
-        if(icd != null)
+        if (icd != null)
             entity.setIcd(icd.getEntity());
         else
             entity.setIcd(null);

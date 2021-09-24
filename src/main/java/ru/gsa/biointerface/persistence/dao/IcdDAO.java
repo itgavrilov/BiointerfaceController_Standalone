@@ -25,25 +25,19 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
     }
 
     @Override
-    public IcdEntity insert(IcdEntity icdEntity) throws DAOException {
-        if (icdEntity == null)
-            throw new NullPointerException("patientRecord is null");
+    public IcdEntity insert(IcdEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
-        IcdEntity result = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
-            statement.setString(1, icdEntity.getICD());
-            statement.setInt(2, icdEntity.getVersion());
-            if (icdEntity.getComment() != null) statement.setString(3, icdEntity.getComment());
+            statement.setString(1, entity.getICD());
+            statement.setInt(2, entity.getVersion());
+            if (entity.getComment() != null) statement.setString(3, entity.getComment());
             else statement.setNull(3, java.sql.Types.NULL);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    result = new IcdEntity(
-                            resultSet.getInt("id"),
-                            icdEntity.getICD(),
-                            icdEntity.getVersion(),
-                            icdEntity.getComment()
-                    );
+                    entity.setId(resultSet.getInt("id"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -54,18 +48,18 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
             throw new DAOException("statement error", e);
         }
 
-        return result;
+        return entity;
     }
 
     @Override
     public IcdEntity getById(int key) throws DAOException {
-        IcdEntity icdEntity = null;
+        IcdEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
             statement.setInt(1, key);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    icdEntity = new IcdEntity(
+                    entity = new IcdEntity(
                             resultSet.getInt("id"),
                             resultSet.getString("ICD"),
                             resultSet.getInt("version"),
@@ -81,20 +75,20 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
             throw new DAOException("statement error", e);
         }
 
-        return icdEntity;
+        return entity;
     }
 
     @Override
-    public boolean update(IcdEntity icdEntity) throws DAOException {
-        if (icdEntity == null)
-            throw new NullPointerException("patientRecord is null");
+    public boolean update(IcdEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (icdEntity.getComment() != null) statement.setString(1, icdEntity.getComment());
+            if (entity.getComment() != null) statement.setString(1, entity.getComment());
             else statement.setNull(1, java.sql.Types.NULL);
-            statement.setInt(2, icdEntity.getId());
+            statement.setInt(2, entity.getId());
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,14 +99,14 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
     }
 
     @Override
-    public boolean delete(IcdEntity icdEntity) throws DAOException {
-        if (icdEntity == null)
-            throw new NullPointerException("patientRecord is null");
+    public boolean delete(IcdEntity entity) throws DAOException {
+        if (entity == null)
+            throw new NullPointerException("entity is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
-            statement.setInt(1, icdEntity.getId());
+            statement.setInt(1, entity.getId());
 
             result = statement.execute();
         } catch (SQLException e) {
@@ -125,25 +119,25 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
 
     @Override
     public Set<IcdEntity> getAll() throws DAOException {
-        Set<IcdEntity> icdEntities = new TreeSet<>();
+        Set<IcdEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
             while (resultSet.next()) {
-                IcdEntity icdEntity = new IcdEntity(
+                IcdEntity entity = new IcdEntity(
                         resultSet.getInt("id"),
                         resultSet.getString("ICD"),
                         resultSet.getInt("version"),
                         resultSet.getString("comment")
                 );
-                icdEntities.add(icdEntity);
+                entities.add(entity);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException("statement error", e);
         }
 
-        return icdEntities;
+        return entities;
     }
 
     private enum SQL {

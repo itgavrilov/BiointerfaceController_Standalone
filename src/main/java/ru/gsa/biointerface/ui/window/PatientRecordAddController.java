@@ -29,6 +29,7 @@ public class PatientRecordAddController extends AbstractWindow {
             return null;
         }
     };
+
     @FXML
     private TextField externalIDField;
     @FXML
@@ -196,7 +197,7 @@ public class PatientRecordAddController extends AbstractWindow {
                 .replaceAll("[^0-9.\\-:_]", "")
                 .replaceAll("[-:_]+", ".");
 
-        if(str.length() == 2 || str.length() == 5)
+        if (str.length() == 2 || str.length() == 5)
             str = str + ".";
 
         if (!birthdayField.getEditor().getText().equals(str)) {
@@ -239,7 +240,7 @@ public class PatientRecordAddController extends AbstractWindow {
     public void onAdd() {
         IcdEntity icdEntity = null;
 
-        if(icdComboBox.getValue() != null)
+        if (icdComboBox.getValue() != null)
             icdEntity = icdComboBox.getValue().getEntity();
 
         PatientRecord patientRecord = new PatientRecord(

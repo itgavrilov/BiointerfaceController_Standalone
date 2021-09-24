@@ -2,15 +2,18 @@
 
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" pickOnBounds="false" snapToPixel="false"
             xmlns="http://javafx.com/javafx/11.0.2"
-            fx:controller="ru.gsa.biointerface.ui.window.channel.Channel">
-    <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="500.0"
-          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0"/>
+            fx:controller="ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Channel name:" AnchorPane.leftAnchor="5.0"
+          AnchorPane.topAnchor="4.0"/>
+    <TextField fx:id="nameField" maxHeight="20.0" maxWidth="250.0" minHeight="20.0" minWidth="250.0"
+               onKeyReleased="#nameFieldChange" prefHeight="20.0" prefWidth="250.0" AnchorPane.leftAnchor="85.0"
+               AnchorPane.topAnchor="2.0"/>
     <LineChart fx:id="graphic" alternativeRowFillVisible="false" animated="false" cacheShape="false"
                createSymbols="false" depthTest="DISABLE" legendVisible="false" maxHeight="-Infinity"
                maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" snapToPixel="false"

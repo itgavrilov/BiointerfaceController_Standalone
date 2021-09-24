@@ -11,13 +11,13 @@ import java.util.TreeSet;
 public class Icd implements Comparable<Icd> {
     private IcdEntity entity;
 
-    public Icd(IcdEntity icdEntity) {
-        if (icdEntity.getICD() == null)
+    public Icd(IcdEntity entity) {
+        if (entity.getICD() == null)
             throw new NullPointerException("ICD is null");
-        if (icdEntity.getVersion() <= 0)
+        if (entity.getVersion() <= 0)
             throw new IllegalArgumentException("version is null");
 
-        entity = icdEntity;
+        this.entity = entity;
     }
 
     public Icd(int id, String ICD, int version, String comment) {

@@ -21,15 +21,19 @@ public class DBHandler implements DB {
 
         connection = getConnection();
 
+        boolean IcdIsNotPresent = true;
         boolean patientRecordIsNotPresent = true;
         boolean deviceIsNotPresent = true;
         boolean examinationIsNotPresent = true;
         boolean samplesIsNotPresent = true;
-        boolean IcdIsNotPresent = true;
+        boolean channelIsNotPresent = true;
 
         try (PreparedStatement statement = connection.prepareStatement(SQL.SHOW_TABLES.QUERY);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
+                if ("Icd".equals(resultSet.getString(1)))
+                    IcdIsNotPresent = false;
+
                 if ("PatientRecord".equals(resultSet.getString(1)))
                     patientRecordIsNotPresent = false;
 
@@ -39,11 +43,11 @@ public class DBHandler implements DB {
                 if ("Examination".equals(resultSet.getString(1)))
                     examinationIsNotPresent = false;
 
-                if ("Samples".equals(resultSet.getString(1)))
+                if ("Sample".equals(resultSet.getString(1)))
                     samplesIsNotPresent = false;
 
-                if ("Icd".equals(resultSet.getString(1)))
-                    IcdIsNotPresent = false;
+                if ("Channel".equals(resultSet.getString(1)))
+                    channelIsNotPresent = false;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -76,7 +80,13 @@ public class DBHandler implements DB {
 
             if (samplesIsNotPresent) {
                 statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
-                statement.execute(SQL.CREATE_TABLE_SAMPLES.QUERY);
+                statement.execute(SQL.CREATE_TABLE_SAMPLE.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
+            if (channelIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_CHANNEL.QUERY);
                 statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
         } catch (SQLException throwables) {
@@ -158,14 +168,24 @@ public class DBHandler implements DB {
                 CONSTRAINT fk_device FOREIGN KEY (device_id) REFERENCES Device(id) ON DELETE CASCADE
                 );
                 """),
-        CREATE_TABLE_SAMPLES("""
-                CREATE TABLE Samples (
+        CREATE_TABLE_CHANNEL("""
+                CREATE TABLE Channel (
+                id INTEGER NOT NULL,
+                examination_id INTEGER NOT NULL,
+                name VARCHAR(35) NOT NULL,
+                PRIMARY KEY (id, examination_id),
+                CONSTRAINT fk_Examination FOREIGN KEY (examination_id) REFERENCES Examination(id) ON DELETE CASCADE
+                );
+                """),
+        CREATE_TABLE_SAMPLE("""
+                CREATE TABLE Sample (
                 id INTEGER NOT NULL,
                 examination_id INTEGER NOT NULL,
                 channel_id INTEGER NOT NULL,
                 value INTEGER NOT NULL,
-                PRIMARY KEY (id, Examination_id, channel_id),
-                CONSTRAINT fk_Examination FOREIGN KEY (Examination_id) REFERENCES Examination(id) ON DELETE CASCADE
+                PRIMARY KEY (id, examination_id, channel_id),
+                CONSTRAINT fk_Examination FOREIGN KEY (examination_id) REFERENCES Examination(id) ON DELETE CASCADE
+                CONSTRAINT fk_Channel FOREIGN KEY (channel_id, examination_id) REFERENCES Channel(id, examination_id)
                 );
                 """),
         FOREIGN_KEYS_ON("PRAGMA foreign_keys=on;"),
