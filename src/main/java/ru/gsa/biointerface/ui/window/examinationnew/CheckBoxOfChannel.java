@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.ExaminationNew;
+package ru.gsa.biointerface.ui.window.examinationnew;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;

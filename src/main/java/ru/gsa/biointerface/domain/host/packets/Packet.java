@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost.packets;
+package ru.gsa.biointerface.domain.host.packets;
 
 public interface Packet {
 

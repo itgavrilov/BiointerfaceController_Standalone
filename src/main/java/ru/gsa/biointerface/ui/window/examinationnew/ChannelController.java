@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.ExaminationNew;
+package ru.gsa.biointerface.ui.window.examinationnew;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

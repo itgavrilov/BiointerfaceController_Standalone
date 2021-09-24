@@ -4,13 +4,13 @@ package ru.gsa.biointerface.domain;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
-import ru.gsa.biointerface.domain.serialPortHost.dataCash.Cash;
-import ru.gsa.biointerface.domain.serialPortHost.dataCash.DataCashListener;
-import ru.gsa.biointerface.domain.serialPortHost.dataCash.SampleCash;
+import ru.gsa.biointerface.domain.host.dataCash.Cash;
+import ru.gsa.biointerface.domain.host.dataCash.DataCashListener;
+import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.ChannelDAO;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelUpdater;
+import ru.gsa.biointerface.ui.window.examinationnew.ChannelUpdater;
 
 import java.util.Deque;
 import java.util.LinkedList;

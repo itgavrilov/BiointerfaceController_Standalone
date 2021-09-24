@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost.serverByPuchkov.util;
+package ru.gsa.biointerface.domain.host.serverByPuchkov.util;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

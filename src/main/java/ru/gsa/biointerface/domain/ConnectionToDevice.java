@@ -3,13 +3,13 @@ package ru.gsa.biointerface.domain;
 import com.fazecast.jSerialComm.SerialPort;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
-import ru.gsa.biointerface.domain.serialPortHost.ControlMessages;
-import ru.gsa.biointerface.domain.serialPortHost.DataCollector;
-import ru.gsa.biointerface.domain.serialPortHost.Handler;
-import ru.gsa.biointerface.domain.serialPortHost.SerialPortHost;
+import ru.gsa.biointerface.domain.host.ControlMessages;
+import ru.gsa.biointerface.domain.host.DataCollector;
+import ru.gsa.biointerface.domain.host.Handler;
+import ru.gsa.biointerface.domain.host.SerialPortHost;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController;
+import ru.gsa.biointerface.ui.window.examinationnew.ChannelController;
 
 import java.util.LinkedList;
 import java.util.List;

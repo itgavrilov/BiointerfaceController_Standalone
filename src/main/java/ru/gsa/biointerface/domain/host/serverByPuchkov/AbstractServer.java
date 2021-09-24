@@ -1,6 +1,6 @@
-package ru.gsa.biointerface.domain.serialPortHost.serverByPuchkov;
+package ru.gsa.biointerface.domain.host.serverByPuchkov;
 
-import ru.gsa.biointerface.domain.serialPortHost.serverByPuchkov.util.AbstractLifeCycle;
+import ru.gsa.biointerface.domain.host.serverByPuchkov.util.AbstractLifeCycle;
 
 import java.io.IOException;
 import java.util.Collection;

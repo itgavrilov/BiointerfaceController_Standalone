@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost.dataCash;
+package ru.gsa.biointerface.domain.host.dataCash;
 
 import ru.gsa.biointerface.domain.DomainException;
 

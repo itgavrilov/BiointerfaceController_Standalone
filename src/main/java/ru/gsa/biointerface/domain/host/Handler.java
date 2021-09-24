@@ -1,11 +1,11 @@
-package ru.gsa.biointerface.domain.serialPortHost;
+package ru.gsa.biointerface.domain.host;
 
 import com.fazecast.jSerialComm.SerialPort;
 import ru.gsa.biointerface.domain.Device;
-import ru.gsa.biointerface.domain.serialPortHost.packets.ChannelPacket;
-import ru.gsa.biointerface.domain.serialPortHost.packets.ConfigPacket;
-import ru.gsa.biointerface.domain.serialPortHost.packets.Packet;
-import ru.gsa.biointerface.domain.serialPortHost.serverByPuchkov.ChannelHandler;
+import ru.gsa.biointerface.domain.host.packets.ChannelPacket;
+import ru.gsa.biointerface.domain.host.packets.ConfigPacket;
+import ru.gsa.biointerface.domain.host.packets.Packet;
+import ru.gsa.biointerface.domain.host.serverByPuchkov.ChannelHandler;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

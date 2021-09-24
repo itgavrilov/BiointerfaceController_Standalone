@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.domain;
 
-import ru.gsa.biointerface.ui.window.ExaminationNew.ChannelController;
+import ru.gsa.biointerface.ui.window.examinationnew.ChannelController;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost.serverByPuchkov;
+package ru.gsa.biointerface.domain.host.serverByPuchkov;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

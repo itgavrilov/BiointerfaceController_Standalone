@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost;
+package ru.gsa.biointerface.domain.host;
 
 public interface DeviceConfig {
     int getId();

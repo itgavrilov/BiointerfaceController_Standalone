@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.domain;
 
 import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.domain.serialPortHost.DeviceConfig;
+import ru.gsa.biointerface.domain.host.DeviceConfig;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 

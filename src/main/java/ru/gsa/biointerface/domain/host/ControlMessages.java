@@ -1,8 +1,8 @@
-package ru.gsa.biointerface.domain.serialPortHost;
+package ru.gsa.biointerface.domain.host;
 
-import ru.gsa.biointerface.domain.serialPortHost.packets.ControlPacket;
-import ru.gsa.biointerface.domain.serialPortHost.packets.Packet;
-import ru.gsa.biointerface.domain.serialPortHost.packets.PacketType;
+import ru.gsa.biointerface.domain.host.packets.ControlPacket;
+import ru.gsa.biointerface.domain.host.packets.Packet;
+import ru.gsa.biointerface.domain.host.packets.PacketType;
 
 public enum ControlMessages implements Packet {
     GET_CONFIG((byte) 0x00),

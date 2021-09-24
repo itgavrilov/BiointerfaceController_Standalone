@@ -9,7 +9,7 @@ import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.DBHandler;
 import ru.gsa.biointerface.ui.ProxyGUI;
 import ru.gsa.biointerface.ui.UIException;
-import ru.gsa.biointerface.ui.window.ExaminationNew.ExaminationNewController;
+import ru.gsa.biointerface.ui.window.examinationnew.ExaminationNewController;
 
 import java.io.IOException;
 import java.net.URL;

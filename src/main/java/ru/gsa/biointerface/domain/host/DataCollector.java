@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.serialPortHost;
+package ru.gsa.biointerface.domain.host;
 
 import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.Device;
