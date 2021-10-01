@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.domain;
 
-import ru.gsa.biointerface.ui.window.examinationnew.ChannelController;
+import ru.gsa.biointerface.ui.window.metering.GraphForMeteringController;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public interface Connection {
     Device getDevice();
 
-    void registerChannelGUIs(List<ChannelController> channelControllerGUIS) throws DomainException;
+    void registerChannelGUIs(List<GraphForMeteringController> channelControllerGUIS) throws DomainException;
 
     void setCapacity(int capacity) throws DomainException;
 

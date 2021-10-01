@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.persistence.DAOException;
 
@@ -34,8 +34,8 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
             statement.setInt(1, entity.getId());
-            statement.setInt(2, entity.getExamination_id());
-            statement.setInt(3, entity.getChannel_id());
+            statement.setInt(2, entity.getGraph().getNumberOfChannel());
+            statement.setInt(3, entity.getGraph().getExaminationEntity().getId());
             statement.setInt(4, entity.getValue());
             statement.execute();
         } catch (SQLException e) {
@@ -66,18 +66,17 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
         return null;
     }
 
-
-    public Set<SampleEntity> getAllByExamination(Examination examination) throws DAOException {
+    public Set<SampleEntity> getAllByGraph(Graph graph) throws DAOException {
         Set<SampleEntity> entities = new TreeSet<>();
 
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_EXAMINATION.QUERY)) {
-            statement.setInt(1, examination.getId());
+        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_GRAPH.QUERY)) {
+            statement.setInt(1, graph.getEntity().getNumberOfChannel());
+            statement.setInt(2, graph.getEntity().getExaminationEntity().getId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     SampleEntity entity = new SampleEntity(
                             resultSet.getInt("id"),
-                            resultSet.getInt("examination_id"),
-                            resultSet.getInt("channel_id"),
+                            graph.getEntity(),
                             resultSet.getInt("value")
                     );
                     entities.add(entity);
@@ -122,9 +121,9 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     }
 
     private enum SQL {
-        INSERT("INSERT INTO Sample (id,examination_id,channel_id,value)" +
-                "VALUES ((?),(?),(?),(?))"),
-        SELECT_BY_EXAMINATION("SELECT * FROM Sample WHERE examination_id = (?);");
+        INSERT("INSERT INTO Sample (id, numberOfChannel, examination_id,value) " +
+                "VALUES ((?),(?),(?),(?));"),
+        SELECT_BY_GRAPH("SELECT * FROM Sample WHERE numberOfChannel = (?) AND examination_id = (?);");
 
         final String QUERY;
 

@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.examinationnew;
+package ru.gsa.biointerface.ui.window.metering;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +15,8 @@ import ru.gsa.biointerface.domain.*;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
+import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
+import ru.gsa.biointerface.ui.window.graph.CompositeNode;
 
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -24,10 +26,10 @@ import java.util.stream.Collectors;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public class ExaminationNewController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
-    static private ExaminationNewController instants;
-    private final List<CompositeNode<AnchorPane, ChannelController>> channelGUIs = new LinkedList<>();
-    private final List<CheckBoxOfChannel> checkBoxesOfChannel = new LinkedList<>();
+public class MeteringController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
+    static private MeteringController instants;
+    private final List<CompositeNode<AnchorPane, GraphForMeteringController>> channelGUIs = new LinkedList<>();
+    private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
     private final StringConverter<Device> converter = new StringConverter<>() {
         @Override
         public String toString(Device device) {
@@ -63,7 +65,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
     @FXML
     private Button scanningSerialPortsButton;
     @FXML
-    private ComboBox<Device> availableDevices;
+    private ComboBox<Device> availableDevicesComboBox;
     @FXML
     private Button startButton;
     @FXML
@@ -81,6 +83,14 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         if (instants != null && instants.connection != null) {
             ConnectionFactory.disconnectScanningSerialPort();
             instants.connection.disconnect();
+
+            if (instants.connection.isControllerTransmission()) {
+                try {
+                    instants.connection.controllerTransmissionStop();
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -113,7 +123,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         allSliderZoom.valueProperty().addListener((obs, oldval, newVal) ->
                 allSliderZoom.setValue(newVal.intValue()));
 
-        availableDevices.setConverter(converter);
+        availableDevicesComboBox.setConverter(converter);
 
         transitionGUI.show();
     }
@@ -130,7 +140,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         );
     }
 
-    public void comboBoxComShowing() {
+    public void availableDevicesComboBoxShowing() {
         clearInterface();
         controlInterface(
                 true,
@@ -139,12 +149,12 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
                 false,
                 false
         );
-        availableDevices.getItems().addAll(ConnectionFactory.getListDevices());
+        availableDevicesComboBox.getItems().addAll(ConnectionFactory.getListDevices());
     }
 
-    public void comboBoxComSelect() {
-        if (availableDevices.getValue() != null) {
-            connection = ConnectionFactory.getInstance(availableDevices.getValue());
+    public void availableDevicesComboBoxSelect() {
+        if (availableDevicesComboBox.getValue() != null) {
+            connection = ConnectionFactory.getInstance(availableDevicesComboBox.getValue());
 
             buildingChannelsGUIs();
 
@@ -166,9 +176,9 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         checkBoxesOfChannel.clear();
 
         for (char i = 0; i < connection.getDevice().getAmountChannels(); i++) {
-            CompositeNode<AnchorPane, ChannelController> node =
-                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("Channel.fxml")));
-            CheckBoxOfChannel checkBox = new CheckBoxOfChannel(i);
+            CompositeNode<AnchorPane, GraphForMeteringController> node =
+                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("GraphForMetering.fxml")));
+            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
 
             node.getController().setCheckBox(checkBox);
             checkBox.setOnAction(event -> {
@@ -224,13 +234,13 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
     private void clearInterface() {
         channelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().clear();
-        availableDevices.getItems().clear();
-        availableDevices.setValue(null);
+        availableDevicesComboBox.getItems().clear();
+        availableDevicesComboBox.setValue(null);
         startButton.setText("Start");
         recordingButton.setText("recording");
     }
 
-    public void buttonComStartPush() {
+    public void onStartButtonPush() {
         if (connection.isConnected()) {
             if (connection.isControllerTransmission()) {
                 try {
@@ -265,7 +275,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         recordingButton.setText("recording");
     }
 
-    public void buttonPushComReboot() {
+    public void onRebootButtonPush() {
         if (connection.isConnected())
             connection.controllerReboot();
         clearInterface();
@@ -277,7 +287,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
                 false);
     }
 
-    public void onRecording() {
+    public void onRecordingButtonPush() {
         if (connection.isRecording()) {
             connection.recordingStop();
             recordingButton.setText("recording");
@@ -287,7 +297,15 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         }
     }
 
-    public void onBack() {
+    public void onBackButtonPush() {
+        if (connection.isControllerTransmission()) {
+            try {
+                connection.controllerTransmissionStop();
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             ((WindowWithProperty<PatientRecord>) generateNewWindow("PatientRecordOpen.fxml"))
                     .setProperty(patientRecord)
@@ -308,7 +326,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
                                   boolean enableButtonRecording) {
 
         scanningSerialPortsButton.setDisable(!enableButtonScanning);
-        availableDevices.setDisable(!enableNumberOfCOM);
+        availableDevicesComboBox.setDisable(!enableNumberOfCOM);
         startButton.setDisable(!enableComStart);
         rebootButton.setDisable(!enableComStart);
         allSliderZoom.setDisable(!enableSliderZoom);
@@ -331,7 +349,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
         channelVBox.setPrefHeight(heightChannelGUIs);
         channelVBox.setPrefWidth(width - anchorPaneControl.getWidth());
 
-        for (CompositeNode<AnchorPane, ChannelController> o : channelGUIs) {
+        for (CompositeNode<AnchorPane, GraphForMeteringController> o : channelGUIs) {
             o.getController().resizeWindow(heightChannelGUIs, width - anchorPaneControl.getWidth() + 13);
         }
 
@@ -339,7 +357,7 @@ public class ExaminationNewController extends AbstractWindow implements WindowWi
 
     @Override
     public String getTitleWindow() {
-        return ": biointerface data";
+        return ": new examination";
     }
 }
 

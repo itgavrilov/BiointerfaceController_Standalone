@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.domain.host;
 
-import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.Device;
+import ru.gsa.biointerface.domain.Graph;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface DataCollector {
 
     void setDevice(Device devise);
 
-    List<Channel> getSamplesOfChannels();
+    List<Graph> getSamplesOfChannels();
 }

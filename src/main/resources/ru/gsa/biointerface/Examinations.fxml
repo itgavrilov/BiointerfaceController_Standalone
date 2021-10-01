@@ -27,10 +27,10 @@
               prefHeight="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0"
               AnchorPane.rightAnchor="5.0"/>
     <Button layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            mnemonicParsing="false" onAction="#onBack" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
+            mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
             textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
     <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0"
             layoutY="364.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            mnemonicParsing="false" onAction="#onDelete" prefHeight="25.0" prefWidth="60.0" text="delete"
+            mnemonicParsing="false" onAction="#onDeleteButtonPush" prefHeight="25.0" prefWidth="60.0" text="delete"
             textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
 </AnchorPane>

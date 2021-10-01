@@ -27,7 +27,7 @@ public class Icd implements Comparable<Icd> {
         this.entity = entity;
     }
 
-    static public Set<Icd> getSetAll() throws DomainException {
+    static public Set<Icd> getAll() throws DomainException {
         try {
             Set<IcdEntity> IcdEntity = IcdDAO.getInstance().getAll();
             Set<Icd> icds = new TreeSet<>();

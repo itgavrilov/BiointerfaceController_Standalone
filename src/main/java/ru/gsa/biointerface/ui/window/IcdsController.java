@@ -52,7 +52,7 @@ public class IcdsController extends AbstractWindow {
 
         ObservableList<Icd> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Icd.getSetAll());
+            list.addAll(Icd.getAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class IcdsController extends AbstractWindow {
         }
     }
 
-    public void onBack() {
+    public void onBackButtonPush() {
         try {
             generateNewWindow("PatientRecords.fxml").showWindow();
         } catch (UIException e) {
@@ -91,7 +91,7 @@ public class IcdsController extends AbstractWindow {
         }
     }
 
-    public void onAdd() {
+    public void onAddButtonPush() {
         try {
             generateNewWindow("IcdAdd.fxml").showWindow();
         } catch (UIException e) {
@@ -99,7 +99,7 @@ public class IcdsController extends AbstractWindow {
         }
     }
 
-    public void onDelete() {
+    public void onDeleteButtonPush() {
         Icd icd = tableView.getItems().get(idSelectedRow);
         try {
             icd.delete();

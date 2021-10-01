@@ -36,7 +36,8 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
             statement.setString(3, patientRecordEntity.getFirstName());
             statement.setString(4, patientRecordEntity.getMiddleName());
             statement.setDate(5, Date.valueOf(patientRecordEntity.getBirthday()));
-            if (patientRecordEntity.getIcdEntity() != null) statement.setInt(6, patientRecordEntity.getIcdEntity().getId());
+            if (patientRecordEntity.getIcdEntity() != null)
+                statement.setInt(6, patientRecordEntity.getIcdEntity().getId());
             else statement.setNull(6, java.sql.Types.NULL);
             if (patientRecordEntity.getComment() != null) statement.setString(7, patientRecordEntity.getComment());
             else statement.setNull(7, java.sql.Types.NULL);

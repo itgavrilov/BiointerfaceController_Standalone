@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.examinationnew;
+package ru.gsa.biointerface.ui.window.examination;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,28 +7,26 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import ru.gsa.biointerface.domain.Channel;
+import javafx.scene.text.Text;
+import ru.gsa.biointerface.domain.Graph;
+import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public final class ChannelController implements ChannelUpdater, ContentForWindow {
+public final class GraphController implements ContentForWindow {
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private Channel channel;
-    private CheckBoxOfChannel checkBox;
-    private Boolean isReady = false;
+    private Graph graph;
     @FXML
     private AnchorPane anchorPaneRoot;
     @FXML
-    private TextField nameField;
+    private Text nameText;
     @FXML
     private NumberAxis axisX;
     @FXML
@@ -52,27 +50,12 @@ public final class ChannelController implements ChannelUpdater, ContentForWindow
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
     }
 
-    public void setCheckBox(CheckBoxOfChannel checkBox) {
-        if (checkBox == null)
-            throw new NullPointerException("checkBox is null");
+    public void setGraph(Graph graph) {
+        if (graph == null)
+            throw new NullPointerException("graph is null");
 
-        this.checkBox = checkBox;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-        nameField.setText(channel.getName());
-        checkBox.setText(channel.getName());
-    }
-
-    @Override
-    public void update(List<Integer> data) {
-        Platform.runLater(() -> {
-            for (int i = 0; i < data.size(); i++) {
-                dataLineGraphic.get(i).setYValue(data.get(i));
-            }
-            setReady(true);
-        });
+        this.graph = graph;
+        nameText.setText(graph.getName());
     }
 
     @Override
@@ -110,16 +93,6 @@ public final class ChannelController implements ChannelUpdater, ContentForWindow
     }
 
     @Override
-    public boolean isReady() {
-        return isReady;
-    }
-
-    @Override
-    public void setReady(boolean Ready) {
-        isReady = Ready;
-    }
-
-    @Override
     public void resizeWindow(double height, double width) {
         anchorPaneRoot.setPrefHeight(height);
         anchorPaneRoot.setPrefWidth(width);
@@ -128,23 +101,16 @@ public final class ChannelController implements ChannelUpdater, ContentForWindow
         graphic.setPrefWidth(width);
     }
 
-    public void nameFieldChange() {
-        if (!nameField.getText().equals(channel.getName())) {
-            checkBox.setText(nameField.getText());
-            channel.setName(nameField.getText());
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChannelController channelController = (ChannelController) o;
-        return Objects.equals(channel, channelController.channel);
+        GraphController graphController = (GraphController) o;
+        return Objects.equals(graph, graphController.graph);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(channel);
+        return Objects.hash(graph);
     }
 }

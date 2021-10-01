@@ -27,9 +27,10 @@ public class DBHandler implements DB {
         boolean IcdIsNotPresent = true;
         boolean patientRecordIsNotPresent = true;
         boolean deviceIsNotPresent = true;
-        boolean examinationIsNotPresent = true;
-        boolean samplesIsNotPresent = true;
         boolean channelIsNotPresent = true;
+        boolean examinationIsNotPresent = true;
+        boolean graphIsNotPresent = true;
+        boolean samplesIsNotPresent = true;
 
         try (PreparedStatement statement = connection.prepareStatement(SQL.SHOW_TABLES.QUERY);
              ResultSet resultSet = statement.executeQuery()) {
@@ -43,14 +44,18 @@ public class DBHandler implements DB {
                 if ("Device".equals(resultSet.getString(1)))
                     deviceIsNotPresent = false;
 
+                if ("Channel".equals(resultSet.getString(1)))
+                    channelIsNotPresent = false;
+
                 if ("Examination".equals(resultSet.getString(1)))
                     examinationIsNotPresent = false;
+
+                if ("Graph".equals(resultSet.getString(1)))
+                    graphIsNotPresent = false;
 
                 if ("Sample".equals(resultSet.getString(1)))
                     samplesIsNotPresent = false;
 
-                if ("Channel".equals(resultSet.getString(1)))
-                    channelIsNotPresent = false;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -75,21 +80,27 @@ public class DBHandler implements DB {
                 statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
 
+            if (channelIsNotPresent) {
+                statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
+                statement.execute(SQL.CREATE_TABLE_CHANNEL.QUERY);
+                statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
+            }
+
             if (examinationIsNotPresent) {
                 statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
                 statement.execute(SQL.CREATE_TABLE_EXAMINATION.QUERY);
                 statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
 
-            if (samplesIsNotPresent) {
+            if (graphIsNotPresent) {
                 statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
-                statement.execute(SQL.CREATE_TABLE_SAMPLE.QUERY);
+                statement.execute(SQL.CREATE_TABLE_GRAPH.QUERY);
                 statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
 
-            if (channelIsNotPresent) {
+            if (samplesIsNotPresent) {
                 statement.execute(SQL.FOREIGN_KEYS_OFF.QUERY);
-                statement.execute(SQL.CREATE_TABLE_CHANNEL.QUERY);
+                statement.execute(SQL.CREATE_TABLE_SAMPLE.QUERY);
                 statement.execute(SQL.FOREIGN_KEYS_ON.QUERY);
             }
         } catch (SQLException throwables) {
@@ -173,22 +184,30 @@ public class DBHandler implements DB {
                 """),
         CREATE_TABLE_CHANNEL("""
                 CREATE TABLE Channel (
-                id INTEGER NOT NULL,
-                examination_id INTEGER NOT NULL,
-                name VARCHAR(35) NOT NULL,
-                PRIMARY KEY (id, examination_id),
-                CONSTRAINT fk_Examination FOREIGN KEY (examination_id) REFERENCES Examination(id) ON DELETE CASCADE
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                name VARCHAR(35) UNIQUE NOT NULL,
+                comment TEXT NULL
                 );
                 """),
+        CREATE_TABLE_GRAPH("""
+                CREATE TABLE Graph (
+                numberOfChannel INTEGER NOT NULL,
+                examination_id INTEGER NOT NULL,
+                channel_id INTEGER  NULL,
+                PRIMARY KEY (numberOfChannel,examination_id)
+                CONSTRAINT fk_Examination FOREIGN KEY (examination_id) REFERENCES Examination(id) ON DELETE CASCADE,
+                CONSTRAINT fk_Channel FOREIGN KEY (channel_id) REFERENCES Channel(id)
+                );
+                """),
+
         CREATE_TABLE_SAMPLE("""
                 CREATE TABLE Sample (
                 id INTEGER NOT NULL,
+                numberOfChannel INTEGER NOT NULL,
                 examination_id INTEGER NOT NULL,
-                channel_id INTEGER NOT NULL,
                 value INTEGER NOT NULL,
-                PRIMARY KEY (id, examination_id, channel_id),
-                CONSTRAINT fk_Examination FOREIGN KEY (examination_id) REFERENCES Examination(id) ON DELETE CASCADE
-                CONSTRAINT fk_Channel FOREIGN KEY (channel_id, examination_id) REFERENCES Channel(id, examination_id)
+                PRIMARY KEY (id, numberOfChannel, examination_id),
+                CONSTRAINT fk_Graph FOREIGN KEY (numberOfChannel, examination_id) REFERENCES Graph(numberOfChannel, examination_id) ON DELETE CASCADE
                 );
                 """),
         FOREIGN_KEYS_ON("PRAGMA foreign_keys=on;"),

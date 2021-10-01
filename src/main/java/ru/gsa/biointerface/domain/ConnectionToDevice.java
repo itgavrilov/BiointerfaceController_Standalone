@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.domain;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.host.ControlMessages;
 import ru.gsa.biointerface.domain.host.DataCollector;
@@ -9,7 +8,7 @@ import ru.gsa.biointerface.domain.host.Handler;
 import ru.gsa.biointerface.domain.host.SerialPortHost;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.examinationnew.ChannelController;
+import ru.gsa.biointerface.ui.window.metering.GraphForMeteringController;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.Objects;
  */
 public class ConnectionToDevice implements DataCollector, Connection {
     private final SerialPortHost serialPortHost;
-    private final List<Channel> channels = new LinkedList<>();
+    private final List<Graph> graphs = new LinkedList<>();
     private Examination examination = new Examination(new ExaminationEntity());
     private boolean flagTransmission = false;
 
@@ -68,28 +67,27 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public List<Channel> getSamplesOfChannels() {
-        return channels;
+    public List<Graph> getSamplesOfChannels() {
+        return graphs;
     }
 
     @Override
-    public void registerChannelGUIs(List<ChannelController> channelControllerGUIS) throws DomainException {
+    public void registerChannelGUIs(List<GraphForMeteringController> channelControllerGUIS) throws DomainException {
         if (channelControllerGUIS == null)
             throw new NullPointerException("channelGUIs is null");
         if (channelControllerGUIS.size() < examination.getAmountChannels())
             throw new DomainException("count of channelGUIs less than count of channels");
 
-        channels.clear();
+        graphs.clear();
 
         for (int i = 0; i < examination.getAmountChannels(); i++) {
-            String channelName = "Channel ".concat(String.valueOf(channels.size() + 1));
-            Channel channel = new Channel(new ChannelEntity(channels.size(), examination.getEntity(), channelName));
-            channels.add(channel);
+            Graph graph = new Graph(i, examination.getEntity(), null);
+            graphs.add(graph);
         }
 
         for (int i = 0; i < examination.getAmountChannels(); i++) {
-            channelControllerGUIS.get(i).setChannel(channels.get(i));
-            channels.get(i).setListener(channelControllerGUIS.get(i));
+            channelControllerGUIS.get(i).setGraph(graphs.get(i));
+            graphs.get(i).setListener(channelControllerGUIS.get(i));
         }
         setCapacity(10);
     }
@@ -101,7 +99,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (capacity == 0)
             throw new DomainException("capacity is '0'");
 
-        channels.forEach(o -> o.setCapacity(capacity));
+        graphs.forEach(o -> o.setCapacity(capacity));
     }
 
     @Override
@@ -157,9 +155,10 @@ public class ConnectionToDevice implements DataCollector, Connection {
             examination.setComment(comment);
             examination.insert();
 
-            channels.forEach(o -> {
+            graphs.forEach(o -> {
+                o.setExamination(examination);
                 try {
-                    o.setExaminationEntity(examination.getEntity());
+                    o.insert();
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
@@ -174,13 +173,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
     public void recordingStop() {
         examination.reset();
 
-        channels.forEach(o -> {
-            try {
-                o.setExaminationEntity(examination.getEntity());
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
-        });
+        graphs.forEach(o -> o.setExamination(examination));
         try {
             SampleDAO.getInstance().endTransaction();
         } catch (DAOException e) {

@@ -227,7 +227,7 @@ public class PatientRecordAddController extends AbstractWindow {
         ObservableList<Icd> list = FXCollections.observableArrayList();
         list.add(null);
         try {
-            list.addAll(Icd.getSetAll());
+            list.addAll(Icd.getAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -240,7 +240,7 @@ public class PatientRecordAddController extends AbstractWindow {
         commentField.positionCaret(str.length());
     }
 
-    public void onAdd() {
+    public void onAddButtonPush() {
         IcdEntity icdEntity = null;
 
         if (icdComboBox.getValue() != null)
@@ -261,10 +261,10 @@ public class PatientRecordAddController extends AbstractWindow {
             e.printStackTrace();
         }
 
-        onBack();
+        onBackButtonPush();
     }
 
-    public void onBack() {
+    public void onBackButtonPush() {
         try {
             generateNewWindow("PatientRecords.fxml").showWindow();
         } catch (UIException e) {

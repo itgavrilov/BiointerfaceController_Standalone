@@ -19,16 +19,16 @@ public class Device implements DeviceConfig, Comparable<Device> {
         this(new DeviceEntity(id, amountChannels, comment));
     }
 
-    public Device(DeviceEntity deviceEntity) {
-        if (deviceEntity.getId() == 0)
+    public Device(DeviceEntity entity) {
+        if (entity.getId() == 0)
             throw new IllegalArgumentException("Serial number is '0'");
-        if (deviceEntity.getAmountChannels() == 0)
+        if (entity.getAmountChannels() == 0)
             throw new IllegalArgumentException("Amount channels is '0'");
 
-        this.entity = deviceEntity;
+        this.entity = entity;
     }
 
-    static public Set<Device> getSetAll() throws DomainException {
+    static public Set<Device> getAll() throws DomainException {
         try {
             Set<DeviceEntity> entitys = DeviceDAO.getInstance().getAll();
             Set<Device> result = new TreeSet<>();

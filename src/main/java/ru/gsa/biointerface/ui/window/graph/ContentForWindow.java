@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.examinationnew;
+package ru.gsa.biointerface.ui.window.graph;
 
 import javafx.fxml.Initializable;
 
@@ -6,5 +6,7 @@ import javafx.fxml.Initializable;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface ContentForWindow extends Initializable {
+    void setCapacity(int capacity);
+
     void resizeWindow(double height, double width);
 }

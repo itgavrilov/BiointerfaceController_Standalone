@@ -7,14 +7,12 @@ import java.util.Objects;
  */
 public class SampleEntity implements Comparable<SampleEntity> {
     private int id;
-    private int Examination_id;
-    private int channel_id;
+    private GraphEntity graph;
     private int value;
 
-    public SampleEntity(int id, int examination_id, int channel_id, int value) {
+    public SampleEntity(int id, GraphEntity graph, int value) {
         this.id = id;
-        Examination_id = examination_id;
-        this.channel_id = channel_id;
+        this.graph = graph;
         this.value = value;
     }
 
@@ -26,20 +24,12 @@ public class SampleEntity implements Comparable<SampleEntity> {
         this.id = id;
     }
 
-    public int getExamination_id() {
-        return Examination_id;
+    public GraphEntity getGraph() {
+        return graph;
     }
 
-    public void setExamination_id(int examination_id) {
-        Examination_id = examination_id;
-    }
-
-    public int getChannel_id() {
-        return channel_id;
-    }
-
-    public void setChannel_id(int channel_id) {
-        this.channel_id = channel_id;
+    public void setGraph(GraphEntity graph) {
+        this.graph = graph;
     }
 
     public int getValue() {
@@ -55,16 +45,21 @@ public class SampleEntity implements Comparable<SampleEntity> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SampleEntity that = (SampleEntity) o;
-        return id == that.id && Examination_id == that.Examination_id && channel_id == that.channel_id;
+        return id == that.id && graph.equals(that.graph);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Examination_id, channel_id);
+        return Objects.hash(id, graph);
     }
 
     @Override
     public int compareTo(SampleEntity o) {
-        return id * Examination_id * channel_id - o.id * o.Examination_id * o.channel_id;
+        int result = graph.compareTo(o.graph);
+
+        if (result == 0)
+            result = id - o.id;
+
+        return result;
     }
 }

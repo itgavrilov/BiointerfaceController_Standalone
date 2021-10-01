@@ -8,25 +8,22 @@ import java.util.Objects;
  */
 public class ChannelEntity implements Comparable<ChannelEntity> {
     private int id;
-    private ExaminationEntity examinationEntity;
     private String name;
+    private String comment;
 
-    public ChannelEntity(int id, ExaminationEntity examinationEntity, String name) {
+
+    public ChannelEntity(int id, String name, String comment) {
         this.id = id;
-        this.examinationEntity = examinationEntity;
         this.name = name;
+        this.comment = comment;
     }
 
     public int getId() {
         return id;
     }
 
-    public ExaminationEntity getExaminationEntity() {
-        return examinationEntity;
-    }
-
-    public void setExaminationEntity(ExaminationEntity examinationEntity) {
-        this.examinationEntity = examinationEntity;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -37,27 +34,29 @@ public class ChannelEntity implements Comparable<ChannelEntity> {
         this.name = name;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChannelEntity that = (ChannelEntity) o;
-        return id == that.id && Objects.equals(examinationEntity, that.examinationEntity);
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, examinationEntity);
+        return Objects.hash(id, name);
     }
 
     @Override
     public int compareTo(ChannelEntity o) {
-        int result;
-        if (examinationEntity.getId() == o.examinationEntity.getId())
-            result = id - o.id;
-        else
-            result = examinationEntity.getId() - o.examinationEntity.getId();
-
-        return result;
+        return name.compareTo(o.name);
     }
 }

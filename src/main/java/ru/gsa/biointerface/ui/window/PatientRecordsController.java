@@ -75,7 +75,7 @@ public class PatientRecordsController extends AbstractWindow {
         try {
             ObservableList<Icd> list = FXCollections.observableArrayList();
             list.add(null);
-            list.addAll(Icd.getSetAll());
+            list.addAll(Icd.getAll());
             icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(list));
         } catch (DomainException e) {
             e.printStackTrace();
@@ -162,7 +162,7 @@ public class PatientRecordsController extends AbstractWindow {
         }
     }
 
-    public void onDelete() {
+    public void onDeleteButtonPush() {
         PatientRecord patientRecord = tableView.getItems().get(idSelectedRow);
         try {
             patientRecord.delete();

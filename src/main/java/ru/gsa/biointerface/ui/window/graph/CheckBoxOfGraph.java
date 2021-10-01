@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.examinationnew;
+package ru.gsa.biointerface.ui.window.graph;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
@@ -8,10 +8,10 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class CheckBoxOfChannel extends CheckBox implements Comparable<CheckBoxOfChannel> {
+public class CheckBoxOfGraph extends CheckBox implements Comparable<CheckBoxOfGraph> {
     private final char index;
 
-    public CheckBoxOfChannel(char index) {
+    public CheckBoxOfGraph(char index) {
         this.index = index;
 
         this.setSelected(true);
@@ -22,7 +22,7 @@ public class CheckBoxOfChannel extends CheckBox implements Comparable<CheckBoxOf
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CheckBoxOfChannel that = (CheckBoxOfChannel) o;
+        CheckBoxOfGraph that = (CheckBoxOfGraph) o;
         return index + 1 == that.index + 1;
     }
 
@@ -32,7 +32,7 @@ public class CheckBoxOfChannel extends CheckBox implements Comparable<CheckBoxOf
     }
 
     @Override
-    public int compareTo(CheckBoxOfChannel o) {
+    public int compareTo(CheckBoxOfGraph o) {
         return (index + 1) - (o.index + 1);
     }
 }

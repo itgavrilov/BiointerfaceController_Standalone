@@ -51,9 +51,10 @@ public class DevicesController extends AbstractWindow {
         amountChannelsCol.setStyle("-fx-alignment: center;");
         ObservableList<Device> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Device.getSetAll());
+            list.addAll(Device.getAll());
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new UIException("device loading error", e);
         }
         tableView.setItems(list);
 
@@ -83,7 +84,7 @@ public class DevicesController extends AbstractWindow {
         }
     }
 
-    public void onBack() {
+    public void onBackButtonPush() {
         try {
             generateNewWindow("PatientRecords.fxml").showWindow();
         } catch (UIException e) {
@@ -91,7 +92,7 @@ public class DevicesController extends AbstractWindow {
         }
     }
 
-    public void onDelete() {
+    public void onDeleteButtonPush() {
         Device device = tableView.getItems().get(idSelectedRow);
         try {
             device.delete();

@@ -8,6 +8,7 @@
              prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="Edit">
             <MenuItem mnemonicParsing="false" onAction="#onICDs" text="ICDs"/>
+            <MenuItem mnemonicParsing="false" onAction="#onChannels" text="Channels"/>
             <MenuItem mnemonicParsing="false" onAction="#onDevices" text="Devices"/>
             <MenuItem mnemonicParsing="false" onAction="#onExaminations" text="Examinations"/>
         </Menu>

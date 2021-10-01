@@ -81,9 +81,9 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             }
         });
         dateTimeCol.setCellValueFactory(param -> {
-            DateTimeFormatter dateFormatter1 = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
             LocalDateTime dateTime = param.getValue().getDateTime();
-            return new SimpleObjectProperty<>(dateTime.format(dateFormatter1));
+            return new SimpleObjectProperty<>(dateTime.format(dateTimeFormatter));
         });
         deviceIdCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getDevice().getId()));
 
@@ -118,7 +118,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         }
     }
 
-    public void onBack() {
+    public void onBackButtonPush() {
         try {
             generateNewWindow("PatientRecords.fxml")
                     .showWindow();
@@ -127,9 +127,9 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         }
     }
 
-    public void onAdd() {
+    public void onAddButtonPush() {
         try {
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("ExaminationNew.fxml"))
+            ((WindowWithProperty<PatientRecord>) generateNewWindow("Metering.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (UIException e) {
@@ -137,7 +137,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         }
     }
 
-    public void onDelete() {
+    public void onDeleteButtonPush() {
         Examination examination = tableView.getItems().get(idSelectedRow);
         try {
             examination.delete();
@@ -159,16 +159,14 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             commentField.setDisable(false);
         }
 
-//        if (mouseEvent.getClickCount() == 2) {
-//            FXMLLoader loader = new FXMLLoader(rootObject.getClass().getResource("PatientRecordOpen.fxml"));
-//            try {
-//                transitionGUI.transition(loader);
-//                PatientRecordOpen controller = loader.getController();
-//                controller.setPatientRecord(tableView.getItems().get(idSelectedRow));
-//                controller.uploadContent(rootObject, transitionGUI);
-//            } catch (UIException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (mouseEvent.getClickCount() == 2) {
+            try {
+                ((WindowWithProperty<Examination>) generateNewWindow("Examination.fxml"))
+                        .setProperty(tableView.getItems().get(idSelectedRow))
+                        .showWindow();
+            } catch (UIException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

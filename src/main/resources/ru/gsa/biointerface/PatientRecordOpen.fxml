@@ -50,17 +50,17 @@
         </columns>
     </TableView>
     <Button layoutY="374.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0"
-            mnemonicParsing="false" onAction="#onBack" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
+            mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
             textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
     <Text layoutX="245.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Examinations:"
           AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="5.0"/>
     <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0"
             layoutY="364.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false"
-            onAction="#onDelete" prefHeight="25.0" prefWidth="60.0" text="delete" textAlignment="CENTER"
+            onAction="#onDeleteButtonPush" prefHeight="25.0" prefWidth="60.0" text="delete" textAlignment="CENTER"
             AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="100.0"/>
 
     <Button layoutX="364.0" layoutY="365.0" maxHeight="25.0"
-            maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#onAdd"
+            maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#onAddButtonPush"
             prefHeight="25.0" prefWidth="60.0" text="add &gt;" AnchorPane.bottomAnchor="10.0"
             AnchorPane.rightAnchor="10.0"/>
 </AnchorPane>

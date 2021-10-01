@@ -41,6 +41,17 @@ public class ProxyGUI implements TransitionGUI {
         }
     }
 
+    public void onChannels() {
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Channels.fxml"));
+        try {
+            transition(loader)
+                    .setResourceAndTransition(resourceSource, this)
+                    .showWindow();
+        } catch (UIException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onDevices() {
         FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Devices.fxml"));
         try {

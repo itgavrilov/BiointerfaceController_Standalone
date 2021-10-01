@@ -148,8 +148,8 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
                 "VALUES ((?), (?), (?))" +
                 "RETURNING id;"),
         SELECT("SELECT * FROM Icd WHERE id = (?);"),
-        UPDATE("UPDATE Icd SET comment = (?) WHERE id = (?)"),
-        DELETE("DELETE FROM Icd WHERE id = (?)"),
+        UPDATE("UPDATE Icd SET comment = (?) WHERE id = (?);"),
+        DELETE("DELETE FROM Icd WHERE id = (?);"),
         SELECT_ALL("SELECT * FROM Icd;");
 
         final String QUERY;

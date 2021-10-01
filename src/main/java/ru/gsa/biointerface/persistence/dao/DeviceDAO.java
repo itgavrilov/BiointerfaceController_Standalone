@@ -139,8 +139,8 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
         INSERT("INSERT INTO Device (id, amountChannels, comment)" +
                 "VALUES ((?),(?),(?));"),
         SELECT("SELECT * FROM Device WHERE id = (?);"),
-        UPDATE("UPDATE Device SET comment = (?) WHERE id = (?)"),
-        DELETE("DELETE FROM Device WHERE id = (?)"),
+        UPDATE("UPDATE Device SET comment = (?) WHERE id = (?);"),
+        DELETE("DELETE FROM Device WHERE id = (?);"),
         SELECT_ALL("SELECT * FROM Device;");
 
         final String QUERY;

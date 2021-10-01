@@ -98,6 +98,14 @@ public class PatientRecord implements Comparable<PatientRecord> {
         return entity.getBirthday();
     }
 
+    public Icd getIcd() {
+        Icd icd = null;
+        if (entity.getIcdEntity() != null)
+            icd = new Icd(entity.getIcdEntity());
+
+        return icd;
+    }
+
     public void setIcd(Icd icd) {
         if (icd != null)
             entity.setIcd(icd.getEntity());
@@ -105,20 +113,12 @@ public class PatientRecord implements Comparable<PatientRecord> {
             entity.setIcd(null);
     }
 
-    public Icd getIcd() {
-        Icd icd = null;
-        if(entity.getIcdEntity() != null)
-            icd = new Icd(entity.getIcdEntity());
-
-        return icd;
+    public String getComment() {
+        return entity.getComment();
     }
 
     public void setComment(String comment) {
         entity.setComment(comment);
-    }
-
-    public String getComment() {
-        return entity.getComment();
     }
 
     @Override

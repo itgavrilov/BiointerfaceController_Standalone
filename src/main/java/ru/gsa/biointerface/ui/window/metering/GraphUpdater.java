@@ -1,11 +1,11 @@
-package ru.gsa.biointerface.ui.window.examinationnew;
+package ru.gsa.biointerface.ui.window.metering;
 
 import java.util.List;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public interface ChannelUpdater {
+public interface GraphUpdater {
     void update(List<Integer> data);
 
     void setCapacity(int capacity);

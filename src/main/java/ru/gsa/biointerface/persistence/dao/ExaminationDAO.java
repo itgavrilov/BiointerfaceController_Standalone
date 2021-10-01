@@ -248,7 +248,7 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                 "WHERE e.patientRecord_id = (?)" +
                 ";"),
 
-        UPDATE("UPDATE Examination SET comment = (?) WHERE id = (?)"),
+        UPDATE("UPDATE Examination SET comment = (?) WHERE id = (?);"),
 
         DELETE("DELETE FROM Examination WHERE id = (?);"),
 
