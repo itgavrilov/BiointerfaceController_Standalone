@@ -58,8 +58,6 @@ public class Examination implements Comparable<Examination> {
             device.insert();
 
             if (entity.getPatientRecord() != null) {
-                PatientRecord patientRecord = new PatientRecord(entity.getPatientRecord());
-
                 try {
                     entity.setDateTime(LocalDateTime.now());
                     entity = ExaminationDAO.getInstance().insert(entity);
@@ -77,11 +75,7 @@ public class Examination implements Comparable<Examination> {
 
     public void update() throws DomainException {
         if (entity.getDeviceEntity() != null) {
-            Device device = new Device(entity.getDeviceEntity());
-
             if (entity.getPatientRecord() != null) {
-                PatientRecord patientRecord = new PatientRecord(entity.getPatientRecord());
-
                 try {
                     ExaminationDAO.getInstance().update(entity);
                 } catch (DAOException e) {

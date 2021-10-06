@@ -21,7 +21,6 @@ import ru.gsa.biointerface.ui.window.graph.CompositeNode;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
@@ -120,9 +119,6 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         birthdayText.setText(patientRecord.getBirthday().format(dateFormatter));
 
-        allSliderZoom.valueProperty().addListener((obs, oldval, newVal) ->
-                allSliderZoom.setValue(newVal.intValue()));
-
         availableDevicesComboBox.setConverter(converter);
 
         transitionGUI.show();
@@ -166,68 +162,57 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                         true,
                         false
                 );
-                channelGUIs.forEach(o -> o.getController().setReady(true));
             }
         }
     }
 
     public void buildingChannelsGUIs() {
+        int capacity = (int) allSliderZoom.getValue();
+
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
-        for (char i = 0; i < connection.getDevice().getAmountChannels(); i++) {
+        for (int i = 0; i < connection.getDevice().getAmountChannels(); i++) {
             CompositeNode<AnchorPane, GraphForMeteringController> node =
                     new CompositeNode<>(new FXMLLoader(resourceSource.getResource("GraphForMetering.fxml")));
-            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
+            node.getController().setGraph(connection.getGraphs().get(i));
+            try {
+                node.getController().setCapacity(capacity);
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
+            channelGUIs.add(node);
 
-            node.getController().setCheckBox(checkBox);
+            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
             checkBox.setOnAction(event -> {
                 node.getNode().setVisible(checkBox.isSelected());
                 drawChannelsGUI();
             });
-
-            checkBoxesOfChannel.add(checkBox);
-            channelGUIs.add(node);
-        }
-
-        try {
-            connection.registerChannelGUIs(
-                    channelGUIs.stream()
-                            .map(CompositeNode::getController)
-                            .collect(Collectors.toList())
-            );
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-
-        drawChannelsGUI();
-
-        allSliderZoom.setOnMouseReleased(e -> {
-            int capacity = (int) allSliderZoom.getValue();
             try {
-                connection.setCapacity(capacity);
+                node.getController().setCheckBox(checkBox);
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
+            checkBoxesOfChannel.add(checkBox);
+        }
+
+        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> channelGUIs.forEach(o -> {
+            try {
+                o.getController().setCapacity(new_val.intValue());
             } catch (DomainException ex) {
                 ex.printStackTrace();
             }
-        });
+        }));
+
+        drawChannelsGUI();
     }
 
     public void drawChannelsGUI() {
-        channelVBox.getChildren().clear();
-        checkBoxOfChannelVBox.getChildren().clear();
-
-        try {
-            connection.setCapacity((int) allSliderZoom.getValue());
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-
         channelGUIs.forEach(n -> {
             if (n.getNode().isVisible())
                 channelVBox.getChildren().add(n.getNode());
         });
         checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
-
         resizeWindow(anchorPaneRoot.getHeight(), anchorPaneRoot.getWidth());
     }
 
@@ -330,6 +315,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         startButton.setDisable(!enableComStart);
         rebootButton.setDisable(!enableComStart);
         allSliderZoom.setDisable(!enableSliderZoom);
+        channelGUIs.forEach(o -> o.getController().setEnable(enableSliderZoom));
         checkBoxesOfChannel.forEach(o -> o.setDisable(!enableSliderZoom));
         recordingButton.setDisable(!enableButtonRecording);
         if (!enableButtonRecording) {

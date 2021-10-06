@@ -1,7 +1,9 @@
 package ru.gsa.biointerface.domain.host.dataCash;
 
+import ru.gsa.biointerface.domain.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
 
+import java.util.Deque;
 import java.util.LinkedList;
 
 /**
@@ -10,18 +12,18 @@ import java.util.LinkedList;
  */
 
 public final class SampleCash implements Cash {
-    private final DataCashListener dataCashListener;
-    private final LinkedList<Integer> dataInDataCash = new LinkedList<>();
+    private final DataListener dataListener;
+    private final Deque<Integer> dataInDataCash = new LinkedList<>();
 
-    public SampleCash(DataCashListener dataCashListener) {
-        this.dataCashListener = dataCashListener;
+    public SampleCash(DataListener dataListener) {
+        this.dataListener = dataListener;
     }
 
     @Override
     public void add(int val) throws DomainException {
         dataInDataCash.add(val);
-        if (dataInDataCash.size() >= 15) {
-            dataCashListener.update(dataInDataCash);
+        if (dataInDataCash.size() > 15) {
+            dataListener.setNewSamples(dataInDataCash);
             dataInDataCash.clear();
         }
     }

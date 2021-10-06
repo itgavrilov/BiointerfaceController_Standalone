@@ -4,7 +4,8 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity"
             minWidth="-Infinity" pickOnBounds="false" snapToPixel="false"
             xmlns="http://javafx.com/javafx/11.0.2"
             fx:controller="ru.gsa.biointerface.ui.window.examination.GraphController">

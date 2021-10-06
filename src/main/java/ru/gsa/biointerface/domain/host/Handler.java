@@ -35,14 +35,14 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
 
             }
             case DATA -> {
-                if (dataCollector.getSamplesOfChannels() != null && dataCollector.getSamplesOfChannels().size() > 0) {
+                if (dataCollector.getGraphs() != null && dataCollector.getGraphs().size() > 0) {
                     ChannelPacket msg = (ChannelPacket) message;
                     for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
                         int scale = msg.getScale(i);
                         int simple = msg.getSample(i);
 
-                        if (dataCollector.getSamplesOfChannels().get(i) != null) {
-                            dataCollector.getSamplesOfChannels().get(i).add(simple);
+                        if (dataCollector.getGraphs().get(i) != null) {
+                            dataCollector.getGraphs().get(i).add(simple);
                         }
                     }
                 }

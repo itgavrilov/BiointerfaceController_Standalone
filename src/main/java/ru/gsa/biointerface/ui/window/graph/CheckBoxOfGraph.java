@@ -11,8 +11,8 @@ import java.util.Objects;
 public class CheckBoxOfGraph extends CheckBox implements Comparable<CheckBoxOfGraph> {
     private final char index;
 
-    public CheckBoxOfGraph(char index) {
-        this.index = index;
+    public CheckBoxOfGraph(int index) {
+        this.index = (char) index;
 
         this.setSelected(true);
         this.setPadding(new Insets(0, 0, 3, 0));

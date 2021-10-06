@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="300.0" maxWidth="400.0" minHeight="300.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="300.0" maxWidth="400.0"
+            minHeight="300.0"
             minWidth="400.0" prefHeight="300.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.ChannelAddController">
     <AnchorPane maxHeight="25.0" maxWidth="305.0" minHeight="25.0" minWidth="305.0" prefHeight="25.0" prefWidth="305.0"

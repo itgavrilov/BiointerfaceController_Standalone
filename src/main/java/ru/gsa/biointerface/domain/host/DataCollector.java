@@ -10,5 +10,5 @@ public interface DataCollector {
 
     void setDevice(Device devise);
 
-    List<Graph> getSamplesOfChannels();
+    List<Graph> getGraphs();
 }

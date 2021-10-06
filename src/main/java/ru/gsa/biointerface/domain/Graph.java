@@ -5,30 +5,25 @@ import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.domain.host.dataCash.Cash;
-import ru.gsa.biointerface.domain.host.dataCash.DataCashListener;
 import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.GraphDAO;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.metering.GraphUpdater;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public class Graph implements DataCashListener, Comparable<Graph> {
-    private final Deque<SampleEntity> sampleDeque = new LinkedList<>();
+public class Graph implements DataListener, Comparable<Graph> {
     private final Cash cash;
+    private final Deque<Integer> sampleDeque = new LinkedList<>();
     private GraphEntity entity;
+    private DataListener listener;
     private int idForNewSampleEntity = 0;
-    private GraphUpdater listener;
-    private int capacity = 1 << 10;
 
     public Graph(int numberOfChannel, ExaminationEntity examinationEntity, ChannelEntity channelEntity) {
-
         this(new GraphEntity(numberOfChannel, examinationEntity, channelEntity));
     }
 
@@ -66,14 +61,17 @@ public class Graph implements DataCashListener, Comparable<Graph> {
 
     public void setExamination(Examination examination) {
         if (examination == null)
-            throw new NullPointerException("examinationEntity is null");
+            throw new NullPointerException("examination is null");
 
         entity.setExaminationEntity(examination.getEntity());
+        idForNewSampleEntity = 0;
     }
 
-    public void setChannel(Channel channel) {
+    public void setChannel(Channel channel) throws DomainException {
         if (channel == null)
             throw new NullPointerException("channel is null");
+        if (entity == null)
+            throw new DomainException("examination is null");
 
         entity.setChannelEntity(channel.getEntity());
     }
@@ -91,72 +89,52 @@ public class Graph implements DataCashListener, Comparable<Graph> {
         return name;
     }
 
-    public void setListener(GraphUpdater listener) {
+    public void setListener(DataListener listener) {
         if (listener == null)
             throw new NullPointerException("listener is null");
 
         this.listener = listener;
     }
 
+    @Override
+    public void setNewSamples(Deque<Integer> data) throws DomainException {
+        for (Integer sample : data) {
+            addAllFromCash(sample);
+        }
+
+        listener.setNewSamples(sampleDeque);
+    }
+
     private void addAllFromCash(int y) throws DomainException {
         if (entity.getExaminationEntity().getId() > 0) {
+            sampleDeque.add(y);
             SampleEntity sampleEntity =
                     new SampleEntity(
                             idForNewSampleEntity++,
                             entity,
                             y
                     );
-            sampleDeque.add(sampleEntity);
-
             try {
                 SampleDAO.getInstance().insert(sampleEntity);
             } catch (DAOException e) {
                 e.printStackTrace();
                 throw new DomainException("sampleEntity is null", e);
             }
-        } else
-            sampleDeque.add(new SampleEntity(0, entity, y));
-
-        if (sampleDeque.size() > capacity)
-            sampleDeque.pollFirst();
-    }
-
-    @Override
-    public void update(LinkedList<Integer> data) throws DomainException {
-        for (Integer sample : data) {
-            addAllFromCash(sample);
+        } else {
+            sampleDeque.add(y);
         }
 
-        if (listener.isReady()) {
-            listener.setReady(false);
-            listener.update(sampleDeque.stream().map(SampleEntity::getValue).collect(Collectors.toList()));
-        }
+        sampleDeque.pollFirst();
     }
 
     public void setCapacity(int capacity) {
-        if (capacity < 7)
-            capacity = 7;
-
-        this.capacity = 1 << capacity;
-        if (sampleDeque.size() > this.capacity) {
-            while (sampleDeque.size() > this.capacity) {
+        if (sampleDeque.size() > capacity) {
+            while (sampleDeque.size() > capacity) {
                 sampleDeque.poll();
             }
-        } else while (sampleDeque.size() < this.capacity) {
-            if (entity.getExaminationEntity().getId() > 0)
-                sampleDeque.addFirst(
-                        new SampleEntity(
-                                idForNewSampleEntity++,
-                                entity,
-                                0
-                        )
-                );
-            else
-                sampleDeque.addFirst(new SampleEntity(0, entity, 0));
+        } else while (sampleDeque.size() < capacity) {
+            sampleDeque.addFirst(0);
         }
-
-        if (listener != null)
-            listener.setCapacity(capacity);
     }
 
     public void add(int val) {

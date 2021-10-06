@@ -8,7 +8,6 @@ import ru.gsa.biointerface.domain.host.Handler;
 import ru.gsa.biointerface.domain.host.SerialPortHost;
 import ru.gsa.biointerface.persistence.DAOException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
-import ru.gsa.biointerface.ui.window.metering.GraphForMeteringController;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.Objects;
 public class ConnectionToDevice implements DataCollector, Connection {
     private final SerialPortHost serialPortHost;
     private final List<Graph> graphs = new LinkedList<>();
-    private Examination examination = new Examination(new ExaminationEntity());
+    private final Examination examination = new Examination(new ExaminationEntity());
     private boolean flagTransmission = false;
 
     public ConnectionToDevice(PatientRecord patientRecord, SerialPort serialPort) throws DomainException {
@@ -58,7 +57,11 @@ public class ConnectionToDevice implements DataCollector, Connection {
             throw new NullPointerException("device is null");
 
         examination.setDevice(device);
-
+        graphs.clear();
+        for (int i = 0; i < device.getAmountChannels(); i++) {
+            Graph graph = new Graph(i, examination.getEntity(), null);
+            graphs.add(graph);
+        }
     }
 
     @Override
@@ -67,39 +70,8 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public List<Graph> getSamplesOfChannels() {
+    public List<Graph> getGraphs() {
         return graphs;
-    }
-
-    @Override
-    public void registerChannelGUIs(List<GraphForMeteringController> channelControllerGUIS) throws DomainException {
-        if (channelControllerGUIS == null)
-            throw new NullPointerException("channelGUIs is null");
-        if (channelControllerGUIS.size() < examination.getAmountChannels())
-            throw new DomainException("count of channelGUIs less than count of channels");
-
-        graphs.clear();
-
-        for (int i = 0; i < examination.getAmountChannels(); i++) {
-            Graph graph = new Graph(i, examination.getEntity(), null);
-            graphs.add(graph);
-        }
-
-        for (int i = 0; i < examination.getAmountChannels(); i++) {
-            channelControllerGUIS.get(i).setGraph(graphs.get(i));
-            graphs.get(i).setListener(channelControllerGUIS.get(i));
-        }
-        setCapacity(10);
-    }
-
-    @Override
-    public void setCapacity(int capacity) throws DomainException {
-        if (examination.getDevice() == null)
-            throw new DomainException("Device configuration empty");
-        if (capacity == 0)
-            throw new DomainException("capacity is '0'");
-
-        graphs.forEach(o -> o.setCapacity(capacity));
     }
 
     @Override
@@ -200,7 +172,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (comment == null)
             throw new NullPointerException("comment is null");
 
-        if (examination != null && !comment.equals(examination.getComment())) {
+        if (!comment.equals(examination.getComment())) {
             examination.setComment(comment);
             try {
                 examination.update();

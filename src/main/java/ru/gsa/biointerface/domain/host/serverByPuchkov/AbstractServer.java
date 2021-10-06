@@ -1,5 +1,6 @@
 package ru.gsa.biointerface.domain.host.serverByPuchkov;
 
+import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.host.serverByPuchkov.util.AbstractLifeCycle;
 
 import java.io.IOException;
@@ -92,7 +93,7 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
      * @param message - пакет
      * @throws IOException - ошибка ввода
      */
-    protected abstract void send(Output message) throws IOException;
+    protected abstract void send(Output message) throws IOException, DomainException;
 
     /**
      * Поток зписи
@@ -133,15 +134,12 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
      * Поток чтения
      */
     private class ReadThread extends Thread {
-        private Input message;
-
         @Override
         public void run() {
             while (isRunning()) {
-                //чтение всех пакетов из шины can
-                //блокирующее чтение из сокета
                 try {
-                    while ((message = readBuffer.take()) != null) {
+                    while (!readBuffer.isEmpty()) {
+                        Input message = readBuffer.take();
                         //передача пакета слушателям
                         for (Server.Listener<Input> listener : listeners) {
                             listener.sendPackage(message);

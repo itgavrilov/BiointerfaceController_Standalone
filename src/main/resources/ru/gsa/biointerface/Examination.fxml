@@ -14,9 +14,9 @@
                 prefWidth="230.0" snapToPixel="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                 AnchorPane.topAnchor="0.0">
         <Slider fx:id="allSliderZoom" blockIncrement="1.0" cacheShape="false" centerShape="false" majorTickUnit="1.0"
-                max="14.0" maxHeight="15.0" maxWidth="-Infinity" min="7.0" minHeight="15.0" minWidth="-Infinity"
-                minorTickCount="0" prefHeight="15.0" scaleShape="false" showTickMarks="true" snapToTicks="true"
-                value="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0"/>
+                max="4096.0" maxHeight="15.0" maxWidth="-Infinity" min="128.0" minHeight="15.0" minWidth="-Infinity"
+                minorTickCount="0" prefHeight="15.0" scaleShape="false" value="512.0" AnchorPane.leftAnchor="5.0"
+                AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0"/>
         <AnchorPane maxHeight="90.0" maxWidth="-Infinity" minHeight="90.0" minWidth="-Infinity" prefHeight="90.0"
                     AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
             <Text layoutX="87.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" textAlignment="RIGHT"
@@ -61,14 +61,14 @@
                   minHeight="140.0" minWidth="-Infinity" prefHeight="140.0" AnchorPane.leftAnchor="5.0"
                   AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0"/>
             <Text layoutX="3.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date &amp; time:"
-                  wrappingWidth="70.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="165.0"/>
+                  wrappingWidth="70.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="190.0"/>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to examination:" textAlignment="RIGHT"
-                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="185.0"/>
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="205.0"/>
             <TextArea fx:id="commentField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
                       minWidth="-Infinity" onKeyReleased="#commentFieldChange" AnchorPane.bottomAnchor="0.0"
-                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0"/>
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="220.0"/>
             <Text fx:id="dateTimeText" layoutX="74.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="dateTimeText" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="165.0"/>
+                  text="dateTimeText" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="190.0"/>
         </AnchorPane>
         <Button maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false"
                 onAction="#onBack" prefHeight="25.0" prefWidth="60.0" text="&lt; back" textAlignment="CENTER"
@@ -77,6 +77,7 @@
     <VBox fx:id="channelVBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
           minWidth="-Infinity" scaleShape="false" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="230.0"
           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0"/>
-    <ScrollBar fx:id="timeScrollBar" maxHeight="20.0" minHeight="20.0" minWidth="-Infinity" prefHeight="20.0"
-               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="0.0"/>
+    <ScrollBar fx:id="timeScrollBar" blockIncrement="1.0" max="1000.0" maxHeight="20.0" minHeight="20.0"
+               minWidth="-Infinity" prefHeight="20.0" value="30.0" visibleAmount="30.0" AnchorPane.bottomAnchor="0.0"
+               AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="0.0"/>
 </AnchorPane>

@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
@@ -32,8 +33,11 @@ import java.util.Set;
 public class ExaminationController extends AbstractWindow implements WindowWithProperty<Examination> {
     private final List<CompositeNode<AnchorPane, GraphController>> channelGUIs = new LinkedList<>();
     private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
-    private final List<Graph> graphs = new LinkedList<>();
     private Examination examination;
+    private double graphSize = 0;
+    private double graphCapacity = 0;
+    private double graphStart = 0;
+
     @FXML
     private AnchorPane anchorPaneControl;
     @FXML
@@ -89,21 +93,13 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         birthdayText.setText(examination.getPatientRecord().getBirthday().format(dateFormatter));
 
-        allSliderZoom.valueProperty().addListener((obs, oldval, newVal) ->
-                allSliderZoom.setValue(newVal.intValue()));
-
         idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         dateTimeText.setText(examination.getDateTime().format(dateTimeFormatter));
-
-        try {
-            Set<GraphEntity> graphEntities = GraphDAO.getInstance().getAllByExamination(examination);
-            graphEntities.forEach(o -> graphs.add(new Graph(o)));
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new UIException("channels loading error", e);
-        }
+        timeScrollBar.setMin(0);
+        timeScrollBar.setValue(0);
+        timeScrollBar.setBlockIncrement(1);
 
         buildingChannelsGUIs();
         drawChannelsGUI();
@@ -112,43 +108,82 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     }
 
     public void buildingChannelsGUIs() {
+        Set<GraphEntity> graphEntities = new TreeSet<>();
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
-        for (char i = 0; i < examination.getDevice().getAmountChannels(); i++) {
+        try {
+            graphEntities = GraphDAO.getInstance().getAllByExamination(examination);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+
+        graphCapacity = allSliderZoom.getValue();
+
+        for (GraphEntity o : graphEntities) {
+            Graph graph = new Graph(o);
             CompositeNode<AnchorPane, GraphController> node =
                     new CompositeNode<>(new FXMLLoader(resourceSource.getResource("Graph.fxml")));
-            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
+            node.getController().setGraph(graph);
+            if (graphSize > node.getController().getLengthGraphic() || graphSize == 0) {
+                graphSize = node.getController().getLengthGraphic();
+            }
+            channelGUIs.add(node);
 
-            node.getController().setGraph(graphs.get(i));
-
-            checkBox.setText(graphs.get(i).getName());
+            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(o.getNumberOfChannel());
+            checkBox.setText(graph.getName());
             checkBox.setOnAction(event -> {
                 node.getNode().setVisible(checkBox.isSelected());
                 drawChannelsGUI();
             });
-
             checkBoxesOfChannel.add(checkBox);
-            channelGUIs.add(node);
         }
+        for (CompositeNode<AnchorPane, GraphController> node : channelGUIs) {
+            node.getController().setStart(0);
+            node.getController().setCapacity((int) graphCapacity);
+        }
+
+        allSliderZoom.setMax(graphSize);
+        timeScrollBar.setMax(graphSize - graphCapacity);
+        timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
+
+        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> {
+            graphCapacity = new_val.intValue();
+            graphStart = timeScrollBar.getValue();
+
+            if (graphStart > graphSize - graphCapacity) {
+                graphStart = graphSize - graphCapacity;
+                timeScrollBar.setValue(graphStart);
+            }
+
+            timeScrollBar.setMax(graphSize - graphCapacity);
+            timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
+
+            channelGUIs.forEach(o -> {
+                o.getController().setStart((int) graphStart);
+                o.getController().setCapacity((int) graphCapacity);
+            });
+        });
+
+        timeScrollBar.valueProperty().addListener((ov, old_val, new_val) -> {
+            graphStart = new_val.intValue();
+            channelGUIs.forEach(o -> o.getController().setStart((int) graphStart));
+        });
+
+        drawChannelsGUI();
     }
 
     public void drawChannelsGUI() {
         channelVBox.getChildren().clear();
-        checkBoxOfChannelVBox.getChildren().clear();
-
         channelGUIs.forEach(n -> {
             if (n.getNode().isVisible())
                 channelVBox.getChildren().add(n.getNode());
         });
+
+        checkBoxOfChannelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
 
         resizeWindow(anchorPaneRoot.getHeight(), anchorPaneRoot.getWidth());
-    }
-
-    private void clearInterface() {
-        channelVBox.getChildren().clear();
-        checkBoxOfChannelVBox.getChildren().clear();
     }
 
     public void onBack() {

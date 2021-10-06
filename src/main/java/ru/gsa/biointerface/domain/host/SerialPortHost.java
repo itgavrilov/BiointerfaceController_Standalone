@@ -3,6 +3,7 @@ package ru.gsa.biointerface.domain.host;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.host.packets.*;
 import ru.gsa.biointerface.domain.host.serverByPuchkov.AbstractServer;
 
@@ -18,10 +19,6 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
     public SerialPortHost(SerialPort serialPort) {
         super();
         this.serialPort = serialPort;
-    }
-
-    public SerialPort getSerialPort() {
-        return serialPort;
     }
 
     @Override
@@ -55,11 +52,11 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
     }
 
     @Override
-    protected void send(Packet packet) {
+    protected void send(Packet packet) throws DomainException {
         if (packet == null)
             throw new NullPointerException("Packet is null");
         if (!serialPort.isOpen())
-            throw new RuntimeException("Serial port is not open");
+            throw new DomainException("Serial port is not open");
 
         serialPort.writeBytes(packet.getBytes(), packet.getBytes().length);
     }
@@ -76,7 +73,7 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
         if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
             return;
 
-        while (serialPort.isOpen() && serialPort.bytesAvailable() > 0) {
+        if (serialPort.isOpen() && serialPort.bytesAvailable() > 0) {
             byte[] bytesFromSerialPort = new byte[serialPort.bytesAvailable()];
             int indexByteArray = 0;
 

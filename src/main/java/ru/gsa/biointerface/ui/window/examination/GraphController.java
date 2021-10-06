@@ -10,19 +10,24 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.Graph;
+import ru.gsa.biointerface.domain.entity.SampleEntity;
+import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.dao.SampleDAO;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphController implements ContentForWindow {
+    private final List<Integer> samples = new LinkedList<>();
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private Graph graph;
+    private int start = 0;
+    private int capacity = 0;
+
     @FXML
     private AnchorPane anchorPaneRoot;
     @FXML
@@ -40,11 +45,9 @@ public final class GraphController implements ContentForWindow {
                 max = 2047,
                 tickUnit = max / 4,
                 tickCount = (max - min) / tickUnit;
-        setCapacity(10);
-
 
         axisY.setTickUnit(tickUnit);
-        axisX.setMinorTickCount(tickCount);
+        axisY.setMinorTickCount(tickCount);
         axisY.setUpperBound(max);
         axisY.setLowerBound(min);
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
@@ -54,42 +57,55 @@ public final class GraphController implements ContentForWindow {
         if (graph == null)
             throw new NullPointerException("graph is null");
 
-        this.graph = graph;
         nameText.setText(graph.getName());
-    }
-
-    @Override
-    public void setCapacity(int capacity) {
-        if (capacity < 7)
-            capacity = 7;
-        int capacity1 = 1 << capacity;
-        if (dataLineGraphic.size() > capacity1) {
-            int tmpDelta = dataLineGraphic.size() - capacity1 - 1;
-            for (int i = 0; i < capacity1; i++) {
-                dataLineGraphic.get(i).setYValue(dataLineGraphic.get(i + tmpDelta).getYValue());
-            }
-            dataLineGraphic.remove(capacity1, dataLineGraphic.size());
-        } else if (dataLineGraphic.size() < capacity1) {
-            ArrayList<XYChart.Data<Integer, Integer>> tmp = new ArrayList<>();
-
-            while (tmp.size() < capacity1 - dataLineGraphic.size()) {
-                tmp.add(new XYChart.Data<>(tmp.size(), 0));
-            }
-
-            dataLineGraphic.forEach(o -> tmp.add(new XYChart.Data<>(tmp.size(), o.getYValue())));
-
-            Platform.runLater(() -> {
-                dataLineGraphic.clear();
-                dataLineGraphic.addAll(tmp);
-            });
+        try {
+            Set<SampleEntity> sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
+            sampleEntities.forEach(o -> samples.add(o.getValue()));
+        } catch (DAOException e) {
+            e.printStackTrace();
         }
 
-        setAxisXSize(capacity1);
+        this.graph = graph;
     }
 
-    private void setAxisXSize(int countPoint) {
-        axisX.setTickUnit(countPoint >> 3);
-        axisX.setUpperBound(countPoint - 1);
+    public int getLengthGraphic() {
+        return samples.size();
+    }
+
+    public void setStart(int start) {
+        if (this.start != start) {
+            this.start = start;
+            resetGraphic();
+            setAxisXSize();
+        }
+    }
+
+    public void setCapacity(int capacity) {
+        if (this.capacity != capacity) {
+            this.capacity = capacity;
+            resetGraphic();
+            setAxisXSize();
+        }
+    }
+
+    private void resetGraphic() {
+        ArrayList<XYChart.Data<Integer, Integer>> tmp = new ArrayList<>();
+        int index = start;
+        while (tmp.size() < capacity) {
+            tmp.add(new XYChart.Data<>(index, samples.get(index)));
+            index++;
+        }
+
+        Platform.runLater(() -> {
+            dataLineGraphic.clear();
+            dataLineGraphic.addAll(tmp);
+        });
+    }
+
+    private void setAxisXSize() {
+        axisX.setTickUnit(capacity >> 3);
+        axisX.setLowerBound(start);
+        axisX.setUpperBound(start + capacity - 1);
     }
 
     @Override
