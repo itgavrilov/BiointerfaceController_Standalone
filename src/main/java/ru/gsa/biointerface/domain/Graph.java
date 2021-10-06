@@ -11,14 +11,12 @@ import ru.gsa.biointerface.persistence.dao.GraphDAO;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
 
 import java.util.Deque;
-import java.util.LinkedList;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class Graph implements DataListener, Comparable<Graph> {
     private final Cash cash;
-    private final Deque<Integer> sampleDeque = new LinkedList<>();
     private GraphEntity entity;
     private DataListener listener;
     private int idForNewSampleEntity = 0;
@@ -97,44 +95,32 @@ public class Graph implements DataListener, Comparable<Graph> {
     }
 
     @Override
+    public boolean isReady() {
+        return listener.isReady();
+    }
+
+    @Override
     public void setNewSamples(Deque<Integer> data) throws DomainException {
-        for (Integer sample : data) {
-            addAllFromCash(sample);
-        }
+        if (listener == null)
+            throw new DomainException("listener is null");
 
-        listener.setNewSamples(sampleDeque);
-    }
-
-    private void addAllFromCash(int y) throws DomainException {
         if (entity.getExaminationEntity().getId() > 0) {
-            sampleDeque.add(y);
-            SampleEntity sampleEntity =
-                    new SampleEntity(
-                            idForNewSampleEntity++,
-                            entity,
-                            y
-                    );
-            try {
-                SampleDAO.getInstance().insert(sampleEntity);
-            } catch (DAOException e) {
-                e.printStackTrace();
-                throw new DomainException("sampleEntity is null", e);
+            for (Integer sample : data) {
+                SampleEntity sampleEntity =
+                        new SampleEntity(
+                                idForNewSampleEntity++,
+                                entity,
+                                sample
+                        );
+                try {
+                    SampleDAO.getInstance().insert(sampleEntity);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                    throw new DomainException("sampleEntity is null", e);
+                }
             }
-        } else {
-            sampleDeque.add(y);
         }
-
-        sampleDeque.pollFirst();
-    }
-
-    public void setCapacity(int capacity) {
-        if (sampleDeque.size() > capacity) {
-            while (sampleDeque.size() > capacity) {
-                sampleDeque.poll();
-            }
-        } else while (sampleDeque.size() < capacity) {
-            sampleDeque.addFirst(0);
-        }
+        listener.setNewSamples(data);
     }
 
     public void add(int val) {

@@ -12,19 +12,19 @@ import java.util.LinkedList;
  */
 
 public final class SampleCash implements Cash {
-    private final DataListener dataListener;
-    private final Deque<Integer> dataInDataCash = new LinkedList<>();
+    private final DataListener listener;
+    private final Deque<Integer> data = new LinkedList<>();
 
-    public SampleCash(DataListener dataListener) {
-        this.dataListener = dataListener;
+    public SampleCash(DataListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void add(int val) throws DomainException {
-        dataInDataCash.add(val);
-        if (dataInDataCash.size() > 15) {
-            dataListener.setNewSamples(dataInDataCash);
-            dataInDataCash.clear();
+        data.add(val);
+        if (listener.isReady() && data.size() > 15) {
+            listener.setNewSamples(data);
+            data.clear();
         }
     }
 }
