@@ -22,7 +22,7 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphController implements ContentForWindow {
-    private final List<Integer> samples = new LinkedList<>();
+    private final ArrayList<XYChart.Data<Integer, Integer>> samples = new ArrayList<>();
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private Graph graph;
     private int start = 0;
@@ -60,7 +60,14 @@ public final class GraphController implements ContentForWindow {
         nameText.setText(graph.getName());
         try {
             Set<SampleEntity> sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
-            sampleEntities.forEach(o -> samples.add(o.getValue()));
+
+            for (SampleEntity sample: sampleEntities){
+                samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
+            }
+            Platform.runLater(() -> {
+                dataLineGraphic.clear();
+                dataLineGraphic.addAll(samples);
+            });
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -75,7 +82,6 @@ public final class GraphController implements ContentForWindow {
     public void setStart(int start) {
         if (this.start != start) {
             this.start = start;
-            resetGraphic();
             setAxisXSize();
         }
     }
@@ -83,23 +89,8 @@ public final class GraphController implements ContentForWindow {
     public void setCapacity(int capacity) {
         if (this.capacity != capacity) {
             this.capacity = capacity;
-            resetGraphic();
             setAxisXSize();
         }
-    }
-
-    private void resetGraphic() {
-        ArrayList<XYChart.Data<Integer, Integer>> tmp = new ArrayList<>();
-        int index = start;
-        while (tmp.size() < capacity) {
-            tmp.add(new XYChart.Data<>(index, samples.get(index)));
-            index++;
-        }
-
-        Platform.runLater(() -> {
-            dataLineGraphic.clear();
-            dataLineGraphic.addAll(tmp);
-        });
     }
 
     private void setAxisXSize() {
