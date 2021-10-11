@@ -1,0 +1,11 @@
+Thumbs.db
+
+.idea/*
+
+.gradle/*
+gradle/*
+
+build/*
+
+*.s3db
+

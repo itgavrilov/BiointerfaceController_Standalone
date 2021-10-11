@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="300.0" maxWidth="400.0"
+            minHeight="300.0"
+            minWidth="400.0" prefHeight="300.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.ChannelAddController">
+    <AnchorPane maxHeight="25.0" maxWidth="305.0" minHeight="25.0" minWidth="305.0" prefHeight="25.0" prefWidth="305.0"
+                AnchorPane.leftAnchor="47.5" AnchorPane.topAnchor="5.0">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="channel:" wrappingWidth="53.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.topAnchor="3.0">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Text>
+        <TextField fx:id="channelField" alignment="CENTER" maxHeight="25.0" minHeight="25.0" minWidth="-Infinity"
+                   onKeyReleased="#icdChange" prefHeight="25.0" AnchorPane.leftAnchor="53.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+    </AnchorPane>
+    <Text layoutX="87.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to channel:"
+          wrappingWidth="120.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="47.0"/>
+    <TextArea fx:id="commentField" disable="true" layoutX="115.0" layoutY="195.0" onKeyReleased="#commentChange"
+              AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+              AnchorPane.topAnchor="65.0"/>
+    <Button layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
+            textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
+    <Button fx:id="addButton" disable="true" layoutX="338.0" layoutY="365.0" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddButtonPush"
+            prefHeight="25.0" prefWidth="60.0" text="add" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0"
+            AnchorPane.rightAnchor="10.0"/>
+</AnchorPane>

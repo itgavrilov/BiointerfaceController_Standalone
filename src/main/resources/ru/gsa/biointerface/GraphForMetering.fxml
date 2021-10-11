@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity"
+            minWidth="-Infinity" pickOnBounds="false" snapToPixel="false"
+            xmlns="http://javafx.com/javafx/11.0.2"
+            fx:controller="ru.gsa.biointerface.ui.window.metering.GraphForMeteringController">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Channel name:" AnchorPane.leftAnchor="5.0"
+          AnchorPane.topAnchor="4.0"/>
+    <ComboBox fx:id="nameComboBox" maxHeight="25.0" maxWidth="250.0" minHeight="25.0" minWidth="250.0"
+              onAction="#nameComboBoxSelect" onShowing="#onNameComboBoxShowing" prefHeight="25.0" prefWidth="250.0"
+              AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="0.0"/>
+    <LineChart fx:id="graphic" alternativeRowFillVisible="false" animated="false" cacheShape="false"
+               createSymbols="false" depthTest="DISABLE" legendVisible="false" maxHeight="-Infinity"
+               maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" snapToPixel="false"
+               verticalZeroLineVisible="false" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0"
+               AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="12.0">
+        <xAxis>
+            <NumberAxis fx:id="axisX" animated="false" autoRanging="false" forceZeroInRange="false" layoutY="-5.0"
+                        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                        minorTickLength="1.0" side="BOTTOM" snapToPixel="false" tickLabelGap="0.0"
+                        tickLabelsVisible="false" tickLength="1.0" tickUnit="1.0"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis fx:id="axisY" animated="false" autoRanging="false" layoutX="-5.0" maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="1"
+                        minorTickLength="1.0" side="LEFT" snapToPixel="false" tickLabelGap="0.0"
+                        tickLabelsVisible="false" tickLength="1.0" tickUnit="1.0"/>
+        </yAxis>
+    </LineChart>
+</AnchorPane>
