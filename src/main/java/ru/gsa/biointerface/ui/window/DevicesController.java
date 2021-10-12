@@ -49,12 +49,12 @@ public class DevicesController extends AbstractWindow {
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
         amountChannelsCol.setStyle("-fx-alignment: center;");
+
         ObservableList<Device> list = FXCollections.observableArrayList();
         try {
             list.addAll(Device.getAll());
         } catch (DomainException e) {
-            e.printStackTrace();
-            throw new UIException("device loading error", e);
+            throw new UIException("Error getting a list of devices", e);
         }
         tableView.setItems(list);
 
@@ -86,7 +86,7 @@ public class DevicesController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

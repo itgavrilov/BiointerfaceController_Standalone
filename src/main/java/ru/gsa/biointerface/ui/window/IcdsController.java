@@ -54,7 +54,7 @@ public class IcdsController extends AbstractWindow {
         try {
             list.addAll(Icd.getAll());
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of ICDs", e);
         }
         tableView.setItems(list);
         transitionGUI.show();
@@ -85,7 +85,7 @@ public class IcdsController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }
@@ -93,7 +93,7 @@ public class IcdsController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            generateNewWindow("IcdAdd.fxml").showWindow();
+            generateNewWindow("fxml/IcdAdd.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

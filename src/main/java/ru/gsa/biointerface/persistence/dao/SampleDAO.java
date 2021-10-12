@@ -2,7 +2,7 @@ package ru.gsa.biointerface.persistence.dao;
 
 import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +16,11 @@ import java.util.TreeSet;
 public class SampleDAO extends AbstractDAO<SampleEntity> {
     protected static SampleDAO dao;
 
-    private SampleDAO() throws DAOException {
+    private SampleDAO() throws PersistenceException {
         super();
     }
 
-    public static SampleDAO getInstance() throws DAOException {
+    public static SampleDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new SampleDAO();
 
@@ -28,7 +28,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     }
 
     @Override
-    public SampleEntity insert(SampleEntity entity) throws DAOException {
+    public SampleEntity insert(SampleEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -39,8 +39,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
             statement.setInt(4, entity.getValue());
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
@@ -62,11 +61,11 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
     }
 
     @Override
-    public Set<SampleEntity> getAll() throws DAOException {
+    public Set<SampleEntity> getAll() throws PersistenceException {
         return null;
     }
 
-    public Set<SampleEntity> getAllByGraph(Graph graph) throws DAOException {
+    public Set<SampleEntity> getAllByGraph(Graph graph) throws PersistenceException {
         Set<SampleEntity> entities = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_GRAPH.QUERY)) {
@@ -82,41 +81,33 @@ public class SampleDAO extends AbstractDAO<SampleEntity> {
                     entities.add(entity);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entities;
     }
 
-    public void beginTransaction() throws DAOException {
+    public void beginTransaction() throws PersistenceException {
         try {
             if (db.getConnection().getAutoCommit()) {
                 db.getConnection().setAutoCommit(false);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DAOException("setAutoCommit error", e);
+            throw new PersistenceException("ResetAutoCommit error", e);
         }
     }
 
-    public void endTransaction() throws DAOException {
+    public void endTransaction() throws PersistenceException {
         try {
             if (!db.getConnection().getAutoCommit()) {
                 db.getConnection().commit();
                 db.getConnection().setAutoCommit(true);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DAOException("setAutoCommit error", e);
+            throw new PersistenceException("SetAutoCommit error", e);
         }
     }
 

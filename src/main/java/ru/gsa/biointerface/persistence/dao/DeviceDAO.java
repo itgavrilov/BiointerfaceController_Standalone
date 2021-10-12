@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.persistence.dao;
 
 import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +16,11 @@ import java.util.TreeSet;
 public class DeviceDAO extends AbstractDAO<DeviceEntity> {
     protected static DeviceDAO dao;
 
-    private DeviceDAO() throws DAOException {
+    private DeviceDAO() throws PersistenceException {
         super();
     }
 
-    public static DAO<DeviceEntity> getInstance() throws DAOException {
+    public static DAO<DeviceEntity> getInstance() throws PersistenceException {
         if (dao == null)
             dao = new DeviceDAO();
 
@@ -28,9 +28,9 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
     }
 
     @Override
-    public DeviceEntity insert(DeviceEntity entity) throws DAOException {
+    public DeviceEntity insert(DeviceEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
             statement.setInt(1, entity.getId());
@@ -40,15 +40,14 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
 
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public DeviceEntity getById(int key) throws DAOException {
+    public DeviceEntity getById(int key) throws PersistenceException {
         DeviceEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
@@ -62,21 +61,19 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
                     );
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public boolean update(DeviceEntity entity) throws DAOException {
+    public boolean update(DeviceEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -87,17 +84,16 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(DeviceEntity entity) throws DAOException {
+    public boolean delete(DeviceEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -106,15 +102,14 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<DeviceEntity> getAll() throws DAOException {
+    public Set<DeviceEntity> getAll() throws PersistenceException {
         Set<DeviceEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
@@ -128,8 +123,7 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity> {
                 entities.add(entity);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement or resultSet error", e);
         }
 
         return entities;

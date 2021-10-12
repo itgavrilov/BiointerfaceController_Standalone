@@ -33,7 +33,7 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         public String toString(Channel channel) {
             String str = "Channel " + (graph.getNumberOfChannel() + 1);
             if (channel != null)
-                str = channel.toString();
+                str = channel.getName();
             return str;
         }
 

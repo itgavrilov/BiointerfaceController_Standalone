@@ -49,4 +49,13 @@ public class DeviceEntity implements Comparable<DeviceEntity> {
     public int compareTo(DeviceEntity o) {
         return id - o.id;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceEntity{" +
+                "id=" + id +
+                ", amountChannels=" + amountChannels +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

@@ -100,7 +100,7 @@ public class IcdAddController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("Icds.fxml").showWindow();
+            generateNewWindow("fxml/Icds.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

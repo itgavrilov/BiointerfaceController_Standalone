@@ -59,4 +59,13 @@ public class ChannelEntity implements Comparable<ChannelEntity> {
     public int compareTo(ChannelEntity o) {
         return name.compareTo(o.name);
     }
+
+    @Override
+    public String toString() {
+        return "ChannelEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

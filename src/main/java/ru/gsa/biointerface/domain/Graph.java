@@ -1,12 +1,14 @@
 package ru.gsa.biointerface.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.domain.host.dataCash.Cash;
 import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.GraphDAO;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
 
@@ -16,6 +18,7 @@ import java.util.Deque;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class Graph implements DataListener, Comparable<Graph> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
     private final Cash cash;
     private GraphEntity entity;
     private DataListener listener;
@@ -27,9 +30,9 @@ public class Graph implements DataListener, Comparable<Graph> {
 
     public Graph(GraphEntity entity) {
         if (entity == null)
-            throw new NullPointerException("graphEntity is null");
+            throw new NullPointerException("GraphEntity is null");
         if (entity.getExaminationEntity() == null)
-            throw new NullPointerException("examinationEntity in channelEntity is null");
+            throw new NullPointerException("ExaminationEntity in channelEntity is null");
 
         this.entity = entity;
         cash = new SampleCash(this);
@@ -38,18 +41,18 @@ public class Graph implements DataListener, Comparable<Graph> {
     public void insert() throws DomainException {
         try {
             entity = GraphDAO.getInstance().insert(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao insert examination error");
+            LOGGER.info("Graph '{}' is recorded in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO insert examination error");
         }
     }
 
     public void update() throws DomainException {
         try {
             GraphDAO.getInstance().update(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao update examination error");
+            LOGGER.info("Graph '{}' is updated in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update examination error");
         }
     }
 
@@ -59,18 +62,20 @@ public class Graph implements DataListener, Comparable<Graph> {
 
     public void setExamination(Examination examination) {
         if (examination == null)
-            throw new NullPointerException("examination is null");
+            throw new NullPointerException("Examination is null");
 
+        LOGGER.info("Set Examination '{}' is graph '{}'", examination, entity);
         entity.setExaminationEntity(examination.getEntity());
         idForNewSampleEntity = 0;
     }
 
     public void setChannel(Channel channel) throws DomainException {
         if (channel == null)
-            throw new NullPointerException("channel is null");
+            throw new NullPointerException("Channel is null");
         if (entity == null)
-            throw new DomainException("examination is null");
+            throw new DomainException("Examination is null. First call setExamination()");
 
+        LOGGER.info("Set channel '{}' of graph '{}'", channel, entity);
         entity.setChannelEntity(channel.getEntity());
     }
 
@@ -114,25 +119,29 @@ public class Graph implements DataListener, Comparable<Graph> {
                         );
                 try {
                     SampleDAO.getInstance().insert(sampleEntity);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                    throw new DomainException("sampleEntity is null", e);
+                } catch (PersistenceException e) {
+                    throw new DomainException("SampleEntity is null", e);
                 }
             }
         }
         listener.setNewSamples(data);
     }
 
-    public void add(int val) {
+    public void add(int val) throws DomainException {
         try {
             cash.add(val);
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new DomainException("Error add new sample in cash", e);
         }
     }
 
     @Override
     public int compareTo(Graph o) {
         return entity.compareTo(o.entity);
+    }
+
+    @Override
+    public String toString() {
+        return entity.toString();
     }
 }

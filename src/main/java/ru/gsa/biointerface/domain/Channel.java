@@ -1,7 +1,9 @@
 package ru.gsa.biointerface.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.ChannelDAO;
 
 import java.util.Objects;
@@ -12,6 +14,7 @@ import java.util.TreeSet;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class Channel implements Comparable<Channel> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Channel.class);
     private ChannelEntity entity;
 
     public Channel(int id, String name, String comment) {
@@ -20,9 +23,9 @@ public class Channel implements Comparable<Channel> {
 
     public Channel(ChannelEntity entity) {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
         if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("name is empty");
+            throw new IllegalArgumentException("Name is empty");
 
         this.entity = entity;
     }
@@ -33,36 +36,35 @@ public class Channel implements Comparable<Channel> {
             Set<Channel> channels = new TreeSet<>();
             entities.forEach(o -> channels.add(new Channel(o)));
             return channels;
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao getAll icds error");
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll channels error");
         }
     }
 
     public void insert() throws DomainException {
         try {
             entity = ChannelDAO.getInstance().insert(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao insert icd error");
+            LOGGER.info("Channel is recorded in database wish id '{}'", entity.getId());
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO insert channel error");
         }
     }
 
     public void update() throws DomainException {
         try {
             ChannelDAO.getInstance().update(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao update icd error");
+            LOGGER.info("Channel '{}' is updated in database", entity.getId());
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update channel error");
         }
     }
 
     public void delete() throws DomainException {
         try {
             ChannelDAO.getInstance().delete(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao delete icd error");
+            LOGGER.info("Channel '{}' is deleted in database", entity.getId());
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO delete channel error");
         }
     }
 
@@ -80,11 +82,7 @@ public class Channel implements Comparable<Channel> {
 
     public void setComment(String comment) {
         entity.setComment(comment);
-    }
-
-    @Override
-    public String toString() {
-        return entity.getName();
+        LOGGER.info("Comment is update in channel '{}'", entity.getId());
     }
 
     @Override
@@ -103,5 +101,10 @@ public class Channel implements Comparable<Channel> {
     @Override
     public int compareTo(Channel o) {
         return entity.compareTo(o.entity);
+    }
+
+    @Override
+    public String toString() {
+        return entity.toString();
     }
 }

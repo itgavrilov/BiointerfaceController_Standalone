@@ -1,7 +1,9 @@
 package ru.gsa.biointerface.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.IcdEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.IcdDAO;
 
 import java.util.Objects;
@@ -12,6 +14,7 @@ import java.util.TreeSet;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class Icd implements Comparable<Icd> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Icd.class);
     private IcdEntity entity;
 
     public Icd(int id, String ICD, int version, String comment) {
@@ -33,36 +36,35 @@ public class Icd implements Comparable<Icd> {
             Set<Icd> icds = new TreeSet<>();
             IcdEntity.forEach(o -> icds.add(new Icd(o)));
             return icds;
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao getAll icds error");
+        } catch (PersistenceException e) {
+            throw new DomainException("Dao getAll ICDs error");
         }
     }
 
     public void insert() throws DomainException {
         try {
             entity = IcdDAO.getInstance().insert(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao insert icd error");
+            LOGGER.info("ICD '{}' is recorded in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO insert ICD error");
         }
     }
 
     public void update() throws DomainException {
         try {
             IcdDAO.getInstance().update(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao update icd error");
+            LOGGER.info("ICD '{}' is updated in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update ICD error");
         }
     }
 
     public void delete() throws DomainException {
         try {
             IcdDAO.getInstance().delete(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao delete icd error");
+            LOGGER.info("ICD '{}' is deleted in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO delete icd error");
         }
     }
 
@@ -87,6 +89,7 @@ public class Icd implements Comparable<Icd> {
     }
 
     public void setComment(String comment) {
+        LOGGER.info("Comment '{}' is update in ICD '{}'", comment, entity);
         entity.setComment(comment);
     }
 
@@ -104,12 +107,12 @@ public class Icd implements Comparable<Icd> {
     }
 
     @Override
-    public String toString() {
-        return getICD() + " (ICD-" + getVersion() + ")";
+    public int compareTo(Icd o) {
+        return entity.compareTo(o.entity);
     }
 
     @Override
-    public int compareTo(Icd o) {
-        return entity.compareTo(o.entity);
+    public String toString() {
+        return entity.toString();
     }
 }

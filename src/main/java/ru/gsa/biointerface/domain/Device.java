@@ -1,8 +1,10 @@
 package ru.gsa.biointerface.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.DeviceEntity;
 import ru.gsa.biointerface.domain.host.DeviceConfig;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 
 import java.util.Objects;
@@ -13,6 +15,7 @@ import java.util.TreeSet;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class Device implements DeviceConfig, Comparable<Device> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Device.class);
     private final DeviceEntity entity;
 
     public Device(int id, int amountChannels, String comment) {
@@ -34,37 +37,37 @@ public class Device implements DeviceConfig, Comparable<Device> {
             Set<Device> result = new TreeSet<>();
             entitys.forEach(o -> result.add(new Device(o)));
             return result;
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao getAll devices error");
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll devices error");
+        }
+    }
+
+    public void insert() throws DomainException {
+        try {
+            if (DeviceDAO.getInstance().getById(entity.getId()) == null) {
+                DeviceDAO.getInstance().insert(entity);
+                LOGGER.info("Device '{}' is recorded in database", entity.getId());
+            }
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO insert devices error");
         }
     }
 
     public void update() throws DomainException {
         try {
             DeviceDAO.getInstance().update(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao update device error");
+            LOGGER.info("Device '{}' is updated in database", entity.getId());
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update device error");
         }
     }
 
     public void delete() throws DomainException {
         try {
             DeviceDAO.getInstance().delete(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao delete device error");
-        }
-    }
-
-    public void insert() throws DomainException {
-        try {
-            if (DeviceDAO.getInstance().getById(entity.getId()) == null)
-                DeviceDAO.getInstance().insert(entity);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            throw new DomainException("dao insert devices error");
+            LOGGER.info("Device '{}' is deleted in database", entity.getId());
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO delete device error");
         }
     }
 
@@ -88,6 +91,7 @@ public class Device implements DeviceConfig, Comparable<Device> {
 
     public void setComment(String comment) {
         entity.setComment(comment);
+        LOGGER.info("Comment is update in Device '{}'", entity.getId());
     }
 
     @Override
@@ -106,5 +110,10 @@ public class Device implements DeviceConfig, Comparable<Device> {
     @Override
     public int compareTo(Device o) {
         return entity.compareTo(o.entity);
+    }
+
+    @Override
+    public String toString() {
+        return entity.toString();
     }
 }

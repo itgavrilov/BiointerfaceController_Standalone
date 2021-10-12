@@ -78,4 +78,17 @@ public class PatientRecordEntity implements Comparable<PatientRecordEntity> {
     public int compareTo(PatientRecordEntity o) {
         return id - o.id;
     }
+
+    @Override
+    public String toString() {
+        return "PatientRecordEntity{" +
+                "id=" + id +
+                ", secondName='" + secondName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", birthday=" + birthday +
+                ", icdEntity=" + icdEntity +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

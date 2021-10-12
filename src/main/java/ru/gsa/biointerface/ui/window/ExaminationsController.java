@@ -74,7 +74,7 @@ public class ExaminationsController extends AbstractWindow {
         try {
             list.addAll(Examination.getAll());
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of examinations", e);
         }
         tableView.setItems(list);
 
@@ -106,7 +106,7 @@ public class ExaminationsController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

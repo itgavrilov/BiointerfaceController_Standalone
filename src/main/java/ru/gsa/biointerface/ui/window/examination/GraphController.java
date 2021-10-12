@@ -11,8 +11,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
+import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
 import java.net.URL;
@@ -53,24 +54,26 @@ public final class GraphController implements ContentForWindow {
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
     }
 
-    public void setGraph(Graph graph) {
+    public void setGraph(Graph graph) throws UIException {
         if (graph == null)
             throw new NullPointerException("graph is null");
 
         nameText.setText(graph.getName());
-        try {
-            Set<SampleEntity> sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
 
-            for (SampleEntity sample: sampleEntities){
-                samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
-            }
-            Platform.runLater(() -> {
-                dataLineGraphic.clear();
-                dataLineGraphic.addAll(samples);
-            });
-        } catch (DAOException e) {
-            e.printStackTrace();
+        Set<SampleEntity> sampleEntities;
+        try {
+            sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
+        } catch (PersistenceException e) {
+            throw new UIException("Error getting a list of sampleEntities", e);
         }
+
+        for (SampleEntity sample: sampleEntities){
+            samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
+        }
+        Platform.runLater(() -> {
+            dataLineGraphic.clear();
+            dataLineGraphic.addAll(samples);
+        });
 
         this.graph = graph;
     }
