@@ -6,6 +6,7 @@ Thumbs.db
 gradle/*
 
 build/*
+logs/*
 
 *.s3db
 

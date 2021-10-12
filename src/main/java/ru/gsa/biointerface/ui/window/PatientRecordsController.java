@@ -9,6 +9,8 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
+import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.PatientRecord;
@@ -22,6 +24,20 @@ import java.time.format.DateTimeFormatter;
  */
 public class PatientRecordsController extends AbstractWindow {
     int idSelectedRow = -1;
+    private final StringConverter<Icd> converter = new StringConverter<>() {
+        @Override
+        public String toString(Icd icd) {
+            String str = "";
+            if (icd != null)
+                str = icd.getICD() + " (ICD-" + icd.getVersion() + ")";
+            return str;
+        }
+
+        @Override
+        public Icd fromString(String string) {
+            return null;
+        }
+    };
 
     @FXML
     private TableView<PatientRecord> tableView;
@@ -72,14 +88,17 @@ public class PatientRecordsController extends AbstractWindow {
             Icd icd = patientRecord.getIcd();
             return new SimpleObjectProperty<>(icd);
         });
+
+
+        ObservableList<Icd> listIcd = FXCollections.observableArrayList();
+        listIcd.add(null);
         try {
-            ObservableList<Icd> list = FXCollections.observableArrayList();
-            list.add(null);
-            list.addAll(Icd.getAll());
-            icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(list));
+            listIcd.addAll(Icd.getAll());
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of ICDs", e);
         }
+
+        icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, listIcd));
 
         icdCol.setOnEditCommit((TableColumn.CellEditEvent<PatientRecord, Icd> event) -> {
             TablePosition<PatientRecord, Icd> pos = event.getTablePosition();
@@ -100,20 +119,20 @@ public class PatientRecordsController extends AbstractWindow {
             }
         });
 
-        ObservableList<PatientRecord> list = FXCollections.observableArrayList();
+        ObservableList<PatientRecord> listPatientRecord = FXCollections.observableArrayList();
         try {
-            list.addAll(PatientRecord.getSetAll());
+            listPatientRecord.addAll(PatientRecord.getSetAll());
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of patientRecords", e);
         }
+        tableView.setItems(listPatientRecord);
 
-        tableView.setItems(list);
         transitionGUI.show();
     }
 
     @Override
     public String getTitleWindow() {
-        return ": start";
+        return "";
     }
 
     @Override
@@ -133,7 +152,7 @@ public class PatientRecordsController extends AbstractWindow {
 
         if (mouseEvent.getClickCount() == 2) {
             try {
-                ((WindowWithProperty<PatientRecord>) generateNewWindow("PatientRecordOpen.fxml"))
+                ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                         .setProperty(tableView.getItems().get(idSelectedRow))
                         .showWindow();
             } catch (UIException e) {
@@ -144,7 +163,7 @@ public class PatientRecordsController extends AbstractWindow {
 
     public void createNewPatientRecord() {
         try {
-            generateNewWindow("PatientRecordAdd.fxml").showWindow();
+            generateNewWindow("fxml/PatientRecordAdd.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

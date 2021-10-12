@@ -31,7 +31,7 @@ public class ProxyGUI implements TransitionGUI {
     private AnchorPane fieldForWindow;
 
     public void onICDs() {
-        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Icds.fxml"));
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/Icds.fxml"));
         try {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
@@ -42,7 +42,7 @@ public class ProxyGUI implements TransitionGUI {
     }
 
     public void onChannels() {
-        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Channels.fxml"));
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/Channels.fxml"));
         try {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
@@ -53,7 +53,7 @@ public class ProxyGUI implements TransitionGUI {
     }
 
     public void onDevices() {
-        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Devices.fxml"));
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/Devices.fxml"));
         try {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
@@ -64,7 +64,7 @@ public class ProxyGUI implements TransitionGUI {
     }
 
     public void onExaminations() {
-        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("Examinations.fxml"));
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/Examinations.fxml"));
         try {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
@@ -99,12 +99,11 @@ public class ProxyGUI implements TransitionGUI {
 
         this.resourceSource = resourceSource;
         try {
-            transition(new FXMLLoader(resourceSource.getResource("PatientRecords.fxml")))
+            transition(new FXMLLoader(resourceSource.getResource("fxml/PatientRecords.fxml")))
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (UIException e) {
-            e.printStackTrace();
-            throw new UIException("uploadContent error", e);
+            throw new UIException("UploadContent error", e);
         }
     }
 
@@ -145,8 +144,7 @@ public class ProxyGUI implements TransitionGUI {
             resizeWindow(node.getPrefHeight() + toolbar.getHeight(), node.getPrefWidth());
             return controller;
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new UIException("node is null", e);
+            throw new UIException("Node is null", e);
         }
     }
 

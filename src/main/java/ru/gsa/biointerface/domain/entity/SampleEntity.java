@@ -62,4 +62,13 @@ public class SampleEntity implements Comparable<SampleEntity> {
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SampleEntity{" +
+                "id=" + id +
+                ", graph=" + graph +
+                ", value=" + value +
+                '}';
+    }
 }

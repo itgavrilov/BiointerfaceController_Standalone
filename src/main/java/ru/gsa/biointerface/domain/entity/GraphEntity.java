@@ -62,4 +62,13 @@ public class GraphEntity implements Comparable<GraphEntity> {
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "GraphEntity{" +
+                "numberOfChannel=" + numberOfChannel +
+                ", examinationEntity=" + examinationEntity +
+                ", channelEntity=" + channelEntity +
+                '}';
+    }
 }

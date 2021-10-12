@@ -89,4 +89,15 @@ public class ExaminationEntity implements Comparable<ExaminationEntity> {
     public int compareTo(ExaminationEntity o) {
         return dateTime.compareTo(o.dateTime);
     }
+
+    @Override
+    public String toString() {
+        return "ExaminationEntity{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", patientRecordEntity=" + patientRecordEntity +
+                ", deviceEntity=" + deviceEntity +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

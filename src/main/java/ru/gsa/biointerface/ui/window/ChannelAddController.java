@@ -79,7 +79,7 @@ public class ChannelAddController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("Channels.fxml").showWindow();
+            generateNewWindow("fxml/Channels.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

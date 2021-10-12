@@ -4,7 +4,7 @@ import ru.gsa.biointerface.domain.entity.DeviceEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.*;
 import java.util.Set;
@@ -16,11 +16,11 @@ import java.util.TreeSet;
 public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
     protected static ExaminationDAO dao;
 
-    private ExaminationDAO() throws DAOException {
+    private ExaminationDAO() throws PersistenceException {
         super();
     }
 
-    public static ExaminationDAO getInstance() throws DAOException {
+    public static ExaminationDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new ExaminationDAO();
 
@@ -28,9 +28,9 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
     }
 
     @Override
-    public ExaminationEntity insert(ExaminationEntity entity) throws DAOException {
+    public ExaminationEntity insert(ExaminationEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("examination is null");
+            throw new NullPointerException("Examination is null");
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
             statement.setTimestamp(1, Timestamp.valueOf(entity.getDateTime()));
@@ -43,19 +43,17 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                     entity.setId(resultSet.getInt("id"));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public ExaminationEntity getById(int key) throws DAOException {
+    public ExaminationEntity getById(int key) throws PersistenceException {
         ExaminationEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_ID.QUERY)) {
@@ -71,19 +69,17 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                     );
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
     }
 
 
-    public Set<ExaminationEntity> getByDevice(DeviceEntity device) throws DAOException {
+    public Set<ExaminationEntity> getByDevice(DeviceEntity device) throws PersistenceException {
         Set<ExaminationEntity> entities = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_DEVICE_ID.QUERY)) {
@@ -100,18 +96,16 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                     entities.add(entity);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entities;
     }
 
-    public Set<ExaminationEntity> getByPatientRecord(PatientRecordEntity patientRecord) throws DAOException {
+    public Set<ExaminationEntity> getByPatientRecord(PatientRecordEntity patientRecord) throws PersistenceException {
         Set<ExaminationEntity> entities = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_PATIENT_RECORD_ID.QUERY)) {
@@ -132,21 +126,19 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                     entities.add(entity);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entities;
     }
 
     @Override
-    public boolean update(ExaminationEntity entity) throws DAOException {
+    public boolean update(ExaminationEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -156,34 +148,31 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
             statement.setInt(2, entity.getId());
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(ExaminationEntity entity) throws DAOException {
+    public boolean delete(ExaminationEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
             statement.setInt(1, entity.getId());
-
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<ExaminationEntity> getAll() throws DAOException {
+    public Set<ExaminationEntity> getAll() throws PersistenceException {
         Set<ExaminationEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
@@ -203,8 +192,7 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity> {
                 entities.add(entity);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement or resultSet error", e);
         }
 
         return entities;

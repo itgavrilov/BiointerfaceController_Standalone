@@ -266,7 +266,7 @@ public class PatientRecordAddController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

@@ -89,11 +89,12 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         ObservableList<Examination> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Examination.getSetByPatientRecordId(patientRecord));
+            list.addAll(Examination.getByPatientRecordId(patientRecord));
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of examinations", e);
         }
         tableView.setItems(list);
+
         transitionGUI.show();
     }
 
@@ -120,7 +121,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml")
+            generateNewWindow("fxml/PatientRecords.fxml")
                     .showWindow();
         } catch (UIException e) {
             e.printStackTrace();
@@ -129,7 +130,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void onAddButtonPush() {
         try {
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("Metering.fxml"))
+            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/Metering.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (UIException e) {
@@ -161,7 +162,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         if (mouseEvent.getClickCount() == 2) {
             try {
-                ((WindowWithProperty<Examination>) generateNewWindow("Examination.fxml"))
+                ((WindowWithProperty<Examination>) generateNewWindow("fxml/Examination.fxml"))
                         .setProperty(tableView.getItems().get(idSelectedRow))
                         .showWindow();
             } catch (UIException e) {

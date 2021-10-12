@@ -80,22 +80,22 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     static public void disconnect() {
         if (instants != null && instants.connection != null) {
-            ConnectionFactory.disconnectScanningSerialPort();
-            instants.connection.disconnect();
+            try {
+                ConnectionFactory.disconnectScanningSerialPort();
+                instants.connection.disconnect();
 
-            if (instants.connection.isControllerTransmission()) {
-                try {
-                    instants.connection.controllerTransmissionStop();
-                } catch (DomainException e) {
-                    e.printStackTrace();
+                if (instants.connection.isControllerTransmission()) {
+                        instants.connection.controllerTransmissionStop();
                 }
+            } catch (DomainException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public WindowWithProperty<PatientRecord> setProperty(PatientRecord patientRecord) {
         if (patientRecord == null)
-            throw new NullPointerException("examination is null");
+            throw new NullPointerException("patientRecord is null");
 
         this.patientRecord = patientRecord;
 
@@ -126,7 +126,11 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     public void buttonScanningSerialPortsPush() {
         clearInterface();
-        ConnectionFactory.scanningSerialPort(patientRecord);
+        try {
+            ConnectionFactory.scanningSerialPort(patientRecord);
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
         controlInterface(
                 true,
                 true,
@@ -152,7 +156,11 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (availableDevicesComboBox.getValue() != null) {
             connection = ConnectionFactory.getInstance(availableDevicesComboBox.getValue());
 
-            buildingChannelsGUIs();
+            try {
+                buildingChannelsGUIs();
+            } catch (UIException e) {
+                e.printStackTrace();
+            }
 
             if (connection.isConnected()) {
                 controlInterface(
@@ -166,7 +174,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
     }
 
-    public void buildingChannelsGUIs() {
+    public void buildingChannelsGUIs() throws UIException {
         int capacity = (int) allSliderZoom.getValue();
 
         channelGUIs.clear();
@@ -174,12 +182,12 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
         for (int i = 0; i < connection.getDevice().getAmountChannels(); i++) {
             CompositeNode<AnchorPane, GraphForMeteringController> node =
-                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("GraphForMetering.fxml")));
+                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/GraphForMetering.fxml")));
             node.getController().setGraph(connection.getGraphs().get(i));
             try {
                 node.getController().setCapacity(capacity);
             } catch (DomainException e) {
-                e.printStackTrace();
+                throw new UIException("Graph capacity setting error", e);
             }
             channelGUIs.add(node);
 
@@ -191,7 +199,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             try {
                 node.getController().setCheckBox(checkBox);
             } catch (DomainException e) {
-                e.printStackTrace();
+                throw new UIException("Graph checkbox setting error", e);
             }
             checkBoxesOfChannel.add(checkBox);
         }
@@ -199,8 +207,8 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> channelGUIs.forEach(o -> {
             try {
                 o.getController().setCapacity(new_val.intValue());
-            } catch (DomainException ex) {
-                ex.printStackTrace();
+            } catch (DomainException e) {
+                e.printStackTrace();
             }
         }));
 
@@ -274,16 +282,24 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     public void onRecordingButtonPush() {
         if (connection.isRecording()) {
-            connection.recordingStop();
+            try {
+                connection.recordingStop();
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
             recordingButton.setText("recording");
         } else {
-            connection.recordingStart(commentField.getText());
+            try {
+                connection.recordingStart(commentField.getText());
+            } catch (DomainException e) {
+                e.printStackTrace();
+            }
             recordingButton.setText("stop\nrecording");
         }
     }
 
     public void onBackButtonPush() {
-        if (connection.isControllerTransmission()) {
+        if (connection != null && connection.isControllerTransmission()) {
             try {
                 connection.controllerTransmissionStop();
             } catch (DomainException e) {
@@ -292,7 +308,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
 
         try {
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("PatientRecordOpen.fxml"))
+            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (UIException e) {
@@ -319,8 +335,13 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         checkBoxesOfChannel.forEach(o -> o.setDisable(!enableSliderZoom));
         recordingButton.setDisable(!enableButtonRecording);
         if (!enableButtonRecording) {
-            if (connection != null)
-                connection.recordingStop();
+            if (connection != null && connection.isRecording()) {
+                try {
+                    connection.recordingStop();
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.persistence.dao;
 
 import ru.gsa.biointerface.domain.entity.IcdEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +16,11 @@ import java.util.TreeSet;
 public class IcdDAO extends AbstractDAO<IcdEntity> {
     protected static IcdDAO dao;
 
-    private IcdDAO() throws DAOException {
+    private IcdDAO() throws PersistenceException {
         super();
     }
 
-    public static DAO<IcdEntity> getInstance() throws DAOException {
+    public static DAO<IcdEntity> getInstance() throws PersistenceException {
         if (dao == null)
             dao = new IcdDAO();
 
@@ -28,7 +28,7 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
     }
 
     @Override
-    public IcdEntity insert(IcdEntity entity) throws DAOException {
+    public IcdEntity insert(IcdEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -43,19 +43,17 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
                     entity.setId(resultSet.getInt("id"));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("resultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public IcdEntity getById(int key) throws DAOException {
+    public IcdEntity getById(int key) throws PersistenceException {
         IcdEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
@@ -70,21 +68,19 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
                     );
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public boolean update(IcdEntity entity) throws DAOException {
+    public boolean update(IcdEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -94,17 +90,16 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
             statement.setInt(2, entity.getId());
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(IcdEntity entity) throws DAOException {
+    public boolean delete(IcdEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -113,15 +108,14 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<IcdEntity> getAll() throws DAOException {
+    public Set<IcdEntity> getAll() throws PersistenceException {
         Set<IcdEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
@@ -136,8 +130,7 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
                 entities.add(entity);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement or resultSet error", e);
         }
 
         return entities;

@@ -60,4 +60,14 @@ public class IcdEntity implements Comparable<IcdEntity> {
     public int compareTo(IcdEntity o) {
         return id - o.id;
     }
+
+    @Override
+    public String toString() {
+        return "IcdEntity{" +
+                "ICD='" + ICD + '\'' +
+                ", version=" + version +
+                ", id=" + id +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

@@ -1,7 +1,7 @@
 package ru.gsa.biointerface.persistence.dao;
 
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.*;
 import java.util.Set;
@@ -13,11 +13,11 @@ import java.util.TreeSet;
 public class ChannelDAO extends AbstractDAO<ChannelEntity> {
     protected static ChannelDAO dao;
 
-    private ChannelDAO() throws DAOException {
+    private ChannelDAO() throws PersistenceException {
         super();
     }
 
-    public static ChannelDAO getInstance() throws DAOException {
+    public static ChannelDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new ChannelDAO();
 
@@ -25,7 +25,7 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
     }
 
     @Override
-    public ChannelEntity insert(ChannelEntity entity) throws DAOException {
+    public ChannelEntity insert(ChannelEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -43,18 +43,18 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("resultSet error", e);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public ChannelEntity getById(int id) throws DAOException {
+    public ChannelEntity getById(int id) throws PersistenceException {
         ChannelEntity entity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
@@ -69,18 +69,18 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("resultSet error", e);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return entity;
     }
 
     @Override
-    public boolean update(ChannelEntity entity) throws DAOException {
+    public boolean update(ChannelEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -98,14 +98,14 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(ChannelEntity entity) throws DAOException {
+    public boolean delete(ChannelEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -117,14 +117,14 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<ChannelEntity> getAll() throws DAOException {
+    public Set<ChannelEntity> getAll() throws PersistenceException {
         Set<ChannelEntity> entities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
@@ -139,7 +139,7 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("statement error", e);
         }
 
         return entities;

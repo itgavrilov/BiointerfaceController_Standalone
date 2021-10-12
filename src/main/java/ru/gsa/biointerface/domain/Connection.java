@@ -12,7 +12,7 @@ public interface Connection {
 
     boolean isConnected();
 
-    void disconnect();
+    void disconnect() throws DomainException;
 
     void controllerTransmissionStart() throws DomainException;
 
@@ -22,9 +22,9 @@ public interface Connection {
 
     void controllerReboot();
 
-    void recordingStart(String comment);
+    void recordingStart(String comment) throws DomainException;
 
-    void recordingStop();
+    void recordingStop() throws DomainException;
 
     boolean isRecording();
 

@@ -2,7 +2,7 @@ package ru.gsa.biointerface.persistence.dao;
 
 import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.*;
 import java.util.Set;
@@ -14,11 +14,11 @@ import java.util.TreeSet;
 public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
     protected static PatientRecordDAO dao;
 
-    private PatientRecordDAO() throws DAOException {
+    private PatientRecordDAO() throws PersistenceException {
         super();
     }
 
-    public static DAO<PatientRecordEntity> getInstance() throws DAOException {
+    public static DAO<PatientRecordEntity> getInstance() throws PersistenceException {
         if (dao == null)
             dao = new PatientRecordDAO();
 
@@ -26,7 +26,7 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
     }
 
     @Override
-    public PatientRecordEntity insert(PatientRecordEntity patientRecordEntity) throws DAOException {
+    public PatientRecordEntity insert(PatientRecordEntity patientRecordEntity) throws PersistenceException {
         if (patientRecordEntity == null)
             throw new NullPointerException("patientRecord is null");
 
@@ -45,15 +45,14 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
             statement.execute();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return patientRecordEntity;
     }
 
     @Override
-    public PatientRecordEntity getById(int key) throws DAOException {
+    public PatientRecordEntity getById(int key) throws PersistenceException {
         PatientRecordEntity patientRecordEntity = null;
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
@@ -80,21 +79,19 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
                     );
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return patientRecordEntity;
     }
 
     @Override
-    public boolean update(PatientRecordEntity patientRecordEntity) throws DAOException {
+    public boolean update(PatientRecordEntity patientRecordEntity) throws PersistenceException {
         if (patientRecordEntity == null)
-            throw new NullPointerException("patientRecord is null");
+            throw new NullPointerException("PatientRecord is null");
 
         boolean result;
 
@@ -113,17 +110,16 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(PatientRecordEntity patientRecordEntity) throws DAOException {
+    public boolean delete(PatientRecordEntity patientRecordEntity) throws PersistenceException {
         if (patientRecordEntity == null)
-            throw new NullPointerException("patientRecord is null");
+            throw new NullPointerException("PatientRecord is null");
 
         boolean result;
 
@@ -132,15 +128,14 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<PatientRecordEntity> getAll() throws DAOException {
+    public Set<PatientRecordEntity> getAll() throws PersistenceException {
         Set<PatientRecordEntity> patientRecordEntities = new TreeSet<>();
 
         try (Statement statement = db.getConnection().createStatement();
@@ -166,8 +161,7 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
                 patientRecordEntities.add(patientRecordEntity);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement or resultSet error", e);
+            throw new PersistenceException("Statement or resultSet error", e);
         }
 
         return patientRecordEntities;

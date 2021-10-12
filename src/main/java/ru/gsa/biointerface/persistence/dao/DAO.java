@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.Set;
 
@@ -9,13 +9,13 @@ import java.util.Set;
  */
 public interface DAO<Entity> {
 
-    Entity insert(Entity entity) throws DAOException;
+    Entity insert(Entity entity) throws PersistenceException;
 
-    Entity getById(int id) throws DAOException;
+    Entity getById(int id) throws PersistenceException;
 
-    boolean update(Entity entity) throws DAOException;
+    boolean update(Entity entity) throws PersistenceException;
 
-    boolean delete(Entity entity) throws DAOException;
+    boolean delete(Entity entity) throws PersistenceException;
 
-    Set<Entity> getAll() throws DAOException;
+    Set<Entity> getAll() throws PersistenceException;
 }

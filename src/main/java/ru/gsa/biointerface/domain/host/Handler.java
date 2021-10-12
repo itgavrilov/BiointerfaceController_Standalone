@@ -2,6 +2,7 @@ package ru.gsa.biointerface.domain.host;
 
 import com.fazecast.jSerialComm.SerialPort;
 import ru.gsa.biointerface.domain.Device;
+import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.host.packets.ChannelPacket;
 import ru.gsa.biointerface.domain.host.packets.ConfigPacket;
 import ru.gsa.biointerface.domain.host.packets.Packet;
@@ -42,7 +43,11 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
                         int simple = msg.getSample(i);
 
                         if (dataCollector.getGraphs().get(i) != null) {
-                            dataCollector.getGraphs().get(i).add(simple);
+                            try {
+                                dataCollector.getGraphs().get(i).add(simple);
+                            } catch (DomainException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }

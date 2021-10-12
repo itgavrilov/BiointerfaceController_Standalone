@@ -3,7 +3,7 @@ package ru.gsa.biointerface.persistence.dao;
 import ru.gsa.biointerface.domain.Examination;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +17,11 @@ import java.util.TreeSet;
 public class GraphDAO extends AbstractDAO<GraphEntity> {
     protected static GraphDAO dao;
 
-    private GraphDAO() throws DAOException {
+    private GraphDAO() throws PersistenceException {
         super();
     }
 
-    public static GraphDAO getInstance() throws DAOException {
+    public static GraphDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new GraphDAO();
 
@@ -29,7 +29,7 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
     }
 
     @Override
-    public GraphEntity insert(GraphEntity entity) throws DAOException {
+    public GraphEntity insert(GraphEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("entity is null");
 
@@ -46,8 +46,7 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
 
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entity;
@@ -59,9 +58,9 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
     }
 
     @Override
-    public boolean update(GraphEntity entity) throws DAOException {
+    public boolean update(GraphEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -78,17 +77,16 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public boolean delete(GraphEntity entity) throws DAOException {
+    public boolean delete(GraphEntity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
 
         boolean result;
 
@@ -98,19 +96,18 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
 
             result = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return result;
     }
 
     @Override
-    public Set<GraphEntity> getAll() throws DAOException {
+    public Set<GraphEntity> getAll() throws PersistenceException {
         return null;
     }
 
-    public Set<GraphEntity> getAllByExamination(Examination examination) throws DAOException {
+    public Set<GraphEntity> getAllByExamination(Examination examination) throws PersistenceException {
         Set<GraphEntity> entities = new TreeSet<>();
 
         try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT_BY_EXAMINATION.QUERY)) {
@@ -134,12 +131,10 @@ public class GraphDAO extends AbstractDAO<GraphEntity> {
                     entities.add(entity);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                throw new DAOException("resultSet error", e);
+                throw new PersistenceException("ResultSet error", e);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException("statement error", e);
+            throw new PersistenceException("Statement error", e);
         }
 
         return entities;

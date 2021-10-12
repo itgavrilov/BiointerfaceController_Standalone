@@ -50,7 +50,7 @@ public class ChannelsController extends AbstractWindow {
         try {
             list.addAll(Channel.getAll());
         } catch (DomainException e) {
-            e.printStackTrace();
+            throw new UIException("Error getting a list of channels", e);
         }
         tableView.setItems(list);
         transitionGUI.show();
@@ -81,7 +81,7 @@ public class ChannelsController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("PatientRecords.fxml").showWindow();
+            generateNewWindow("/fxml/PatientRecords.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }
@@ -89,7 +89,7 @@ public class ChannelsController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            generateNewWindow("ChannelAdd.fxml").showWindow();
+            generateNewWindow("fxml/ChannelAdd.fxml").showWindow();
         } catch (UIException e) {
             e.printStackTrace();
         }

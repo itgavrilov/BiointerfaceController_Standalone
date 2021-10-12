@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.DBHandler;
 import ru.gsa.biointerface.ui.ProxyGUI;
 import ru.gsa.biointerface.ui.UIException;
@@ -23,7 +23,7 @@ public class Main extends Application implements ResourceSource {
         MeteringController.disconnect();
         try {
             DBHandler.getInstance().disconnect();
-        } catch (DAOException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
         Platform.exit();
@@ -36,7 +36,7 @@ public class Main extends Application implements ResourceSource {
 
     @Override
     public void start(Stage stage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProxyGUI.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("fxml/ProxyGUI.fxml"));
 
         try {
             stage.setScene(new Scene(fxmlLoader.load()));

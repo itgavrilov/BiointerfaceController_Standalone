@@ -13,7 +13,7 @@ import ru.gsa.biointerface.domain.Examination;
 import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.persistence.DAOException;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.GraphDAO;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
@@ -107,15 +107,15 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         transitionGUI.show();
     }
 
-    public void buildingChannelsGUIs() {
-        Set<GraphEntity> graphEntities = new TreeSet<>();
+    public void buildingChannelsGUIs() throws UIException {
+        Set<GraphEntity> graphEntities;
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
         try {
             graphEntities = GraphDAO.getInstance().getAllByExamination(examination);
-        } catch (DAOException e) {
-            e.printStackTrace();
+        } catch (PersistenceException e) {
+            throw new UIException("Error getting a list of graphEntities by examination", e);
         }
 
         graphCapacity = allSliderZoom.getValue();
@@ -123,8 +123,10 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         for (GraphEntity o : graphEntities) {
             Graph graph = new Graph(o);
             CompositeNode<AnchorPane, GraphController> node =
-                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("Graph.fxml")));
+                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
+
             node.getController().setGraph(graph);
+
             if (graphSize > node.getController().getLengthGraphic() || graphSize == 0) {
                 graphSize = node.getController().getLengthGraphic();
             }
@@ -138,6 +140,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
             });
             checkBoxesOfChannel.add(checkBox);
         }
+
         for (CompositeNode<AnchorPane, GraphController> node : channelGUIs) {
             node.getController().setStart(0);
             node.getController().setCapacity((int) graphCapacity);
@@ -188,7 +191,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
     public void onBack() {
         try {
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("PatientRecordOpen.fxml"))
+            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(examination.getPatientRecord())
                     .showWindow();
         } catch (UIException e) {

@@ -10,6 +10,8 @@ module ru.gsa.biointerface {
     requires java.management;
     requires com.fazecast.jSerialComm;
     requires org.xerial.sqlitejdbc;
+    requires org.slf4j;
+    requires org.apache.logging.log4j;
 
     exports ru.gsa.biointerface;
     exports ru.gsa.biointerface.domain;
