@@ -10,14 +10,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdsController extends AbstractWindow {
-    int idSelectedRow = -1;
-
+    private Icd icdSelected;
     @FXML
     private TableView<Icd> tableView;
     @FXML
@@ -54,32 +54,27 @@ public class IcdsController extends AbstractWindow {
         try {
             list.addAll(Icd.getAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of ICDs", e);
+            throw new UIException("Error getting a list of ICDs");
         }
         tableView.setItems(list);
         transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (icdSelected != tableView.getFocusModel().getFocusedItem()) {
+            icdSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(icdSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        if (!commentField.getText().equals(tableView.getItems().get(idSelectedRow).getComment())) {
-            Icd icd = tableView.getItems().get(idSelectedRow);
-            icd.setComment(commentField.getText());
-            try {
-                icd.update();
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
+        icdSelected.setComment(commentField.getText());
+        try {
+            icdSelected.update();
+        } catch (DomainException e) {
+            e.printStackTrace();
         }
     }
 
@@ -100,14 +95,12 @@ public class IcdsController extends AbstractWindow {
     }
 
     public void onDeleteButtonPush() {
-        Icd icd = tableView.getItems().get(idSelectedRow);
         try {
-            icd.delete();
+            icdSelected.delete();
+            tableView.getItems().remove(icdSelected);
+            commentField.setText("");
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 }

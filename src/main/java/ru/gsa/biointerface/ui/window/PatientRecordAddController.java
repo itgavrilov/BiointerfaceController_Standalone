@@ -23,7 +23,7 @@ public class PatientRecordAddController extends AbstractWindow {
         public String toString(Icd icd) {
             String str = "";
             if (icd != null)
-                str = icd.toString();
+                str = icd.getICD() + " (ICD-" + icd.getVersion() + ")";
             return str;
         }
 

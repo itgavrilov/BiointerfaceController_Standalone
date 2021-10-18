@@ -6,6 +6,7 @@ import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.IcdDAO;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,7 +23,7 @@ public class Icd implements Comparable<Icd> {
     }
 
     public Icd(IcdEntity entity) {
-        if (entity.getICD() == null)
+        if (entity.getIcd() == null)
             throw new NullPointerException("ICD is null");
         if (entity.getVersion() <= 0)
             throw new IllegalArgumentException("version is null");
@@ -32,19 +33,19 @@ public class Icd implements Comparable<Icd> {
 
     static public Set<Icd> getAll() throws DomainException {
         try {
-            Set<IcdEntity> IcdEntity = IcdDAO.getInstance().getAll();
+            List<IcdEntity> IcdEntity = IcdDAO.getInstance().getAll();
             Set<Icd> icds = new TreeSet<>();
             IcdEntity.forEach(o -> icds.add(new Icd(o)));
             return icds;
         } catch (PersistenceException e) {
-            throw new DomainException("Dao getAll ICDs error");
+            throw new DomainException("DAO getAll ICDs error");
         }
     }
 
     public void insert() throws DomainException {
         try {
             entity = IcdDAO.getInstance().insert(entity);
-            LOGGER.info("ICD '{}' is recorded in database", entity);
+            LOGGER.info("{} is recorded in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert ICD error");
         }
@@ -53,7 +54,7 @@ public class Icd implements Comparable<Icd> {
     public void update() throws DomainException {
         try {
             IcdDAO.getInstance().update(entity);
-            LOGGER.info("ICD '{}' is updated in database", entity);
+            LOGGER.info("{} is updated in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO update ICD error");
         }
@@ -62,7 +63,7 @@ public class Icd implements Comparable<Icd> {
     public void delete() throws DomainException {
         try {
             IcdDAO.getInstance().delete(entity);
-            LOGGER.info("ICD '{}' is deleted in database", entity);
+            LOGGER.info("{} is deleted in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO delete icd error");
         }
@@ -77,7 +78,7 @@ public class Icd implements Comparable<Icd> {
     }
 
     public String getICD() {
-        return entity.getICD();
+        return entity.getIcd();
     }
 
     public int getVersion() {
@@ -89,7 +90,7 @@ public class Icd implements Comparable<Icd> {
     }
 
     public void setComment(String comment) {
-        LOGGER.info("Comment '{}' is update in ICD '{}'", comment, entity);
+        LOGGER.info("{} is update in {}", comment, entity);
         entity.setComment(comment);
     }
 

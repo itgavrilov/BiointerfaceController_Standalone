@@ -14,6 +14,7 @@ import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Graph;
+import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
@@ -24,10 +25,11 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphForMeteringController implements DataListener, ContentForWindow {
-    private int capacity = 0;
-    private List<Integer> samples = new LinkedList<>();
-    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private Graph graph;
+    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
+    private final List<Integer> samples = new ArrayList<>();
+
+
     private final StringConverter<Channel> converter = new StringConverter<>() {
         @Override
         public String toString(Channel channel) {
@@ -96,7 +98,6 @@ public final class GraphForMeteringController implements DataListener, ContentFo
             throw new NullPointerException("graph is null");
 
         this.graph = graph;
-        graph.setListener(this);
     }
 
     public void setCheckBox(CheckBoxOfGraph checkBox) throws DomainException {
@@ -110,20 +111,13 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     }
 
     @Override
-    public boolean isReady() {
-        return ready;
-    }
-
-    @Override
     public void setNewSamples(Deque<Integer> data) {
         ready = false;
 
         samples.addAll(data);
 
         Platform.runLater(() -> {
-            for (int i = 0; i < capacity; i++) {
-                dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-            }
+            filling();
             ready = true;
         });
     }
@@ -134,50 +128,45 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         if (capacity < 128)
             throw new DomainException("Capacity must be greater than 127");
 
-
-        if (this.capacity > capacity) {
-            this.capacity = capacity;
+        if (dataLineGraphic.size() > capacity) {
             Platform.runLater(() -> {
-                for (int i = 0; i < capacity; i++) {
-                    dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-                }
                 dataLineGraphic.remove(capacity, dataLineGraphic.size());
+                filling();
             });
-        } else if (this.capacity < capacity) {
-
-            if(samples.size() < capacity){
-                List<Integer> tmp = new ArrayList<>();
-                while (tmp.size() < capacity - samples.size()){
-                    tmp.add(0);
-                }
-                tmp.addAll(samples);
-                samples = tmp;
-            }
-            this.capacity = capacity;
-
+        } else if (dataLineGraphic.size() < capacity) {
             Platform.runLater(() -> {
-                for (int i = 0; i < dataLineGraphic.size(); i++) {
-                    dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-                }
-
                 while (dataLineGraphic.size() < capacity) {
-                    dataLineGraphic.add(
-                            new XYChart.Data<>(
-                                    dataLineGraphic.size(),
-                                    samples.get(samples.get(samples.size() - capacity + dataLineGraphic.size()))
-                            )
-                    );
+                    dataLineGraphic.add(new XYChart.Data<>(dataLineGraphic.size(), 0));
                 }
+                filling();
             });
         }
 
-        setAxisXSize();
+        setAxisXSize(capacity);
     }
 
-    private void setAxisXSize() {
+    private void filling(){
+        if(samples.size() >= dataLineGraphic.size()) {
+            for (int i = 0; i < dataLineGraphic.size(); i++) {
+                int value = samples.get(samples.size() - dataLineGraphic.size() + i);
+                dataLineGraphic.get(i).setYValue(value);
+            }
+        } else {
+            for (int i = 0, j = 0; i < dataLineGraphic.size(); i++) {
+                if (i < dataLineGraphic.size() - samples.size()) {
+                    dataLineGraphic.get(i).setYValue(0);
+                } else {
+                    int value = samples.get(j++);
+                    dataLineGraphic.get(i).setYValue(value);
+                }
+            }
+        }
+    }
+
+    private void setAxisXSize(int capacity) {
         axisX.setTickUnit(capacity >> 3);
         axisX.setLowerBound(0);
-        axisX.setUpperBound(capacity-1);
+        axisX.setUpperBound(capacity - 1);
     }
 
     public void setEnable(boolean enable) {

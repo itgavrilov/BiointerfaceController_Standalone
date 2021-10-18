@@ -11,11 +11,12 @@ public class PersistenceException extends Exception {
 
     public PersistenceException(String message) {
         super(message);
-        LOGGER.error("{}", message);
+        LOGGER.error("{}:", message, this);
     }
 
     public PersistenceException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.error("{}:", message, cause);
+        cause.printStackTrace();
+        LOGGER.error("{}:", message, this);
     }
 }

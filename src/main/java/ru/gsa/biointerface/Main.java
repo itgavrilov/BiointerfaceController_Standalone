@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.DBHandler;
 import ru.gsa.biointerface.ui.ProxyGUI;
-import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.metering.MeteringController;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ public class Main extends Application implements ResourceSource {
     private static void handle(javafx.stage.WindowEvent event) {
         MeteringController.disconnect();
         try {
-            DBHandler.getInstance().disconnect();
+            DBHandler.getInstance().getSessionFactory().close();
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -43,7 +42,7 @@ public class Main extends Application implements ResourceSource {
             stage.setOnCloseRequest(Main::handle);
             ProxyGUI proxyGUI = fxmlLoader.getController();
             proxyGUI.uploadContent(this);
-        } catch (IOException | UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -16,7 +16,6 @@ public class CompositeNode<N extends Node, C> {
         try {
             this.node = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             throw new NullPointerException("node is null");
         }
         controller = loader.getController();

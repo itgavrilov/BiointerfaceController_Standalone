@@ -13,7 +13,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.PatientRecord;
+import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDateTime;
@@ -23,8 +25,8 @@ import java.time.format.DateTimeFormatter;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordOpenController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
-    int idSelectedRow = -1;
     private PatientRecord patientRecord;
+    private Examination examinationSelected;
     @FXML
     private Text idText;
     @FXML
@@ -68,8 +70,12 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         secondNameText.setText(patientRecord.getSecondName());
         firstNameText.setText(patientRecord.getFirstName());
         middleNameText.setText(patientRecord.getMiddleName());
-        if (patientRecord.getIcd() != null)
-            icdText.setText(patientRecord.getIcd().toString());
+        if (patientRecord.getIcd() != null) {
+            Icd icd = patientRecord.getIcd();
+            icdText.setText(icd.getICD() + " (ICD-" + icd.getVersion() + ")");
+        } else {
+            icdText.setText("-");
+        }
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         birthdayText.setText(patientRecord.getBirthday().format(dateFormatter));
@@ -89,9 +95,9 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         ObservableList<Examination> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Examination.getByPatientRecordId(patientRecord));
+            list.addAll(Examination.getByPatientRecordId(patientRecord.getEntity()));
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of examinations", e);
+            throw new UIException("Error getting a list of examinations");
         }
         tableView.setItems(list);
 
@@ -139,23 +145,20 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     }
 
     public void onDeleteButtonPush() {
-        Examination examination = tableView.getItems().get(idSelectedRow);
         try {
-            examination.delete();
+            examinationSelected.delete();
+            commentField.setText("");
+            tableView.getItems().remove(examinationSelected);
+            examinationSelected = null;
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (examinationSelected != tableView.getFocusModel().getFocusedItem()) {
+            examinationSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(examinationSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
@@ -163,7 +166,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         if (mouseEvent.getClickCount() == 2) {
             try {
                 ((WindowWithProperty<Examination>) generateNewWindow("fxml/Examination.fxml"))
-                        .setProperty(tableView.getItems().get(idSelectedRow))
+                        .setProperty(examinationSelected)
                         .showWindow();
             } catch (UIException e) {
                 e.printStackTrace();

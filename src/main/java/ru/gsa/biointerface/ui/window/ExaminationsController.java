@@ -74,7 +74,7 @@ public class ExaminationsController extends AbstractWindow {
         try {
             list.addAll(Examination.getAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of examinations", e);
+            throw new UIException("Error getting a list of examinations");
         }
         tableView.setItems(list);
 

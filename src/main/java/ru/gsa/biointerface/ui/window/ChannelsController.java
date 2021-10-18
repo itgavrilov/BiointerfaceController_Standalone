@@ -16,8 +16,7 @@ import ru.gsa.biointerface.ui.UIException;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ChannelsController extends AbstractWindow {
-    int idSelectedRow = -1;
-
+    private Channel channelSelected;
     @FXML
     private TableView<Channel> tableView;
     @FXML
@@ -41,7 +40,7 @@ public class ChannelsController extends AbstractWindow {
     @Override
     public void showWindow() throws UIException {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new UIException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         tableView.getItems().clear();
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -50,32 +49,27 @@ public class ChannelsController extends AbstractWindow {
         try {
             list.addAll(Channel.getAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of channels", e);
+            throw new UIException("Error getting a list of channels");
         }
         tableView.setItems(list);
         transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (channelSelected != tableView.getFocusModel().getFocusedItem()) {
+            channelSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(channelSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        if (!commentField.getText().equals(tableView.getItems().get(idSelectedRow).getComment())) {
-            Channel channel = tableView.getItems().get(idSelectedRow);
-            channel.setComment(commentField.getText());
-            try {
-                channel.update();
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
+        channelSelected.setComment(commentField.getText());
+        try {
+            channelSelected.update();
+        } catch (DomainException e) {
+            e.printStackTrace();
         }
     }
 
@@ -96,14 +90,12 @@ public class ChannelsController extends AbstractWindow {
     }
 
     public void onDeleteButtonPush() {
-        Channel channel = tableView.getItems().get(idSelectedRow);
         try {
-            channel.delete();
+            channelSelected.delete();
+            tableView.getItems().remove(channelSelected);
+            commentField.setText("");
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 }

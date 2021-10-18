@@ -1,19 +1,43 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.persistence.*;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class GraphEntity implements Comparable<GraphEntity> {
-    private int numberOfChannel;
+@Entity(name = "graph")
+@Table(name = "graph")
+@IdClass(GraphEntityId.class)
+public class GraphEntity{
+    @Id
+    int numberOfChannel = -1;
+
+    @Id
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "examination_id", referencedColumnName = "id")
     private ExaminationEntity examinationEntity;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "channel_id", referencedColumnName = "id")
     private ChannelEntity channelEntity;
 
-    public GraphEntity(int numberOfChannel, ExaminationEntity examinationEntity, ChannelEntity channelEntity) {
+    @OneToMany(mappedBy = "graphEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<SampleEntity> sampleEntities;
+
+    public GraphEntity() {
+
+    }
+
+    public GraphEntity(int numberOfChannel, ExaminationEntity examinationEntity, ChannelEntity channelEntity, List<SampleEntity> sampleEntities) {
         this.numberOfChannel = numberOfChannel;
         this.examinationEntity = examinationEntity;
         this.channelEntity = channelEntity;
+        this.sampleEntities = sampleEntities;
     }
 
     public int getNumberOfChannel() {
@@ -40,6 +64,14 @@ public class GraphEntity implements Comparable<GraphEntity> {
         this.channelEntity = channelEntity;
     }
 
+    public List<SampleEntity> getSampleEntities() {
+        return sampleEntities;
+    }
+
+    public void setSampleEntities(List<SampleEntity> sampleEntities) {
+        this.sampleEntities = sampleEntities;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,21 +86,17 @@ public class GraphEntity implements Comparable<GraphEntity> {
     }
 
     @Override
-    public int compareTo(GraphEntity o) {
-        int result = examinationEntity.compareTo(o.examinationEntity);
-
-        if (result == 0)
-            result = numberOfChannel - o.numberOfChannel;
-
-        return result;
-    }
-
-    @Override
     public String toString() {
+        String channelName = "-";
+
+        if(channelEntity != null)
+            channelName = channelEntity.getName();
+
         return "GraphEntity{" +
                 "numberOfChannel=" + numberOfChannel +
-                ", examinationEntity=" + examinationEntity +
-                ", channelEntity=" + channelEntity +
+                ", examinationEntity_id=" + examinationEntity.getId() +
+                ", channelEntity=" + channelName +
                 '}';
     }
 }
+

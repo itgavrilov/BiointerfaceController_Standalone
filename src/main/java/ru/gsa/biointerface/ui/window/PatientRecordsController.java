@@ -10,10 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.Device;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
+import ru.gsa.biointerface.domain.*;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
@@ -23,7 +20,7 @@ import java.time.format.DateTimeFormatter;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordsController extends AbstractWindow {
-    int idSelectedRow = -1;
+    private PatientRecord patientRecordSelected;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -95,7 +92,7 @@ public class PatientRecordsController extends AbstractWindow {
         try {
             listIcd.addAll(Icd.getAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of ICDs", e);
+            e.printStackTrace();
         }
 
         icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, listIcd));
@@ -123,7 +120,7 @@ public class PatientRecordsController extends AbstractWindow {
         try {
             listPatientRecord.addAll(PatientRecord.getSetAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of patientRecords", e);
+            e.printStackTrace();
         }
         tableView.setItems(listPatientRecord);
 
@@ -141,11 +138,9 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (patientRecordSelected != tableView.getFocusModel().getFocusedItem()) {
+            patientRecordSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(patientRecordSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
@@ -153,7 +148,7 @@ public class PatientRecordsController extends AbstractWindow {
         if (mouseEvent.getClickCount() == 2) {
             try {
                 ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
-                        .setProperty(tableView.getItems().get(idSelectedRow))
+                        .setProperty(patientRecordSelected)
                         .showWindow();
             } catch (UIException e) {
                 e.printStackTrace();
@@ -170,26 +165,21 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        if (!commentField.getText().equals(tableView.getItems().get(idSelectedRow).getComment())) {
-            PatientRecord patientRecord = tableView.getItems().get(idSelectedRow);
-            patientRecord.setComment(commentField.getText());
-            try {
-                patientRecord.update();
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
+        patientRecordSelected.setComment(commentField.getText());
+        try {
+            patientRecordSelected.update();
+        } catch (DomainException e) {
+            e.printStackTrace();
         }
     }
 
     public void onDeleteButtonPush() {
-        PatientRecord patientRecord = tableView.getItems().get(idSelectedRow);
         try {
-            patientRecord.delete();
+            patientRecordSelected.delete();
+            tableView.getItems().remove(patientRecordSelected);
+            commentField.setText("");
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 }

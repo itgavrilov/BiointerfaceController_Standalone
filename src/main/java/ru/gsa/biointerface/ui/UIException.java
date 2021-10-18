@@ -11,11 +11,11 @@ public class UIException extends Exception {
 
     public UIException(String message) {
         super(message);
-        LOGGER.error("{}", message);
+        LOGGER.error("{}:", message, this);
     }
 
     public UIException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.error("{}:", message, cause);
+        LOGGER.error("{}:", message, this);
     }
 }

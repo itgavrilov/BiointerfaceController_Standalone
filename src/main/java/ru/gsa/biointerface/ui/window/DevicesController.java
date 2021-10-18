@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.ui.UIException;
@@ -16,7 +17,7 @@ import ru.gsa.biointerface.ui.UIException;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class DevicesController extends AbstractWindow {
-    int idSelectedRow = -1;
+    private Device deviceSelected;
 
     @FXML
     private TableView<Device> tableView;
@@ -54,7 +55,7 @@ public class DevicesController extends AbstractWindow {
         try {
             list.addAll(Device.getAll());
         } catch (DomainException e) {
-            throw new UIException("Error getting a list of devices", e);
+            throw new UIException("Error getting a list of devices");
         }
         tableView.setItems(list);
 
@@ -62,25 +63,20 @@ public class DevicesController extends AbstractWindow {
     }
 
     public void onMouseClickedTableView() {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (deviceSelected != tableView.getFocusModel().getFocusedItem()) {
+            deviceSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(deviceSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        if (!commentField.getText().equals(tableView.getItems().get(idSelectedRow).getComment())) {
-            Device device = tableView.getItems().get(idSelectedRow);
-            device.setComment(commentField.getText());
-            try {
-                device.update();
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
+        deviceSelected.setComment(commentField.getText());
+        try {
+            deviceSelected.update();
+        } catch (DomainException e) {
+            e.printStackTrace();
         }
     }
 
@@ -93,14 +89,12 @@ public class DevicesController extends AbstractWindow {
     }
 
     public void onDeleteButtonPush() {
-        Device device = tableView.getItems().get(idSelectedRow);
         try {
-            device.delete();
+            deviceSelected.delete();
+            tableView.getItems().remove(deviceSelected);
+            commentField.setText("");
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 }

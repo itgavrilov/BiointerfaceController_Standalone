@@ -1,24 +1,24 @@
 package ru.gsa.biointerface.persistence.dao;
 
-import ru.gsa.biointerface.domain.entity.IcdEntity;
+import org.hibernate.Session;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
-import java.sql.*;
-import java.util.Set;
-import java.util.TreeSet;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.List;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
+public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity, Integer> {
     protected static PatientRecordDAO dao;
 
     private PatientRecordDAO() throws PersistenceException {
         super();
     }
 
-    public static DAO<PatientRecordEntity> getInstance() throws PersistenceException {
+    public static DAO<PatientRecordEntity, Integer> getInstance() throws PersistenceException {
         if (dao == null)
             dao = new PatientRecordDAO();
 
@@ -26,170 +26,36 @@ public class PatientRecordDAO extends AbstractDAO<PatientRecordEntity> {
     }
 
     @Override
-    public PatientRecordEntity insert(PatientRecordEntity patientRecordEntity) throws PersistenceException {
-        if (patientRecordEntity == null)
-            throw new NullPointerException("patientRecord is null");
+    public PatientRecordEntity read(Integer key) throws PersistenceException {
+        PatientRecordEntity entity;
 
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
-            statement.setInt(1, patientRecordEntity.getId());
-            statement.setString(2, patientRecordEntity.getSecondName());
-            statement.setString(3, patientRecordEntity.getFirstName());
-            statement.setString(4, patientRecordEntity.getMiddleName());
-            statement.setDate(5, Date.valueOf(patientRecordEntity.getBirthday()));
-            if (patientRecordEntity.getIcdEntity() != null)
-                statement.setInt(6, patientRecordEntity.getIcdEntity().getId());
-            else statement.setNull(6, java.sql.Types.NULL);
-            if (patientRecordEntity.getComment() != null) statement.setString(7, patientRecordEntity.getComment());
-            else statement.setNull(7, java.sql.Types.NULL);
-
-            statement.execute();
-
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
+        try (final Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            entity = session.get(PatientRecordEntity.class, key);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new PersistenceException("Session error", e);
         }
 
-        return patientRecordEntity;
+        return entity;
     }
 
     @Override
-    public PatientRecordEntity getById(int key) throws PersistenceException {
-        PatientRecordEntity patientRecordEntity = null;
+    public List<PatientRecordEntity> getAll() throws PersistenceException {
+        List<PatientRecordEntity> entities;
 
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
-            statement.setInt(1, key);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    IcdEntity icdEntity = null;
-                    if (resultSet.getInt("Icd_id") > 0) {
-                        icdEntity = new IcdEntity(resultSet.getInt("Icd_id"),
-                                resultSet.getString("ICD"),
-                                resultSet.getInt("version"),
-                                resultSet.getString("icdComment")
-                        );
-                    }
+        try (final Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<PatientRecordEntity> cq = cb.createQuery(PatientRecordEntity.class);
+            cq.from(PatientRecordEntity.class);
 
-                    patientRecordEntity = new PatientRecordEntity(
-                            resultSet.getInt("id"),
-                            resultSet.getString("secondName"),
-                            resultSet.getString("firstName"),
-                            resultSet.getString("middleName"),
-                            resultSet.getDate("birthday").toLocalDate(),
-                            icdEntity,
-                            resultSet.getString("comment")
-                    );
-                }
-            } catch (SQLException e) {
-                throw new PersistenceException("ResultSet error", e);
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
+            entities = session.createQuery(cq).getResultList();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new PersistenceException("Session error", e);
         }
 
-        return patientRecordEntity;
-    }
-
-    @Override
-    public boolean update(PatientRecordEntity patientRecordEntity) throws PersistenceException {
-        if (patientRecordEntity == null)
-            throw new NullPointerException("PatientRecord is null");
-
-        boolean result;
-
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (patientRecordEntity.getIcdEntity() != null)
-                statement.setInt(1, patientRecordEntity.getIcdEntity().getId());
-            else
-                statement.setNull(1, Types.NULL);
-
-            if (patientRecordEntity.getComment() != null)
-                statement.setString(2, patientRecordEntity.getComment());
-            else
-                statement.setNull(2, Types.NULL);
-
-            statement.setInt(3, patientRecordEntity.getId());
-
-            result = statement.execute();
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean delete(PatientRecordEntity patientRecordEntity) throws PersistenceException {
-        if (patientRecordEntity == null)
-            throw new NullPointerException("PatientRecord is null");
-
-        boolean result;
-
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
-            statement.setInt(1, patientRecordEntity.getId());
-
-            result = statement.execute();
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
-        }
-
-        return result;
-    }
-
-    @Override
-    public Set<PatientRecordEntity> getAll() throws PersistenceException {
-        Set<PatientRecordEntity> patientRecordEntities = new TreeSet<>();
-
-        try (Statement statement = db.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
-            while (resultSet.next()) {
-                IcdEntity icdEntity = null;
-                if (resultSet.getInt("Icd_id") > 0)
-                    icdEntity = new IcdEntity(resultSet.getInt("Icd_id"),
-                            resultSet.getString("ICD"),
-                            resultSet.getInt("version"),
-                            resultSet.getString("icdComment")
-                    );
-
-                PatientRecordEntity patientRecordEntity = new PatientRecordEntity(
-                        resultSet.getInt("id"),
-                        resultSet.getString("secondName"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("middleName"),
-                        resultSet.getDate("birthday").toLocalDate(),
-                        icdEntity,
-                        resultSet.getString("comment")
-                );
-                patientRecordEntities.add(patientRecordEntity);
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement or resultSet error", e);
-        }
-
-        return patientRecordEntities;
-    }
-
-    private enum SQL {
-        INSERT("INSERT INTO PatientRecord (id,secondName,firstName,middleName,birthday,icd_id,comment)" +
-                "VALUES ((?), (?), (?), (?), (?), (?), (?));"),
-
-        SELECT("SELECT pr.*, i.ICD, i.version, i.comment AS icdComment " +
-                "FROM PatientRecord AS pr " +
-                "LEFT JOIN Icd i ON i.id = pr.icd_id " +
-                "WHERE pr.id = (?)" +
-                ";"),
-
-        UPDATE("UPDATE PatientRecord SET icd_id = (?), comment = (?) WHERE id = (?);"),
-
-        DELETE("DELETE FROM PatientRecord WHERE id = (?);"),
-
-        SELECT_ALL("SELECT pr.*, i.ICD, i.version, i.comment AS icdComment " +
-                "FROM PatientRecord AS pr " +
-                "LEFT JOIN Icd i ON i.id = pr.icd_id" +
-                ";");
-
-        final String QUERY;
-
-        SQL(String query) {
-            this.QUERY = query;
-        }
+        return entities;
     }
 }
