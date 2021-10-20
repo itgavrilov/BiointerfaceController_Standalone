@@ -1,10 +1,10 @@
-package ru.gsa.biointerface.domain.host;
+package ru.gsa.biointerface.domain.host.serialport;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.host.packets.*;
+import ru.gsa.biointerface.domain.host.serialport.packets.*;
 import ru.gsa.biointerface.domain.host.serverByPuchkov.AbstractServer;
 
 import java.util.Arrays;

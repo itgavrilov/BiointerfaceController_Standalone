@@ -16,20 +16,7 @@ import java.util.TreeSet;
  */
 public class Channel implements Comparable<Channel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Channel.class);
-    private ChannelEntity entity;
-
-    public Channel(int id, String name, String comment) {
-        this(new ChannelEntity(id, name, comment));
-    }
-
-    public Channel(ChannelEntity entity) {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("Name is empty");
-
-        this.entity = entity;
-    }
+    private final ChannelEntity entity;
 
     static public Set<Channel> getAll() throws DomainException {
         try {
@@ -42,21 +29,26 @@ public class Channel implements Comparable<Channel> {
         }
     }
 
-    public void insert() throws DomainException {
+    private Channel(ChannelEntity entity) {
+        if(entity == null)
+            throw new NullPointerException("Entity is null");
+
+        this.entity = entity;
+    }
+
+    public Channel(String name, String comment) throws DomainException {
+        if (name == null)
+            throw new NullPointerException("Name is null");
+        if ("".equals(name))
+            throw new IllegalArgumentException("Name is empty");
+
+        entity = new ChannelEntity(-1, name, comment);
+
         try {
-            entity = ChannelDAO.getInstance().insert(entity);
+            ChannelDAO.getInstance().insert(entity);
             LOGGER.info("{} is recorded in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert channel error");
-        }
-    }
-
-    public void update() throws DomainException {
-        try {
-            ChannelDAO.getInstance().update(entity);
-            LOGGER.info("{} is updated in database", entity);
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO update channel error");
         }
     }
 
@@ -81,9 +73,14 @@ public class Channel implements Comparable<Channel> {
         return entity.getComment();
     }
 
-    public void setComment(String comment) {
-        LOGGER.info("{} is update in {}", comment, entity);
+    public void setComment(String comment) throws DomainException {
         entity.setComment(comment);
+        try {
+            ChannelDAO.getInstance().update(entity);
+            LOGGER.info("{} is update in {}", comment, entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update channel error");
+        }
     }
 
     @Override
@@ -96,7 +93,7 @@ public class Channel implements Comparable<Channel> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity);
+        return entity.hashCode();
     }
 
     @Override

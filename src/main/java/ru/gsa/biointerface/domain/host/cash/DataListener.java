@@ -1,5 +1,7 @@
-package ru.gsa.biointerface.domain;
+package ru.gsa.biointerface.domain.host.cash;
 
+
+import ru.gsa.biointerface.domain.DomainException;
 
 import java.util.Deque;
 

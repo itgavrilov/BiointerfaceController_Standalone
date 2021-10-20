@@ -1,11 +1,10 @@
-package ru.gsa.biointerface.domain.host;
+package ru.gsa.biointerface.domain.host.serialport;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.host.packets.ChannelPacket;
-import ru.gsa.biointerface.domain.host.packets.ConfigPacket;
-import ru.gsa.biointerface.domain.host.packets.Packet;
+import ru.gsa.biointerface.domain.host.serialport.packets.ChannelPacket;
+import ru.gsa.biointerface.domain.host.serialport.packets.ConfigPacket;
+import ru.gsa.biointerface.domain.host.serialport.packets.Packet;
 import ru.gsa.biointerface.domain.host.serverByPuchkov.ChannelHandler;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,7 +29,7 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
         switch (message.getPackageType()) {
             case CONFIG -> {
                 ConfigPacket msg = (ConfigPacket) message;
-                dataCollector.setDevice(new Device(msg.getSerialNumber(), msg.getCountOfChannels(), null));
+                dataCollector.setDevice(msg.getSerialNumber(), msg.getAmountChannels());
             }
             case CONTROL -> {
 

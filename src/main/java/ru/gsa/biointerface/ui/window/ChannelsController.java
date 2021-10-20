@@ -65,9 +65,8 @@ public class ChannelsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        channelSelected.setComment(commentField.getText());
         try {
-            channelSelected.update();
+            channelSelected.setComment(commentField.getText());
         } catch (DomainException e) {
             e.printStackTrace();
         }

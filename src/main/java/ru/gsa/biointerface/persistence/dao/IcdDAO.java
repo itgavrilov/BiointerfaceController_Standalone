@@ -18,7 +18,7 @@ public class IcdDAO extends AbstractDAO<IcdEntity, Integer> {
         super();
     }
 
-    public static DAO<IcdEntity, Integer> getInstance() throws PersistenceException {
+    public static IcdDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new IcdDAO();
 

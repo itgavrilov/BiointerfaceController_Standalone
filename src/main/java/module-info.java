@@ -23,7 +23,7 @@ module ru.gsa.biointerface {
     requires org.slf4j;
     exports ru.gsa.biointerface;
     exports ru.gsa.biointerface.domain;
-    exports ru.gsa.biointerface.domain.host.dataCash;
+    exports ru.gsa.biointerface.domain.host.cash;
     exports ru.gsa.biointerface.domain.entity;
     exports ru.gsa.biointerface.persistence;
     exports ru.gsa.biointerface.persistence.dao;
@@ -40,4 +40,5 @@ module ru.gsa.biointerface {
     opens ru.gsa.biointerface.ui.window.examination to javafx.fxml;
     opens ru.gsa.biointerface to javafx.fxml;
     opens ru.gsa.biointerface.domain.entity to org.hibernate.orm.core;
+    exports ru.gsa.biointerface.domain.host;
 }

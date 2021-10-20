@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.host.ConnectionFactory;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
@@ -94,6 +95,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
     }
 
+    @Override
     public WindowWithProperty<PatientRecord> setProperty(PatientRecord patientRecord) {
         if (patientRecord == null)
             throw new NullPointerException("patientRecord is null");
@@ -329,11 +331,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         channelGUIs.forEach(o -> o.getController().setEnable(!allSliderZoom.isDisable()));
         checkBoxesOfChannel.forEach(o -> o.setDisable(allSliderZoom.isDisable()));
 
-        if (connection != null && connection.isTransmission()) {
-            recordingButton.setDisable(false);
-        } else {
-            recordingButton.setDisable(true);
-        }
+        recordingButton.setDisable(connection == null || !connection.isTransmission());
 
         if (connection != null && connection.isRecording()) {
             recordingButton.setText("stop\nrecording");

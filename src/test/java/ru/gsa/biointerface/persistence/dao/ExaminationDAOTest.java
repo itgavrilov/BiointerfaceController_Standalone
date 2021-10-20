@@ -5,15 +5,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.gsa.biointerface.domain.*;
-import ru.gsa.biointerface.domain.host.dataCash.Cash;
-import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Thread.sleep;
 
 class ExaminationDAOTest {
     private final ExaminationDAO examinationDAO;
@@ -35,8 +31,7 @@ class ExaminationDAOTest {
 
     @Test
     void insert() throws DomainException, InterruptedException {
-        List<Cash> cashList = new ArrayList<>();
-        List<Graph> graphList = new ArrayList<>();
+        List<Channel> channels = new ArrayList<>();
         var patientRecord = new PatientRecord(1,
                 "G",
                 "S",
@@ -44,29 +39,27 @@ class ExaminationDAOTest {
                 LocalDate.now(),
                 null,
                 "test");
-        var device = new Device(1, 1, "test");
+        var device = new Device(1, 1);
+        device.setComment("test");
+
+        Assertions.assertEquals(device.getAmountChannels(), 1);
 
         for (int i = 0; i < device.getAmountChannels(); i++) {
-            Cash cash = new SampleCash();
-            Graph graph = new Graph(i);
-
-            cash.addListener(graph);
-
-            cashList.add(cash);
-            graphList.add(graph);
+            channels.add(null);
         }
 
-        var examination = new Examination(patientRecord, device, graphList, "test");
+        var examination = new Examination(patientRecord, device, channels, "test");
+
+        Assertions.assertEquals(examination.getEntity().getDeviceEntity(), device.getEntity());
+
+        Assertions.assertEquals(examination.getEntity().getPatientRecordEntity(), patientRecord.getEntity());
 
         Assertions.assertFalse(examination.getEntity().getGraphEntities().isEmpty());
 
         examination.recordingStart();
 
         for (int i = 1000; i > 0; i--) {
-            sleep(1);
-            for (Cash cash : cashList) {
-                cash.add(i);
-            }
+            examination.setNewSamplesInGraph(0, i);
         }
 
         examination.recordingStop();

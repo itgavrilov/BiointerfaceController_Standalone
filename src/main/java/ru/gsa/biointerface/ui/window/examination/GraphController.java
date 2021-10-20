@@ -9,7 +9,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.Graph;
+import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.entity.ChannelEntity;
+import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
@@ -25,7 +27,7 @@ import java.util.*;
 public final class GraphController implements ContentForWindow {
     private final ArrayList<XYChart.Data<Long, Integer>> samples = new ArrayList<>();
     private final ObservableList<XYChart.Data<Long, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private Graph graph;
+    private GraphEntity graphEntity;
     private int start = 0;
     private int capacity = 0;
 
@@ -54,15 +56,20 @@ public final class GraphController implements ContentForWindow {
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
     }
 
-    public void setGraph(Graph graph) throws UIException {
-        if (graph == null)
+    public void setGraphEntity(GraphEntity graphEntity) throws UIException {
+        if (graphEntity == null)
             throw new NullPointerException("graph is null");
 
-        nameText.setText(graph.getName());
+        if (graphEntity.getChannelEntity() != null) {
+            ChannelEntity channelEntity = graphEntity.getChannelEntity();
+            nameText.setText(channelEntity.getName());
+        } else {
+            nameText.setText("Channel " + (graphEntity.getNumberOfChannel() + 1));
+        }
 
         List<SampleEntity> sampleEntities = new LinkedList<>();
         try {
-            sampleEntities = SampleDAO.getInstance().getAllByGraph(graph.getEntity());
+            sampleEntities = SampleDAO.getInstance().getAllByGraph(graphEntity);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -76,7 +83,11 @@ public final class GraphController implements ContentForWindow {
             dataLineGraphic.addAll(samples);
         });
 
-        this.graph = graph;
+        this.graphEntity = graphEntity;
+    }
+
+    public String getName(){
+        return nameText.getText();
     }
 
     public int getLengthGraphic() {
@@ -117,11 +128,11 @@ public final class GraphController implements ContentForWindow {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GraphController graphController = (GraphController) o;
-        return Objects.equals(graph, graphController.graph);
+        return Objects.equals(graphEntity, graphController.graphEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(graph);
+        return Objects.hash(graphEntity);
     }
 }

@@ -69,9 +69,8 @@ public class IcdsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        icdSelected.setComment(commentField.getText());
         try {
-            icdSelected.update();
+            icdSelected.setComment(commentField.getText());
         } catch (DomainException e) {
             e.printStackTrace();
         }

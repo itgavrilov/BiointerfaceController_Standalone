@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.ui.window.metering;
 
 import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.host.cash.DataListener;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.

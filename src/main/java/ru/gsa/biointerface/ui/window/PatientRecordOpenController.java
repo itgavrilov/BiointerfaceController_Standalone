@@ -115,9 +115,8 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void commentFieldChange() {
         if (!commentField.getText().equals(patientRecord.getComment())) {
-            patientRecord.setComment(commentField.getText());
             try {
-                patientRecord.update();
+                patientRecord.setComment(commentField.getText());
             } catch (DomainException e) {
                 e.printStackTrace();
             }

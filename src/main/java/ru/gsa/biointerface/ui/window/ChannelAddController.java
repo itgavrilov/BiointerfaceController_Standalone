@@ -63,13 +63,11 @@ public class ChannelAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        Channel channel = new Channel(-1,
-                channelField.getText(),
-                commentField.getText()
-        );
-
         try {
-            channel.insert();
+            new Channel(
+                    channelField.getText(),
+                    commentField.getText()
+            );
         } catch (DomainException e) {
             e.printStackTrace();
         }

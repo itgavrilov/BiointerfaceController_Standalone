@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ExaminationsController extends AbstractWindow {
-    int idSelectedRow = -1;
+    Examination examinationSelected;
 
     @FXML
     private TableView<Examination> tableView;
@@ -82,25 +82,19 @@ public class ExaminationsController extends AbstractWindow {
     }
 
     public void onMouseClickedTableView() {
-        if (idSelectedRow != tableView.getFocusModel().getFocusedCell().getRow()) {
-            idSelectedRow = tableView.getFocusModel().getFocusedCell().getRow();
-            commentField.setText(
-                    tableView.getItems().get(idSelectedRow).getComment()
-            );
+        if (examinationSelected != tableView.getFocusModel().getFocusedItem()) {
+            examinationSelected = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(examinationSelected.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        if (!commentField.getText().equals(tableView.getItems().get(idSelectedRow).getComment())) {
-            Examination examination = tableView.getItems().get(idSelectedRow);
-            examination.setComment(commentField.getText());
-            try {
-                examination.update();
-            } catch (DomainException e) {
-                e.printStackTrace();
-            }
+        try {
+            examinationSelected.setComment(commentField.getText());
+        } catch (DomainException e) {
+            e.printStackTrace();
         }
     }
 
@@ -113,14 +107,12 @@ public class ExaminationsController extends AbstractWindow {
     }
 
     public void onDeleteButtonPush() {
-        Examination examination = tableView.getItems().get(idSelectedRow);
         try {
-            examination.delete();
+            examinationSelected.delete();
+            tableView.getItems().remove(examinationSelected);
+            commentField.setText("");
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        commentField.setText("");
-        tableView.getItems().remove(idSelectedRow);
-        idSelectedRow = -1;
     }
 }

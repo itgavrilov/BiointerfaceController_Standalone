@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.domain.host.packets;
+package ru.gsa.biointerface.domain.host.serialport.packets;
 
 import java.nio.ByteBuffer;
 
@@ -13,7 +13,7 @@ public class ConfigPacket extends AbstractPacket {
         return ByteBuffer.wrap(serialNumber).getInt();
     }
 
-    public int getCountOfChannels() {
+    public int getAmountChannels() {
         return msg[2];
     }
 }

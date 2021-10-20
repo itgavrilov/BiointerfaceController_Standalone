@@ -71,9 +71,8 @@ public class DevicesController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        deviceSelected.setComment(commentField.getText());
         try {
-            deviceSelected.update();
+            deviceSelected.setComment(commentField.getText());
         } catch (DomainException e) {
             e.printStackTrace();
         }

@@ -83,19 +83,16 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        Icd icd = new Icd(-1,
-                icdField.getText(),
-                Integer.parseInt(versionField.getText()),
-                commentField.getText()
-        );
-
         try {
-            icd.insert();
+            new Icd(icdField.getText(),
+                    Integer.parseInt(versionField.getText()),
+                    commentField.getText()
+            );
+
+            onBackButtonPush();
         } catch (DomainException e) {
             e.printStackTrace();
         }
-
-        onBackButtonPush();
     }
 
     public void onBackButtonPush() {

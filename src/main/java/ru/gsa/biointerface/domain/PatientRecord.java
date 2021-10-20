@@ -19,25 +19,6 @@ public class PatientRecord implements Comparable<PatientRecord> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecord.class);
     private final PatientRecordEntity entity;
 
-    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) {
-        this(new PatientRecordEntity(id, secondName, firstName, middleName, localDateToDate(birthday), icdEntity, comment));
-    }
-
-    public PatientRecord(PatientRecordEntity patientRecordEntity) {
-        if (patientRecordEntity.getId() == 0)
-            throw new NullPointerException("Id is null");
-        if (patientRecordEntity.getSecondName() == null)
-            throw new NullPointerException("SecondName is null");
-        if (patientRecordEntity.getFirstName() == null)
-            throw new NullPointerException("FirstName is null");
-        if (patientRecordEntity.getMiddleName() == null)
-            throw new NullPointerException("MiddleName is null");
-        if (patientRecordEntity.getBirthday() == null)
-            throw new NullPointerException("Birthday is null");
-
-        entity = patientRecordEntity;
-    }
-
     private static Calendar localDateToDate(LocalDate localDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
@@ -49,18 +30,26 @@ public class PatientRecord implements Comparable<PatientRecord> {
         return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()).toLocalDate();
     }
 
-    static public Set<PatientRecord> getSetAll() throws DomainException {
-        try {
-            List<PatientRecordEntity> entitys = PatientRecordDAO.getInstance().getAll();
-            Set<PatientRecord> result = new TreeSet<>();
-            entitys.forEach(o -> result.add(new PatientRecord(o)));
-            return result;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getAll patientRecords error");
-        }
-    }
+    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) throws DomainException {
+        if (id <= 0)
+            throw new NullPointerException("Id <= 0");
+        if (secondName == null)
+            throw new NullPointerException("SecondName is null");
+        if ("".equals(secondName))
+            throw new NullPointerException("SecondName is empty");
+        if (firstName == null)
+            throw new NullPointerException("FirstName is null");
+        if ("".equals(firstName))
+            throw new NullPointerException("FirstName is empty");
+        if (middleName == null)
+            throw new NullPointerException("MiddleName is null");
+        if ("".equals(middleName))
+            throw new NullPointerException("MiddleName is empty");
+        if (birthday == null)
+            throw new NullPointerException("Birthday is null");
 
-    public void insert() throws DomainException {
+        entity = new PatientRecordEntity(id, secondName, firstName, middleName, localDateToDate(birthday), icdEntity, comment);
+
         try {
             PatientRecordDAO.getInstance().insert(entity);
             LOGGER.info("{} is recorded in database", entity);
@@ -69,12 +58,21 @@ public class PatientRecord implements Comparable<PatientRecord> {
         }
     }
 
-    public void update() throws DomainException {
+    public PatientRecord(PatientRecordEntity entity) {
+        if(entity == null)
+            throw new NullPointerException("Entity is null");
+
+        this.entity = entity;
+    }
+
+    static public Set<PatientRecord> getSetAll() throws DomainException {
         try {
-            PatientRecordDAO.getInstance().update(entity);
-            LOGGER.info("{} is update in database", entity);
+            List<PatientRecordEntity> entitys = PatientRecordDAO.getInstance().getAll();
+            Set<PatientRecord> result = new TreeSet<>();
+            entitys.forEach(o -> result.add(new PatientRecord(o)));
+            return result;
         } catch (PersistenceException e) {
-            throw new DomainException("DAO update patientRecord error");
+            throw new DomainException("DAO getAll patientRecords error");
         }
     }
 
@@ -119,13 +117,20 @@ public class PatientRecord implements Comparable<PatientRecord> {
         return icd;
     }
 
-    public void setIcd(Icd icd) {
-        if (icd != null) {
-            LOGGER.info("{} is set in {}", icd, entity);
-            entity.setIcdEntity(icd.getEntity());
-        } else {
-            LOGGER.info("ICD is deleted in {}", entity);
-            entity.setIcdEntity(null);
+    public void setIcd(Icd icd) throws DomainException {
+
+        try {
+            if (icd != null) {
+                entity.setIcdEntity(icd.getEntity());
+                PatientRecordDAO.getInstance().update(entity);
+                LOGGER.info("{} is set in {}", icd, entity);
+            } else {
+                entity.setIcdEntity(null);
+                PatientRecordDAO.getInstance().update(entity);
+                LOGGER.info("ICD is deleted in {}", entity);
+            }
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update patientRecord error");
         }
     }
 
@@ -133,9 +138,14 @@ public class PatientRecord implements Comparable<PatientRecord> {
         return entity.getComment();
     }
 
-    public void setComment(String comment) {
-        LOGGER.info("{} is update in {}", comment, entity);
+    public void setComment(String comment) throws DomainException {
         entity.setComment(comment);
+        try {
+            PatientRecordDAO.getInstance().update(entity);
+            LOGGER.info("{} is update in {}", comment, entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO update patientRecord error");
+        }
     }
 
     @Override
@@ -148,7 +158,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity);
+        return entity.hashCode();
     }
 
     @Override

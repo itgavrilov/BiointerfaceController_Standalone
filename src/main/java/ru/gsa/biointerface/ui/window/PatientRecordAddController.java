@@ -246,22 +246,21 @@ public class PatientRecordAddController extends AbstractWindow {
         if (icdComboBox.getValue() != null)
             icdEntity = icdComboBox.getValue().getEntity();
 
-        PatientRecord patientRecord = new PatientRecord(
-                Integer.parseInt(externalIDField.getText()),
-                secondNameField.getText(),
-                firstNameField.getText(),
-                middleNameField.getText(),
-                birthdayField.getValue(),
-                icdEntity,
-                commentField.getText()
-        );
         try {
-            patientRecord.insert();
+            new PatientRecord(
+                    Integer.parseInt(externalIDField.getText()),
+                    secondNameField.getText(),
+                    firstNameField.getText(),
+                    middleNameField.getText(),
+                    birthdayField.getValue(),
+                    icdEntity,
+                    commentField.getText()
+            );
+
+            onBackButtonPush();
         } catch (DomainException e) {
             e.printStackTrace();
         }
-
-        onBackButtonPush();
     }
 
     public void onBackButtonPush() {

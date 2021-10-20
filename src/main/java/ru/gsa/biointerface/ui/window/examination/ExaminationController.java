@@ -9,8 +9,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Examination;
-import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
@@ -114,30 +114,27 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
             graphCapacity = allSliderZoom.getValue();
 
-            for (GraphEntity o : graphEntities) {
-                Graph graph = new Graph(o);
+            for (GraphEntity graphEntity : graphEntities) {
                 CompositeNode<AnchorPane, GraphController> node =
                         new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
+                GraphController graph = node.getController();
 
-                node.getController().setGraph(graph);
+                graph.setGraphEntity(graphEntity);
+                graph.setStart(0);
+                graph.setCapacity((int) graphCapacity);
 
-                if (graphSize > node.getController().getLengthGraphic() || graphSize == 0) {
-                    graphSize = node.getController().getLengthGraphic();
+                if (graphSize > graph.getLengthGraphic() || graphSize == 0) {
+                    graphSize = graph.getLengthGraphic();
                 }
                 channelGUIs.add(node);
 
-                CheckBoxOfGraph checkBox = new CheckBoxOfGraph(o.getNumberOfChannel());
+                CheckBoxOfGraph checkBox = new CheckBoxOfGraph(graphEntity.getNumberOfChannel());
                 checkBox.setText(graph.getName());
                 checkBox.setOnAction(event -> {
                     node.getNode().setVisible(checkBox.isSelected());
                     drawChannelsGUI();
                 });
                 checkBoxesOfChannel.add(checkBox);
-            }
-
-            for (CompositeNode<AnchorPane, GraphController> node : channelGUIs) {
-                node.getController().setStart(0);
-                node.getController().setCapacity((int) graphCapacity);
             }
 
             allSliderZoom.setMax(graphSize);
@@ -197,7 +194,11 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     }
 
     public void commentFieldChange() {
-        examination.setComment(commentField.getText());
+        try {
+            examination.setComment(commentField.getText());
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -108,9 +108,8 @@ public class PatientRecordsController extends AbstractWindow {
 
             if (newIcd != null && (!newIcd.equals(patientRecord.getIcd()))
                     || patientRecord.getIcd() != null && (!patientRecord.getIcd().equals(newIcd))) {
-                patientRecord.setIcd(newIcd);
                 try {
-                    patientRecord.update();
+                    patientRecord.setIcd(newIcd);
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
@@ -166,9 +165,8 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        patientRecordSelected.setComment(commentField.getText());
         try {
-            patientRecordSelected.update();
+            patientRecordSelected.setComment(commentField.getText());
         } catch (DomainException e) {
             e.printStackTrace();
         }
