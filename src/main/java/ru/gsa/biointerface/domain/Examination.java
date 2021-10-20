@@ -2,38 +2,69 @@ package ru.gsa.biointerface.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.DeviceEntity;
 import ru.gsa.biointerface.domain.entity.ExaminationEntity;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.ExaminationDAO;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class Examination implements Comparable<Examination> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Examination.class);
-    private ExaminationEntity entity;
-
-    public Examination(int id, PatientRecordEntity patientRecordEntity, DeviceEntity deviceEntity, String comment) {
-        this(new ExaminationEntity(id, LocalDateTime.now(), patientRecordEntity, deviceEntity, comment));
-    }
+    private final ExaminationEntity entity;
+    private final ExaminationDAO dao;
 
     public Examination(ExaminationEntity examinationEntity) {
-        if (examinationEntity.getDateTime() == null)
-            throw new NullPointerException("DateTime is null");
-
         entity = examinationEntity;
+        try {
+            dao = ExaminationDAO.getInstance();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            throw new NullPointerException("DAO is null");
+        }
+    }
+
+    public Examination(PatientRecord patientRecord, Device device, List<Graph> graphList, String comment) {
+        if (patientRecord == null)
+            throw new NullPointerException("PatientRecord is null");
+        if (device == null)
+            throw new NullPointerException("Device is null");
+        if (graphList == null)
+            throw new NullPointerException("GraphList is null");
+        if (graphList.size() > device.getAmountChannels())
+            throw new IllegalArgumentException("Size graphList is greater than amount channels in device");
+
+
+        entity = new ExaminationEntity(
+                -1,
+                Timestamp.valueOf(LocalDateTime.now()),
+                patientRecord.getEntity(),
+                device.getEntity(),
+                comment,
+                new ArrayList<>());
+
+        for (Graph graph : graphList) {
+            graph.setExamination(this);
+            entity.getGraphEntities().add(graph.getEntity());
+        }
+
+        try {
+            dao = ExaminationDAO.getInstance();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            throw new NullPointerException("DAO is null");
+        }
     }
 
     static public Set<Examination> getAll() throws DomainException {
         try {
-            Set<ExaminationEntity> entities = ExaminationDAO.getInstance().getAll();
+            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getAll();
             Set<Examination> result = new TreeSet<>();
             entities.forEach(o -> result.add(new Examination(o)));
             return result;
@@ -42,9 +73,9 @@ public class Examination implements Comparable<Examination> {
         }
     }
 
-    static public Set<Examination> getByPatientRecordId(PatientRecord patientRecord) throws DomainException {
+    static public Set<Examination> getByPatientRecordId(PatientRecordEntity patientRecordEntity) throws DomainException {
         try {
-            Set<ExaminationEntity> entities = ExaminationDAO.getInstance().getByPatientRecord(patientRecord.getEntity());
+            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getByPatientRecord(patientRecordEntity);
             Set<Examination> result = new TreeSet<>();
             entities.forEach(o -> result.add(new Examination(o)));
             return result;
@@ -53,33 +84,39 @@ public class Examination implements Comparable<Examination> {
         }
     }
 
-    public void insert() throws DomainException {
-        if (entity.getDeviceEntity() != null) {
-            Device device = new Device(entity.getDeviceEntity());
-            device.insert();
-
-            if (entity.getPatientRecord() != null) {
-                try {
-                    entity.setDateTime(LocalDateTime.now());
-                    entity = ExaminationDAO.getInstance().insert(entity);
-                    LOGGER.info("Examination is recorded in database wish id '{}'", entity);
-                } catch (PersistenceException e) {
-                    throw new DomainException("DAO insert examination error");
-                }
-            } else {
-                throw new DomainException("PatientRecordEntity is null");
-            }
-        } else {
+    public void recordingStart() throws DomainException {
+        if (entity.getPatientRecordEntity() == null)
+            throw new DomainException("PatientRecordEntity is null");
+        if (entity.getDeviceEntity() == null)
             throw new DomainException("DeviceEntity is null");
+
+        try {
+            dao.beginTransaction();
+            dao.insert(entity);
+            LOGGER.info("{} is recorded in database", entity);
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO insert " + entity + " error");
         }
+    }
+
+    public void recordingStop() {
+        try {
+            dao.endTransaction();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isRecording() {
+        return dao.transactionIsOpen();
     }
 
     public void update() throws DomainException {
         if (entity.getDeviceEntity() != null) {
-            if (entity.getPatientRecord() != null) {
+            if (entity.getPatientRecordEntity() != null) {
                 try {
                     ExaminationDAO.getInstance().update(entity);
-                    LOGGER.info("Examination '{}' is updated in database", entity);
+                    LOGGER.info("{} is updated in database", entity);
                 } catch (PersistenceException e) {
                     throw new DomainException("DAO update examination error");
                 }
@@ -93,8 +130,8 @@ public class Examination implements Comparable<Examination> {
 
     public void delete() throws DomainException {
         try {
-            ExaminationDAO.getInstance().delete(entity);
-            LOGGER.info("Examination '{}' is deleted in the database", entity);
+            dao.delete(entity);
+            LOGGER.info("{} is deleted in the database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO delete examination error");
         }
@@ -104,33 +141,23 @@ public class Examination implements Comparable<Examination> {
         return entity;
     }
 
-    public void reset() {
-        entity.setId(-1);
-    }
-
-    public int getId() {
+    public long getId() {
         return entity.getId();
     }
 
     public LocalDateTime getDateTime() {
-        return entity.getDateTime();
+        return entity.getDateTime().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public PatientRecord getPatientRecord() {
         PatientRecord patientRecord = null;
 
-        if (entity.getPatientRecord() != null)
-            patientRecord = new PatientRecord(entity.getPatientRecord());
+        if (entity.getPatientRecordEntity() != null)
+            patientRecord = new PatientRecord(entity.getPatientRecordEntity());
 
         return patientRecord;
-    }
-
-    public void setPatientRecord(PatientRecord patientRecord) {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
-
-        LOGGER.info("Set PatientRecord '{}' in Examination '{}'", patientRecord, entity);
-        entity.setPatientRecordEntity(patientRecord.getEntity());
     }
 
     public Device getDevice() {
@@ -141,24 +168,12 @@ public class Examination implements Comparable<Examination> {
         return device;
     }
 
-    public void setDevice(Device device) {
-        if (device == null)
-            throw new NullPointerException("Device is null");
-
-        LOGGER.info("Set Device '{}' in Examination '{}'", device, entity);
-        entity.setDeviceEntity(device.getEntity());
-    }
-
-    public int getAmountChannels() {
-        return entity.getDeviceEntity().getAmountChannels();
-    }
-
     public String getComment() {
         return entity.getComment();
     }
 
     public void setComment(String comment) {
-        LOGGER.info("Comment '{}' is update in the Examination '{}'", comment, entity);
+        LOGGER.info("{} is update in {}", comment, entity);
         entity.setComment(comment);
     }
 

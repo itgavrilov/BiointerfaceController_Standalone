@@ -93,7 +93,7 @@ public class ProxyGUI implements TransitionGUI {
         resizeWindow(stage.getHeight() - 36, stage.getWidth() - 14);
     }
 
-    public void uploadContent(ResourceSource resourceSource) throws UIException {
+    public void uploadContent(ResourceSource resourceSource) {
         if (resourceSource == null)
             throw new NullPointerException("mainClass is null");
 
@@ -103,7 +103,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (UIException e) {
-            throw new UIException("UploadContent error", e);
+            e.printStackTrace();
         }
     }
 
@@ -115,9 +115,9 @@ public class ProxyGUI implements TransitionGUI {
     @Override
     public Window transition(FXMLLoader loader) throws UIException {
         if (loader == null)
-            throw new NullPointerException("content is null");
+            throw new NullPointerException("Content is null");
         if (stage == null)
-            throw new NullPointerException("stage is null");
+            throw new UIException("Stage is null");
 
         stage.close();
         fieldForWindow.getChildren().clear();

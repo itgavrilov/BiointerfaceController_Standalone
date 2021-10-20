@@ -1,35 +1,51 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class SampleEntity implements Comparable<SampleEntity> {
-    private int id;
-    private GraphEntity graph;
+@Entity(name = "sample")
+@Table(name = "sample")
+@IdClass(SampleEntityId.class)
+public class SampleEntity {
+    @Id
+    private long id = -1;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "examination_id", referencedColumnName = "examination_id"),
+            @JoinColumn(name = "numberOfChannel", referencedColumnName = "numberOfChannel")
+    })
+    private GraphEntity graphEntity;
+
     private int value;
 
-    public SampleEntity(int id, GraphEntity graph, int value) {
+    public SampleEntity() {
+    }
+
+    public SampleEntity(long id, GraphEntity graphEntity, int value) {
         this.id = id;
-        this.graph = graph;
+        this.graphEntity = graphEntity;
         this.value = value;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public GraphEntity getGraph() {
-        return graph;
+    public GraphEntity getGraphEntity() {
+        return graphEntity;
     }
 
-    public void setGraph(GraphEntity graph) {
-        this.graph = graph;
+    public void setGraphEntity(GraphEntity graphEntity) {
+        this.graphEntity = graphEntity;
     }
 
     public int getValue() {
@@ -45,29 +61,20 @@ public class SampleEntity implements Comparable<SampleEntity> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SampleEntity that = (SampleEntity) o;
-        return id == that.id && graph.equals(that.graph);
+        return id == that.id && Objects.equals(graphEntity, that.graphEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, graph);
-    }
-
-    @Override
-    public int compareTo(SampleEntity o) {
-        int result = graph.compareTo(o.graph);
-
-        if (result == 0)
-            result = id - o.id;
-
-        return result;
+        return Objects.hash(id, graphEntity);
     }
 
     @Override
     public String toString() {
         return "SampleEntity{" +
                 "id=" + id +
-                ", graph=" + graph +
+                ", examination_id=" + graphEntity.getExaminationEntity().getId() +
+                ", numberOfChannel=" + graphEntity.getNumberOfChannel() +
                 ", value=" + value +
                 '}';
     }

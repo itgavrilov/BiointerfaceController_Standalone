@@ -70,6 +70,7 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
     public void serialEvent(SerialPortEvent event) {
         if (event == null)
             throw new NullPointerException("Event is null");
+
         if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
             return;
 

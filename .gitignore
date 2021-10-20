@@ -8,5 +8,5 @@ gradle/*
 build/*
 logs/*
 
-*.s3db
+#*.s3db
 

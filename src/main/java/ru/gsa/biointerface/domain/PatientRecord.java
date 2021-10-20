@@ -8,9 +8,9 @@ import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.PatientRecordDAO;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -20,7 +20,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     private final PatientRecordEntity entity;
 
     public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) {
-        this(new PatientRecordEntity(id, secondName, firstName, middleName, birthday, icdEntity, comment));
+        this(new PatientRecordEntity(id, secondName, firstName, middleName, localDateToDate(birthday), icdEntity, comment));
     }
 
     public PatientRecord(PatientRecordEntity patientRecordEntity) {
@@ -38,9 +38,20 @@ public class PatientRecord implements Comparable<PatientRecord> {
         entity = patientRecordEntity;
     }
 
+    private static Calendar localDateToDate(LocalDate localDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+        return calendar;
+    }
+
+    private static LocalDate dateToLocalDate(Calendar calendar) {
+        return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()).toLocalDate();
+    }
+
     static public Set<PatientRecord> getSetAll() throws DomainException {
         try {
-            Set<PatientRecordEntity> entitys = PatientRecordDAO.getInstance().getAll();
+            List<PatientRecordEntity> entitys = PatientRecordDAO.getInstance().getAll();
             Set<PatientRecord> result = new TreeSet<>();
             entitys.forEach(o -> result.add(new PatientRecord(o)));
             return result;
@@ -52,9 +63,8 @@ public class PatientRecord implements Comparable<PatientRecord> {
     public void insert() throws DomainException {
         try {
             PatientRecordDAO.getInstance().insert(entity);
-            LOGGER.info("PatientRecord '{}' is recorded in database", entity);
+            LOGGER.info("{} is recorded in database", entity);
         } catch (PersistenceException e) {
-            e.printStackTrace();
             throw new DomainException("DAO insert patientRecord error");
         }
     }
@@ -62,9 +72,8 @@ public class PatientRecord implements Comparable<PatientRecord> {
     public void update() throws DomainException {
         try {
             PatientRecordDAO.getInstance().update(entity);
-            LOGGER.info("PatientRecord '{}' is update in database", entity);
+            LOGGER.info("{} is update in database", entity);
         } catch (PersistenceException e) {
-            e.printStackTrace();
             throw new DomainException("DAO update patientRecord error");
         }
     }
@@ -72,10 +81,9 @@ public class PatientRecord implements Comparable<PatientRecord> {
     public void delete() throws DomainException {
         try {
             PatientRecordDAO.getInstance().delete(entity);
-            LOGGER.info("PatientRecord '{}' is deleted in database", entity);
+            LOGGER.info("{} is deleted in database", entity);
         } catch (PersistenceException e) {
-            e.printStackTrace();
-            throw new DomainException("dao delete patientRecord error");
+            throw new DomainException("DAO delete patientRecord error");
         }
     }
 
@@ -100,7 +108,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     }
 
     public LocalDate getBirthday() {
-        return entity.getBirthday();
+        return dateToLocalDate(entity.getBirthday());
     }
 
     public Icd getIcd() {
@@ -113,11 +121,11 @@ public class PatientRecord implements Comparable<PatientRecord> {
 
     public void setIcd(Icd icd) {
         if (icd != null) {
-            LOGGER.info("ICD '{}' is set in patientRecord '{}'", icd, entity);
-            entity.setIcd(icd.getEntity());
+            LOGGER.info("{} is set in {}", icd, entity);
+            entity.setIcdEntity(icd.getEntity());
         } else {
-            LOGGER.info("ICD is deleted in patientRecord '{}'", entity);
-            entity.setIcd(null);
+            LOGGER.info("ICD is deleted in {}", entity);
+            entity.setIcdEntity(null);
         }
     }
 
@@ -126,7 +134,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     }
 
     public void setComment(String comment) {
-        LOGGER.info("Comment '{}' is update in patientRecord '{}'", comment, entity);
+        LOGGER.info("{} is update in {}", comment, entity);
         entity.setComment(comment);
     }
 

@@ -11,11 +11,12 @@ public class DomainException extends Exception {
 
     public DomainException(String message) {
         super(message);
-        LOGGER.error("{}", message);
+        LOGGER.error("{}:", message, this);
     }
 
     public DomainException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.error("{}:", message, cause);
+        cause.printStackTrace();
+        LOGGER.error("{}:", message, this);
     }
 }

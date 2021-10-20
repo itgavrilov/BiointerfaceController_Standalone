@@ -3,6 +3,7 @@ package ru.gsa.biointerface.domain;
 import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.gsa.biointerface.ui.window.metering.Connection;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,21 +14,49 @@ import java.util.stream.Stream;
  */
 public class ConnectionFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionFactory.class);
-    private static Set<ConnectionToDevice> connectionsToDevice = new LinkedHashSet<>();
+    private static ConnectionFactory instance;
+    private Set<ConnectionToDevice> connections = new LinkedHashSet<>();
+    private ConnectionToDevice connectionsActive;
 
-    private static Stream<SerialPort> getSerialPortsWishDevises() {
+    private ConnectionFactory() {
+
+    }
+
+    public static ConnectionFactory getInstance() {
+        if (instance == null)
+            instance = new ConnectionFactory();
+
+        return instance;
+    }
+
+    public static void disconnectScanningSerialPort() throws DomainException {
+        if (getInstance().connections.size() > 0) {
+            for (ConnectionToDevice connectionToDevice : getInstance().connections) {
+                connectionToDevice.disconnect();
+            }
+            getInstance().connections.clear();
+            LOGGER.info("disconnect all serial ports");
+        }
+    }
+
+    private Stream<SerialPort> getSerialPortsWishDevises() {
         LOGGER.info("Get serial ports with devices");
         return Arrays.stream(SerialPort.getCommPorts())
                 .filter(o -> "BiointerfaceController".equals(o.getPortDescription()));
     }
 
-    public static void scanningSerialPort(PatientRecord patientRecord) throws DomainException {
-        disconnectScanningSerialPort();
+    public void scanningSerialPort() throws DomainException {
+        if (connectionsActive != null) {
+            connectionsActive.controllerReboot();
+            connectionsActive = null;
+        }
 
+        connections.clear();
         getSerialPortsWishDevises()
                 .forEach(o -> {
                     try {
-                        connectionsToDevice.add(new ConnectionToDevice(patientRecord, o));
+                        ConnectionToDevice connection = new ConnectionToDevice(o);
+                        connections.add(connection);
                     } catch (DomainException e) {
                         e.printStackTrace();
                     }
@@ -35,19 +64,19 @@ public class ConnectionFactory {
         LOGGER.info("Scanning devices");
     }
 
-    public static List<Device> getListDevices() {
-        connectionsToDevice = connectionsToDevice.stream()
+    public List<Device> getListDevices() {
+        connections = connections.stream()
                 .filter(ConnectionToDevice::isAvailableDevice)
                 .collect(Collectors.toSet());
         LOGGER.info("Get available devices");
-        return connectionsToDevice.stream()
+        return connections.stream()
                 .map(ConnectionToDevice::getDevice)
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public static Connection getInstance(Device device) {
-        return connectionsToDevice.stream()
+    public Connection getConnection(Device device) {
+        connectionsActive = connections.stream()
                 .peek(o -> {
                     if (!device.equals(o.getDevice())) {
                         try {
@@ -60,15 +89,7 @@ public class ConnectionFactory {
                 .filter(o -> device.equals(o.getDevice()))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
-    }
 
-    public static void disconnectScanningSerialPort() throws DomainException {
-        if (connectionsToDevice.size() > 0) {
-            for (ConnectionToDevice connectionToDevice : connectionsToDevice) {
-                connectionToDevice.disconnect();
-            }
-            connectionsToDevice.clear();
-            LOGGER.info("disconnect all serial ports");
-        }
+        return connectionsActive;
     }
 }

@@ -1,26 +1,24 @@
 package ru.gsa.biointerface.persistence.dao;
 
+import org.hibernate.Session;
 import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Set;
-import java.util.TreeSet;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.List;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class IcdDAO extends AbstractDAO<IcdEntity> {
+public class IcdDAO extends AbstractDAO<IcdEntity, Integer> {
     protected static IcdDAO dao;
 
     private IcdDAO() throws PersistenceException {
         super();
     }
 
-    public static DAO<IcdEntity> getInstance() throws PersistenceException {
+    public static DAO<IcdEntity, Integer> getInstance() throws PersistenceException {
         if (dao == null)
             dao = new IcdDAO();
 
@@ -28,127 +26,36 @@ public class IcdDAO extends AbstractDAO<IcdEntity> {
     }
 
     @Override
-    public IcdEntity insert(IcdEntity entity) throws PersistenceException {
-        if (entity == null)
-            throw new NullPointerException("entity is null");
+    public IcdEntity read(Integer key) throws PersistenceException {
+        IcdEntity entity;
 
-
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.INSERT.QUERY)) {
-            statement.setString(1, entity.getICD());
-            statement.setInt(2, entity.getVersion());
-            if (entity.getComment() != null) statement.setString(3, entity.getComment());
-            else statement.setNull(3, java.sql.Types.NULL);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    entity.setId(resultSet.getInt("id"));
-                }
-            } catch (SQLException e) {
-                throw new PersistenceException("resultSet error", e);
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("statement error", e);
+        try (final Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            entity = session.get(IcdEntity.class, key);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new PersistenceException("Session error", e);
         }
 
         return entity;
     }
 
     @Override
-    public IcdEntity getById(int key) throws PersistenceException {
-        IcdEntity entity = null;
+    public List<IcdEntity> getAll() throws PersistenceException {
+        List<IcdEntity> entities;
 
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.SELECT.QUERY)) {
-            statement.setInt(1, key);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    entity = new IcdEntity(
-                            resultSet.getInt("id"),
-                            resultSet.getString("ICD"),
-                            resultSet.getInt("version"),
-                            resultSet.getString("comment")
-                    );
-                }
-            } catch (SQLException e) {
-                throw new PersistenceException("ResultSet error", e);
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
-        }
+        try (final Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<IcdEntity> cq = cb.createQuery(IcdEntity.class);
+            cq.from(IcdEntity.class);
 
-        return entity;
-    }
-
-    @Override
-    public boolean update(IcdEntity entity) throws PersistenceException {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-
-        boolean result;
-
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.UPDATE.QUERY)) {
-            if (entity.getComment() != null) statement.setString(1, entity.getComment());
-            else statement.setNull(1, java.sql.Types.NULL);
-            statement.setInt(2, entity.getId());
-            result = statement.execute();
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean delete(IcdEntity entity) throws PersistenceException {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-
-        boolean result;
-
-        try (PreparedStatement statement = db.getConnection().prepareStatement(SQL.DELETE.QUERY)) {
-            statement.setInt(1, entity.getId());
-
-            result = statement.execute();
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement error", e);
-        }
-
-        return result;
-    }
-
-    @Override
-    public Set<IcdEntity> getAll() throws PersistenceException {
-        Set<IcdEntity> entities = new TreeSet<>();
-
-        try (Statement statement = db.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL.SELECT_ALL.QUERY)) {
-            while (resultSet.next()) {
-                IcdEntity entity = new IcdEntity(
-                        resultSet.getInt("id"),
-                        resultSet.getString("ICD"),
-                        resultSet.getInt("version"),
-                        resultSet.getString("comment")
-                );
-                entities.add(entity);
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Statement or resultSet error", e);
+            entities = session.createQuery(cq).getResultList();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new PersistenceException("Session error", e);
         }
 
         return entities;
-    }
-
-    private enum SQL {
-        INSERT("INSERT INTO Icd (ICD,version,comment)" +
-                "VALUES ((?), (?), (?))" +
-                "RETURNING id;"),
-        SELECT("SELECT * FROM Icd WHERE id = (?);"),
-        UPDATE("UPDATE Icd SET comment = (?) WHERE id = (?);"),
-        DELETE("DELETE FROM Icd WHERE id = (?);"),
-        SELECT_ALL("SELECT * FROM Icd;");
-
-        final String QUERY;
-
-        SQL(String query) {
-            this.QUERY = query;
-        }
     }
 }

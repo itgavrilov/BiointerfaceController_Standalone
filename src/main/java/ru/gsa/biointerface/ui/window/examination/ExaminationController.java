@@ -24,8 +24,6 @@ import ru.gsa.biointerface.ui.window.graph.CompositeNode;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
@@ -102,78 +100,77 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         timeScrollBar.setBlockIncrement(1);
 
         buildingChannelsGUIs();
-        drawChannelsGUI();
 
         transitionGUI.show();
     }
 
-    public void buildingChannelsGUIs() throws UIException {
-        Set<GraphEntity> graphEntities;
+    public void buildingChannelsGUIs() {
+        List<GraphEntity> graphEntities;
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
         try {
-            graphEntities = GraphDAO.getInstance().getAllByExamination(examination);
-        } catch (PersistenceException e) {
-            throw new UIException("Error getting a list of graphEntities by examination", e);
-        }
+            graphEntities = GraphDAO.getInstance().getAllByExamination(examination.getEntity());
 
-        graphCapacity = allSliderZoom.getValue();
+            graphCapacity = allSliderZoom.getValue();
 
-        for (GraphEntity o : graphEntities) {
-            Graph graph = new Graph(o);
-            CompositeNode<AnchorPane, GraphController> node =
-                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
+            for (GraphEntity o : graphEntities) {
+                Graph graph = new Graph(o);
+                CompositeNode<AnchorPane, GraphController> node =
+                        new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
 
-            node.getController().setGraph(graph);
+                node.getController().setGraph(graph);
 
-            if (graphSize > node.getController().getLengthGraphic() || graphSize == 0) {
-                graphSize = node.getController().getLengthGraphic();
-            }
-            channelGUIs.add(node);
+                if (graphSize > node.getController().getLengthGraphic() || graphSize == 0) {
+                    graphSize = node.getController().getLengthGraphic();
+                }
+                channelGUIs.add(node);
 
-            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(o.getNumberOfChannel());
-            checkBox.setText(graph.getName());
-            checkBox.setOnAction(event -> {
-                node.getNode().setVisible(checkBox.isSelected());
-                drawChannelsGUI();
-            });
-            checkBoxesOfChannel.add(checkBox);
-        }
-
-        for (CompositeNode<AnchorPane, GraphController> node : channelGUIs) {
-            node.getController().setStart(0);
-            node.getController().setCapacity((int) graphCapacity);
-        }
-
-        allSliderZoom.setMax(graphSize);
-        timeScrollBar.setMax(graphSize - graphCapacity);
-        timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
-
-        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> {
-            graphCapacity = new_val.intValue();
-            graphStart = timeScrollBar.getValue();
-
-            if (graphStart > graphSize - graphCapacity) {
-                graphStart = graphSize - graphCapacity;
-                timeScrollBar.setValue(graphStart);
+                CheckBoxOfGraph checkBox = new CheckBoxOfGraph(o.getNumberOfChannel());
+                checkBox.setText(graph.getName());
+                checkBox.setOnAction(event -> {
+                    node.getNode().setVisible(checkBox.isSelected());
+                    drawChannelsGUI();
+                });
+                checkBoxesOfChannel.add(checkBox);
             }
 
+            for (CompositeNode<AnchorPane, GraphController> node : channelGUIs) {
+                node.getController().setStart(0);
+                node.getController().setCapacity((int) graphCapacity);
+            }
+
+            allSliderZoom.setMax(graphSize);
             timeScrollBar.setMax(graphSize - graphCapacity);
             timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
 
-            channelGUIs.forEach(o -> {
-                o.getController().setStart((int) graphStart);
-                o.getController().setCapacity((int) graphCapacity);
+            allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> {
+                graphCapacity = new_val.intValue();
+                graphStart = timeScrollBar.getValue();
+
+                if (graphStart > graphSize - graphCapacity) {
+                    graphStart = graphSize - graphCapacity;
+                    timeScrollBar.setValue(graphStart);
+                }
+
+                timeScrollBar.setMax(graphSize - graphCapacity);
+                timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
+
+                channelGUIs.forEach(o -> {
+                    o.getController().setStart((int) graphStart);
+                    o.getController().setCapacity((int) graphCapacity);
+                });
             });
-        });
 
-        timeScrollBar.valueProperty().addListener((ov, old_val, new_val) -> {
-            graphStart = new_val.intValue();
-            channelGUIs.forEach(o -> o.getController().setStart((int) graphStart));
-        });
+            timeScrollBar.valueProperty().addListener((ov, old_val, new_val) -> {
+                graphStart = new_val.intValue();
+                channelGUIs.forEach(o -> o.getController().setStart((int) graphStart));
+            });
 
-        drawChannelsGUI();
+            drawChannelsGUI();
+        } catch (PersistenceException | UIException e) {
+            e.printStackTrace();
+        }
     }
 
     public void drawChannelsGUI() {

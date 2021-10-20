@@ -3,8 +3,10 @@ package ru.gsa.biointerface.domain.host.dataCash;
 import ru.gsa.biointerface.domain.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created  by Gavrilov Stepan on 07.11.2019.
@@ -12,18 +14,28 @@ import java.util.LinkedList;
  */
 
 public final class SampleCash implements Cash {
-    private final DataListener listener;
+    private final List<DataListener> listeners = new ArrayList<>();
     private final Deque<Integer> data = new LinkedList<>();
 
-    public SampleCash(DataListener listener) {
-        this.listener = listener;
+    public void addListener(DataListener listener) {
+        listeners.add(listener);
+    }
+
+    public void deleteListener(DataListener listener) {
+        listeners.remove(listener);
     }
 
     @Override
-    public void add(int val) throws DomainException {
+    public void add(int val) {
         data.add(val);
-        if (listener.isReady() && data.size() > 15) {
-            listener.setNewSamples(data);
+        if (data.size() > 15) {
+            for (DataListener listener : listeners) {
+                try {
+                    listener.setNewSamples(data);
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
+            }
             data.clear();
         }
     }

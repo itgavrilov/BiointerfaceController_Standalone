@@ -6,6 +6,7 @@ import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.ChannelDAO;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,7 +33,7 @@ public class Channel implements Comparable<Channel> {
 
     static public Set<Channel> getAll() throws DomainException {
         try {
-            Set<ChannelEntity> entities = ChannelDAO.getInstance().getAll();
+            List<ChannelEntity> entities = ChannelDAO.getInstance().getAll();
             Set<Channel> channels = new TreeSet<>();
             entities.forEach(o -> channels.add(new Channel(o)));
             return channels;
@@ -44,7 +45,7 @@ public class Channel implements Comparable<Channel> {
     public void insert() throws DomainException {
         try {
             entity = ChannelDAO.getInstance().insert(entity);
-            LOGGER.info("Channel is recorded in database wish id '{}'", entity.getId());
+            LOGGER.info("{} is recorded in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert channel error");
         }
@@ -53,7 +54,7 @@ public class Channel implements Comparable<Channel> {
     public void update() throws DomainException {
         try {
             ChannelDAO.getInstance().update(entity);
-            LOGGER.info("Channel '{}' is updated in database", entity.getId());
+            LOGGER.info("{} is updated in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO update channel error");
         }
@@ -62,7 +63,7 @@ public class Channel implements Comparable<Channel> {
     public void delete() throws DomainException {
         try {
             ChannelDAO.getInstance().delete(entity);
-            LOGGER.info("Channel '{}' is deleted in database", entity.getId());
+            LOGGER.info("{} is deleted in database", entity);
         } catch (PersistenceException e) {
             throw new DomainException("DAO delete channel error");
         }
@@ -81,8 +82,8 @@ public class Channel implements Comparable<Channel> {
     }
 
     public void setComment(String comment) {
+        LOGGER.info("{} is update in {}", comment, entity);
         entity.setComment(comment);
-        LOGGER.info("Comment is update in channel '{}'", entity.getId());
     }
 
     @Override

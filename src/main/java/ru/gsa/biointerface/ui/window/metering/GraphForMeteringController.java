@@ -13,7 +13,6 @@ import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Graph;
 import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
@@ -24,17 +23,13 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphForMeteringController implements DataListener, ContentForWindow {
-    private int capacity = 0;
-    private List<Integer> samples = new LinkedList<>();
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private Graph graph;
+    private final List<Integer> samples = new ArrayList<>();
+    private int numberOfChannel;
     private final StringConverter<Channel> converter = new StringConverter<>() {
         @Override
         public String toString(Channel channel) {
-            String str = "Channel " + (graph.getNumberOfChannel() + 1);
-            if (channel != null)
-                str = channel.getName();
-            return str;
+            return getChannelName(numberOfChannel, channel);
         }
 
         @Override
@@ -42,6 +37,8 @@ public final class GraphForMeteringController implements DataListener, ContentFo
             return null;
         }
     };
+    private Channel channelSelected;
+    private Connection connection;
     private CheckBoxOfGraph checkBox;
     @FXML
     private AnchorPane anchorPaneRoot;
@@ -54,6 +51,13 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     @FXML
     private LineChart<Integer, Integer> graphic;
     private Boolean ready = true;
+
+    private static String getChannelName(int numberOfChannel, Channel channel) {
+        String str = "Channel " + (numberOfChannel + 1);
+        if (channel != null)
+            str = channel.getName();
+        return str;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,6 +74,20 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         nameComboBox.setConverter(converter);
     }
 
+    public void setNumberOfChannel(int numberOfChannel) {
+        if (numberOfChannel < 0)
+            throw new IllegalArgumentException("NumberOfChannel < 0");
+
+        this.numberOfChannel = numberOfChannel;
+    }
+
+    public void setConnection(Connection connection) {
+        if (connection == null)
+            throw new NullPointerException("Connection is null");
+
+        this.connection = connection;
+    }
+
     public void onNameComboBoxShowing() {
         ObservableList<Channel> list = FXCollections.observableArrayList();
         try {
@@ -82,36 +100,26 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     }
 
     public void nameComboBoxSelect() {
+        channelSelected = nameComboBox.getValue();
+        String channelName = getChannelName(numberOfChannel, channelSelected);
+
         try {
-            graph.setChannel(nameComboBox.getValue());
+            connection.setChannelInGraph(numberOfChannel, channelSelected);
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        nameComboBox.getEditor().setText(graph.getName());
-        checkBox.setText(graph.getName());
-    }
-
-    public void setGraph(Graph graph) {
-        if (graph == null)
-            throw new NullPointerException("graph is null");
-
-        this.graph = graph;
-        graph.setListener(this);
+        nameComboBox.getEditor().setText(channelName);
+        checkBox.setText(channelName);
     }
 
     public void setCheckBox(CheckBoxOfGraph checkBox) throws DomainException {
         if (checkBox == null)
             throw new NullPointerException("checkBox is null");
-        if (graph == null)
-            throw new DomainException("Graph is null. From the beginning use ferst setGraph().");
+
+        String channelName = getChannelName(numberOfChannel, channelSelected);
 
         this.checkBox = checkBox;
-        checkBox.setText(graph.getName());
-    }
-
-    @Override
-    public boolean isReady() {
-        return ready;
+        checkBox.setText(channelName);
     }
 
     @Override
@@ -121,63 +129,54 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         samples.addAll(data);
 
         Platform.runLater(() -> {
-            for (int i = 0; i < capacity; i++) {
-                dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-            }
+            filling();
             ready = true;
         });
     }
 
     public void setCapacity(int capacity) throws DomainException {
-        if (graph == null)
-            throw new DomainException("graph is null");
         if (capacity < 128)
             throw new DomainException("Capacity must be greater than 127");
 
-
-        if (this.capacity > capacity) {
-            this.capacity = capacity;
+        if (dataLineGraphic.size() > capacity) {
             Platform.runLater(() -> {
-                for (int i = 0; i < capacity; i++) {
-                    dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-                }
                 dataLineGraphic.remove(capacity, dataLineGraphic.size());
+                filling();
             });
-        } else if (this.capacity < capacity) {
-
-            if(samples.size() < capacity){
-                List<Integer> tmp = new ArrayList<>();
-                while (tmp.size() < capacity - samples.size()){
-                    tmp.add(0);
-                }
-                tmp.addAll(samples);
-                samples = tmp;
-            }
-            this.capacity = capacity;
-
+        } else if (dataLineGraphic.size() < capacity) {
             Platform.runLater(() -> {
-                for (int i = 0; i < dataLineGraphic.size(); i++) {
-                    dataLineGraphic.get(i).setYValue(samples.get(samples.size() - capacity + i));
-                }
-
                 while (dataLineGraphic.size() < capacity) {
-                    dataLineGraphic.add(
-                            new XYChart.Data<>(
-                                    dataLineGraphic.size(),
-                                    samples.get(samples.get(samples.size() - capacity + dataLineGraphic.size()))
-                            )
-                    );
+                    dataLineGraphic.add(new XYChart.Data<>(dataLineGraphic.size(), 0));
                 }
+                filling();
             });
         }
 
-        setAxisXSize();
+        setAxisXSize(capacity);
     }
 
-    private void setAxisXSize() {
+    private void filling() {
+        if (samples.size() >= dataLineGraphic.size()) {
+            for (int i = 0; i < dataLineGraphic.size(); i++) {
+                int value = samples.get(samples.size() - dataLineGraphic.size() + i);
+                dataLineGraphic.get(i).setYValue(value);
+            }
+        } else {
+            for (int i = 0, j = 0; i < dataLineGraphic.size(); i++) {
+                if (i < dataLineGraphic.size() - samples.size()) {
+                    dataLineGraphic.get(i).setYValue(0);
+                } else {
+                    int value = samples.get(j++);
+                    dataLineGraphic.get(i).setYValue(value);
+                }
+            }
+        }
+    }
+
+    private void setAxisXSize(int capacity) {
         axisX.setTickUnit(capacity >> 3);
         axisX.setLowerBound(0);
-        axisX.setUpperBound(capacity-1);
+        axisX.setUpperBound(capacity - 1);
     }
 
     public void setEnable(boolean enable) {
@@ -197,12 +196,12 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GraphForMeteringController channelController = (GraphForMeteringController) o;
-        return Objects.equals(graph, channelController.graph);
+        GraphForMeteringController that = (GraphForMeteringController) o;
+        return numberOfChannel == that.numberOfChannel;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(graph);
+        return Objects.hash(numberOfChannel);
     }
 }

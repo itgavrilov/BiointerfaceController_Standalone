@@ -36,19 +36,18 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
 
             }
             case DATA -> {
-                if (dataCollector.getGraphs() != null && dataCollector.getGraphs().size() > 0) {
-                    ChannelPacket msg = (ChannelPacket) message;
-                    for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
-                        int scale = msg.getScale(i);
-                        int simple = msg.getSample(i);
+                ChannelPacket msg = (ChannelPacket) message;
 
-                        if (dataCollector.getGraphs().get(i) != null) {
-                            try {
-                                dataCollector.getGraphs().get(i).add(simple);
-                            } catch (DomainException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                dataCollector.setFlagTransmission();
+
+                for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
+                    int scale = msg.getScale(i);
+                    int simple = msg.getSample(i);
+
+                    try {
+                        dataCollector.addInCash(i, simple);
+                    } catch (DomainException e) {
+                        e.printStackTrace();
                     }
                 }
             }

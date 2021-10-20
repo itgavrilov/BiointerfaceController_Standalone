@@ -23,8 +23,8 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphController implements ContentForWindow {
-    private final ArrayList<XYChart.Data<Integer, Integer>> samples = new ArrayList<>();
-    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
+    private final ArrayList<XYChart.Data<Long, Integer>> samples = new ArrayList<>();
+    private final ObservableList<XYChart.Data<Long, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private Graph graph;
     private int start = 0;
     private int capacity = 0;
@@ -38,7 +38,7 @@ public final class GraphController implements ContentForWindow {
     @FXML
     private NumberAxis axisY;
     @FXML
-    private LineChart<Integer, Integer> graphic;
+    private LineChart<Long, Integer> graphic;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,16 +60,17 @@ public final class GraphController implements ContentForWindow {
 
         nameText.setText(graph.getName());
 
-        Set<SampleEntity> sampleEntities;
+        List<SampleEntity> sampleEntities = new LinkedList<>();
         try {
-            sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
+            sampleEntities = SampleDAO.getInstance().getAllByGraph(graph.getEntity());
         } catch (PersistenceException e) {
-            throw new UIException("Error getting a list of sampleEntities", e);
+            e.printStackTrace();
         }
 
-        for (SampleEntity sample: sampleEntities){
+        for (SampleEntity sample : sampleEntities) {
             samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
         }
+
         Platform.runLater(() -> {
             dataLineGraphic.clear();
             dataLineGraphic.addAll(samples);
