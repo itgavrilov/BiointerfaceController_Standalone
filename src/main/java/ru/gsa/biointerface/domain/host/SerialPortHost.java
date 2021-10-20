@@ -3,8 +3,6 @@ package ru.gsa.biointerface.domain.host;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.host.packets.*;
 import ru.gsa.biointerface.domain.host.serverByPuchkov.AbstractServer;

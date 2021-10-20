@@ -28,8 +28,6 @@ import java.util.List;
 public class MeteringController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
     static private MeteringController instants;
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
-    private Connection connection;
-    private PatientRecord patientRecord;
     private final List<CompositeNode<AnchorPane, GraphForMeteringController>> channelGUIs = new LinkedList<>();
     private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
     private final StringConverter<Device> converter = new StringConverter<>() {
@@ -46,6 +44,8 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             return null;
         }
     };
+    private Connection connection;
+    private PatientRecord patientRecord;
     @FXML
     private AnchorPane anchorPaneControl;
     @FXML
@@ -86,7 +86,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 instants.connection.disconnect();
 
                 if (instants.connection.isTransmission()) {
-                        instants.connection.transmissionStop();
+                    instants.connection.transmissionStop();
                 }
             } catch (DomainException e) {
                 e.printStackTrace();
@@ -132,14 +132,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     public void buttonScanningSerialPortsPush() {
         clearInterface();
         try {
+            connection = null;
             connectionFactory.scanningSerialPort();
-            controlInterface(
-                    true,
-                    true,
-                    false,
-                    false,
-                    false
-            );
+            controlInterface(false);
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -147,13 +142,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     public void availableDevicesComboBoxShowing() {
         clearInterface();
-        controlInterface(
-                true,
-                true,
-                false,
-                false,
-                false
-        );
+        controlInterface(false);
         availableDevicesComboBox.getItems().addAll(connectionFactory.getListDevices());
     }
 
@@ -164,13 +153,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 connection.setPatientRecord(patientRecord);
                 buildingChannelsGUIs();
                 if (connection.isConnected()) {
-                    controlInterface(
-                            true,
-                            false,
-                            true,
-                            true,
-                            false
-                    );
+                    controlInterface(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -186,11 +169,19 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
         for (int i = 0; i < connection.getDevice().getAmountChannels(); i++) {
             CompositeNode<AnchorPane, GraphForMeteringController> node =
-                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/GraphForMetering.fxml")));
+                    new CompositeNode<>(
+                            new FXMLLoader(
+                                    resourceSource.getResource("fxml/GraphForMetering.fxml"
+                                    )
+                            )
+                    );
+            GraphForMeteringController graphController = node.getController();
+
             try {
-                node.getController().setGraph(connection.getGraph(i));
-                node.getController().setCapacity(capacity);
-                connection.getCash(i).addListener(node.getController());
+                graphController.setNumberOfChannel(i);
+                graphController.setConnection(connection);
+                graphController.setCapacity(capacity);
+                connection.addListenerInCash(i, graphController);
                 channelGUIs.add(node);
 
                 CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
@@ -199,7 +190,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     drawChannelsGUI();
                 });
                 try {
-                    node.getController().setCheckBox(checkBox);
+                    graphController.setCheckBox(checkBox);
                     checkBoxesOfChannel.add(checkBox);
                 } catch (DomainException e) {
                     throw new UIException("Graph checkbox setting error");
@@ -233,58 +224,29 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         resizeWindow(anchorPaneRoot.getHeight(), anchorPaneRoot.getWidth());
     }
 
-    private void clearInterface() {
-        channelVBox.getChildren().clear();
-        checkBoxOfChannelVBox.getChildren().clear();
-        availableDevicesComboBox.getItems().clear();
-        availableDevicesComboBox.setValue(null);
-        startButton.setText("Start");
-        recordingButton.setText("recording");
-    }
-
     public void onStartButtonPush() {
         if (connection.isConnected()) {
             if (connection.isTransmission()) {
                 try {
                     connection.transmissionStop();
-                    controlInterface(
-                            true,
-                            false,
-                            true,
-                            true,
-                            false
-                    );
-                    startButton.setText("Start");
+                    controlInterface(true);
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
                     connection.transmissionStart();
-                    controlInterface(
-                            false,
-                            false,
-                            true,
-                            false,
-                            true
-                    );
-                    startButton.setText("Stop");
+                    controlInterface(false);
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
             }
         }
-        recordingButton.setText("recording");
     }
 
     public void onRebootButtonPush() {
         clearInterface();
-        controlInterface(
-                true,
-                false,
-                false,
-                false,
-                false);
+        controlInterface(true);
         if (connection.isConnected()) {
             try {
                 connection.controllerReboot();
@@ -298,64 +260,85 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (connection.isRecording()) {
             try {
                 connection.recordingStop();
-                recordingButton.setText("recording");
             } catch (DomainException e) {
                 e.printStackTrace();
             }
         } else {
             try {
                 connection.recordingStart();
-                recordingButton.setText("stop\nrecording");
             } catch (DomainException e) {
                 e.printStackTrace();
             }
         }
+        controlInterface(true);
     }
 
     public void onBackButtonPush() {
         try {
-            if (connection != null && connection.isTransmission()) {
-                connection.transmissionStop();
-                connection.disconnect();
+            if (connection != null && connection.isConnected()) {
+                try {
+                    connection.controllerReboot();
+                } catch (DomainException e) {
+                    e.printStackTrace();
+                }
             }
             ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
-        } catch (DomainException | UIException e) {
+        } catch (UIException e) {
             e.printStackTrace();
         }
     }
 
     public void commentFieldChange() throws UIException {
         try {
-            connection.changeCommentOnExamination(commentField.getText());
+            connection.setCommentForExamination(commentField.getText());
         } catch (DomainException e) {
             throw new UIException("Error updating comment to examination");
         }
     }
 
-    private void controlInterface(boolean enableButtonScanning,
-                                  boolean enableDevicesComboBox,
-                                  boolean enableComStart,
-                                  boolean enableSliderZoom,
-                                  boolean enableButtonRecording) {
+    private void clearInterface() {
+        channelVBox.getChildren().clear();
+        checkBoxOfChannelVBox.getChildren().clear();
+        availableDevicesComboBox.getItems().clear();
+        availableDevicesComboBox.setValue(null);
+    }
 
+    private void controlInterface(boolean enableButtonScanning) {
         scanningSerialPortsButton.setDisable(!enableButtonScanning);
-        availableDevicesComboBox.setDisable(!enableDevicesComboBox);
-        startButton.setDisable(!enableComStart);
-        rebootButton.setDisable(!enableComStart);
-        allSliderZoom.setDisable(!enableSliderZoom);
-        channelGUIs.forEach(o -> o.getController().setEnable(enableSliderZoom));
-        checkBoxesOfChannel.forEach(o -> o.setDisable(!enableSliderZoom));
-        recordingButton.setDisable(!enableButtonRecording);
-        if (!enableButtonRecording) {
-            if (connection != null && connection.isRecording()) {
-                try {
-                    connection.recordingStop();
-                } catch (DomainException e) {
-                    e.printStackTrace();
-                }
+        availableDevicesComboBox.setDisable(connection != null);
+
+        if (connection != null && connection.isConnected()) {
+            startButton.setDisable(false);
+            rebootButton.setDisable(false);
+            if (connection.isTransmission()) {
+                startButton.setText("Stop");
+            } else {
+                startButton.setText("Start");
             }
+        } else {
+            startButton.setDisable(true);
+            rebootButton.setDisable(true);
+            startButton.setText("Start");
+        }
+
+        rebootButton.setDisable(connection == null || !connection.isConnected());
+
+        allSliderZoom.setDisable(connection == null || !connection.isConnected() || connection.isTransmission());
+        channelGUIs.forEach(o -> o.getController().setEnable(!allSliderZoom.isDisable()));
+        checkBoxesOfChannel.forEach(o -> o.setDisable(allSliderZoom.isDisable()));
+
+        if (connection != null && connection.isTransmission()) {
+            recordingButton.setDisable(false);
+        } else {
+            recordingButton.setDisable(true);
+        }
+
+        if (connection != null && connection.isRecording()) {
+            recordingButton.setText("stop\nrecording");
+        } else {
+            recordingButton.setText("recording");
         }
     }
 

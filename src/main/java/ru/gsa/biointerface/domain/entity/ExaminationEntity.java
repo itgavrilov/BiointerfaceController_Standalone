@@ -1,23 +1,11 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -26,11 +14,11 @@ import javax.persistence.TemporalType;
 @Table(name = "examination")
 public class ExaminationEntity implements Comparable<ExaminationEntity> {
     @Id
-    @GeneratedValue(generator="sqlite_examination")
-    @TableGenerator(name="sqlite_examination", table="sqlite_sequence",
-            pkColumnName="name", valueColumnName="seq",
-            pkColumnValue="examination",
-            initialValue=1)
+    @GeneratedValue(generator = "sqlite_examination")
+    @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
+            pkColumnName = "name", valueColumnName = "seq",
+            pkColumnValue = "examination",
+            initialValue = 1)
     private long id = -1;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -5,12 +5,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.DBHandler;
+import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.ui.ProxyGUI;
 import ru.gsa.biointerface.ui.window.metering.MeteringController;
 
-import java.io.IOException;
 import java.net.URL;
 
 /**

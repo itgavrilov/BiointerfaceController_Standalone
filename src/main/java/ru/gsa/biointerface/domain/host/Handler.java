@@ -37,12 +37,15 @@ public class Handler implements ChannelHandler<Packet, Packet, SerialPort> {
             }
             case DATA -> {
                 ChannelPacket msg = (ChannelPacket) message;
+
+                dataCollector.setFlagTransmission();
+
                 for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
                     int scale = msg.getScale(i);
                     int simple = msg.getSample(i);
 
                     try {
-                        dataCollector.getCash(i).add(simple);
+                        dataCollector.addInCash(i, simple);
                     } catch (DomainException e) {
                         e.printStackTrace();
                     }

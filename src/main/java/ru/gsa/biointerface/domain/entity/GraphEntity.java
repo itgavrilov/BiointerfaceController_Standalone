@@ -1,16 +1,8 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -18,17 +10,17 @@ import javax.persistence.Table;
 @Entity(name = "graph")
 @Table(name = "graph")
 @IdClass(GraphEntityId.class)
-public class GraphEntity{
+public class GraphEntity {
     @Id
-    int numberOfChannel = -1;
+    int numberOfChannel;
 
     @Id
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "examination_id", referencedColumnName = "id")
     private ExaminationEntity examinationEntity;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id", referencedColumnName = "id")
     private ChannelEntity channelEntity;
 
@@ -94,13 +86,17 @@ public class GraphEntity{
     @Override
     public String toString() {
         String channelName = "-";
+        String examinationId = "-";
 
-        if(channelEntity != null)
+        if (channelEntity != null)
             channelName = channelEntity.getName();
+
+        if (examinationEntity != null)
+            examinationId = String.valueOf(examinationEntity.getId());
 
         return "GraphEntity{" +
                 "numberOfChannel=" + numberOfChannel +
-                ", examinationEntity_id=" + examinationEntity.getId() +
+                ", examinationEntity_id=" + examinationId +
                 ", channelEntity=" + channelName +
                 '}';
     }

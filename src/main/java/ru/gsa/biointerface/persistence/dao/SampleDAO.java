@@ -2,7 +2,8 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.entity.*;
+import ru.gsa.biointerface.domain.entity.GraphEntity;
+import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.List;
@@ -44,8 +45,12 @@ public class SampleDAO extends AbstractDAO<SampleEntity, Integer> {
     }
 
     @Override
-    public SampleEntity read(Integer key) {return null;}
+    public SampleEntity read(Integer key) {
+        return null;
+    }
 
     @Override
-    public List<SampleEntity> getAll() throws PersistenceException {return null;}
+    public List<SampleEntity> getAll() throws PersistenceException {
+        return null;
+    }
 }

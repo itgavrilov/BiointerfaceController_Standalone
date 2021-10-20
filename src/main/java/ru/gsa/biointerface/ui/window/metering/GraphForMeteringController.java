@@ -13,8 +13,6 @@ import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Graph;
-import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
@@ -25,18 +23,13 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphForMeteringController implements DataListener, ContentForWindow {
-    private Graph graph;
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private final List<Integer> samples = new ArrayList<>();
-
-
+    private int numberOfChannel;
     private final StringConverter<Channel> converter = new StringConverter<>() {
         @Override
         public String toString(Channel channel) {
-            String str = "Channel " + (graph.getNumberOfChannel() + 1);
-            if (channel != null)
-                str = channel.getName();
-            return str;
+            return getChannelName(numberOfChannel, channel);
         }
 
         @Override
@@ -44,6 +37,8 @@ public final class GraphForMeteringController implements DataListener, ContentFo
             return null;
         }
     };
+    private Channel channelSelected;
+    private Connection connection;
     private CheckBoxOfGraph checkBox;
     @FXML
     private AnchorPane anchorPaneRoot;
@@ -56,6 +51,13 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     @FXML
     private LineChart<Integer, Integer> graphic;
     private Boolean ready = true;
+
+    private static String getChannelName(int numberOfChannel, Channel channel) {
+        String str = "Channel " + (numberOfChannel + 1);
+        if (channel != null)
+            str = channel.getName();
+        return str;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,6 +74,20 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         nameComboBox.setConverter(converter);
     }
 
+    public void setNumberOfChannel(int numberOfChannel) {
+        if (numberOfChannel < 0)
+            throw new IllegalArgumentException("NumberOfChannel < 0");
+
+        this.numberOfChannel = numberOfChannel;
+    }
+
+    public void setConnection(Connection connection) {
+        if (connection == null)
+            throw new NullPointerException("Connection is null");
+
+        this.connection = connection;
+    }
+
     public void onNameComboBoxShowing() {
         ObservableList<Channel> list = FXCollections.observableArrayList();
         try {
@@ -84,30 +100,26 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     }
 
     public void nameComboBoxSelect() {
+        channelSelected = nameComboBox.getValue();
+        String channelName = getChannelName(numberOfChannel, channelSelected);
+
         try {
-            graph.setChannel(nameComboBox.getValue());
+            connection.setChannelInGraph(numberOfChannel, channelSelected);
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        nameComboBox.getEditor().setText(graph.getName());
-        checkBox.setText(graph.getName());
-    }
-
-    public void setGraph(Graph graph) {
-        if (graph == null)
-            throw new NullPointerException("graph is null");
-
-        this.graph = graph;
+        nameComboBox.getEditor().setText(channelName);
+        checkBox.setText(channelName);
     }
 
     public void setCheckBox(CheckBoxOfGraph checkBox) throws DomainException {
         if (checkBox == null)
             throw new NullPointerException("checkBox is null");
-        if (graph == null)
-            throw new DomainException("Graph is null. From the beginning use ferst setGraph().");
+
+        String channelName = getChannelName(numberOfChannel, channelSelected);
 
         this.checkBox = checkBox;
-        checkBox.setText(graph.getName());
+        checkBox.setText(channelName);
     }
 
     @Override
@@ -123,8 +135,6 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     }
 
     public void setCapacity(int capacity) throws DomainException {
-        if (graph == null)
-            throw new DomainException("graph is null");
         if (capacity < 128)
             throw new DomainException("Capacity must be greater than 127");
 
@@ -145,8 +155,8 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         setAxisXSize(capacity);
     }
 
-    private void filling(){
-        if(samples.size() >= dataLineGraphic.size()) {
+    private void filling() {
+        if (samples.size() >= dataLineGraphic.size()) {
             for (int i = 0; i < dataLineGraphic.size(); i++) {
                 int value = samples.get(samples.size() - dataLineGraphic.size() + i);
                 dataLineGraphic.get(i).setYValue(value);
@@ -186,12 +196,12 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GraphForMeteringController channelController = (GraphForMeteringController) o;
-        return Objects.equals(graph, channelController.graph);
+        GraphForMeteringController that = (GraphForMeteringController) o;
+        return numberOfChannel == that.numberOfChannel;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(graph);
+        return Objects.hash(numberOfChannel);
     }
 }

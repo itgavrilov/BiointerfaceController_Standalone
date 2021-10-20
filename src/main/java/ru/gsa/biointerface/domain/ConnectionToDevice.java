@@ -11,7 +11,10 @@ import ru.gsa.biointerface.domain.host.dataCash.Cash;
 import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
 import ru.gsa.biointerface.ui.window.metering.Connection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -26,7 +29,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
     private Examination examination;
     private String comment;
     private boolean flagTransmission = false;
-    private boolean flagRecording = false;
 
     public ConnectionToDevice(SerialPort serialPort) throws DomainException {
         if (serialPort == null)
@@ -57,15 +59,11 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
         this.patientRecord = patientRecord;
 
-        cashList = new ArrayList<>();
         graphList = new ArrayList<>();
 
         for (int i = 0; i < device.getAmountChannels(); i++) {
             Graph graph = new Graph(i);
-            Cash cash = new SampleCash();
-
-            cash.addListener(graph);
-            cashList.add(cash);
+            cashList.get(i).addListener(graph);
             graphList.add(graph);
         }
     }
@@ -79,8 +77,18 @@ public class ConnectionToDevice implements DataCollector, Connection {
     public void setDevice(Device device) {
         if (device == null)
             throw new NullPointerException("device is null");
+        if (this.device != null && this.device.equals(device))
+            return;
 
         this.device = device;
+        cashList = new ArrayList<>();
+        for (int i = 0; i < device.getAmountChannels(); i++) {
+            cashList.add(new SampleCash());
+        }
+
+        graphList = null;
+        examination = null;
+        patientRecord = null;
     }
 
     @Override
@@ -89,27 +97,39 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
-    public Cash getCash(int i) throws DomainException {
+    public void addListenerInCash(int numberOfChannel, DataListener listener) throws DomainException {
+        if (listener == null)
+            throw new NullPointerException("Listener null");
         if (device == null)
             throw new DomainException("Device null");
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is not init. First call setPatientRecord()");
-        if(i >= cashList.size() || i < 0)
+        if (numberOfChannel >= cashList.size() || numberOfChannel < 0)
             throw new DomainException("I > amount cashList");
 
-        return cashList.get(i);
+        cashList.get(numberOfChannel).addListener(listener);
     }
 
     @Override
-    public Graph getGraph(int i) throws DomainException {
+    public void addInCash(int numberOfChannel, int value) throws DomainException {
         if (device == null)
             throw new DomainException("Device null");
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is not init. First call setPatientRecord()");
-        if(i >= graphList.size() || i < 0)
-            throw new DomainException("I > amount graphList");
+        if (numberOfChannel >= cashList.size() || numberOfChannel < 0)
+            throw new DomainException("NumberOfChannel > amount cashList");
 
-        return graphList.get(i);
+        cashList.get(numberOfChannel).add(value);
+    }
+
+    @Override
+    public void setChannelInGraph(int i, Channel channel) throws DomainException {
+        if (i < 0)
+            throw new IllegalArgumentException("I < 0");
+        if (patientRecord == null)
+            throw new DomainException("PatientRecord is not init. First call setPatientRecord()");
+        if (i >= graphList.size())
+            throw new DomainException("I > amount graphList");
+        if (isRecording())
+            throw new NullPointerException("Recording is started");
+
+        graphList.get(i).setChannel(channel);
     }
 
     @Override
@@ -126,7 +146,8 @@ public class ConnectionToDevice implements DataCollector, Connection {
     public void disconnect() throws DomainException {
         if (serialPortHost != null) {
             try {
-                transmissionStop();
+                if (isTransmission())
+                    transmissionStop();
                 serialPortHost.stop();
                 LOGGER.info("Disconnecting from device");
             } catch (Exception e) {
@@ -137,8 +158,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public void transmissionStart() throws DomainException {
-        if (device == null)
-            throw new DomainException("Device null");
         if (patientRecord == null)
             throw new NullPointerException("PatientRecord is not init. First call setPatientRecord()");
         if (serialPortHost == null)
@@ -153,14 +172,19 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
     @Override
     public void transmissionStop() throws DomainException {
-        if(flagTransmission) {
-            if (serialPortHost == null)
-                throw new DomainException("Server is not initialized (null)");
+        if (!flagTransmission)
+            throw new DomainException("Transmission is not started");
+        if (serialPortHost == null)
+            throw new DomainException("Server is not initialized (null)");
 
-            flagTransmission = false;
-            serialPortHost.sendPackage(ControlMessages.STOP_TRANSMISSION);
-            LOGGER.info("Stop transmission");
-        }
+        serialPortHost.sendPackage(ControlMessages.STOP_TRANSMISSION);
+        flagTransmission = false;
+        LOGGER.info("Stop transmission");
+    }
+
+    @Override
+    public void setFlagTransmission() {
+        flagTransmission = true;
     }
 
     @Override
@@ -176,35 +200,42 @@ public class ConnectionToDevice implements DataCollector, Connection {
             throw new NullPointerException("PatientRecord is not init. First call setPatientRecord()");
         if (!flagTransmission)
             throw new DomainException("Transmission is stop");
-        if (flagRecording)
+        if (isRecording())
             throw new DomainException("Recording is already in progress");
 
         device.insert();
-
         examination = new Examination(patientRecord, device, graphList, comment);
         examination.recordingStart();
-
-        flagRecording = true;
         LOGGER.info("Start recording");
     }
 
     @Override
     public void recordingStop() throws DomainException {
-        if(flagRecording) {
-            try {
-                examination.recordingStop();
-                examination = null;
-                flagRecording = false;
-                LOGGER.info("Stop recording");
-            } catch (DomainException e) {
-                throw new DomainException("RecordingStop error");
-            }
+        if (!isRecording())
+            throw new DomainException("Recording is stop");
+
+        for (int i = 0; i < device.getAmountChannels(); i++) {
+            cashList.get(i).deleteListener(graphList.get(i));
         }
+
+        examination.recordingStop();
+        examination = null;
+
+        for (int i = 0; i < device.getAmountChannels(); i++) {
+            graphList.get(i).setExamination(examination);
+            graphList.get(i).getEntity().setSampleEntities(new LinkedList<>());
+        }
+        LOGGER.info("Stop recording");
     }
 
     @Override
     public boolean isRecording() {
-        return flagRecording;
+        boolean result = false;
+
+        if (examination != null)
+            result = examination.isRecording();
+
+        return result;
     }
 
     @Override
@@ -212,14 +243,16 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (serialPortHost == null)
             throw new NullPointerException("Server is not initialized (null)");
 
+        if (isRecording())
+            recordingStop();
+        if (isTransmission())
+            transmissionStop();
         serialPortHost.sendPackage(ControlMessages.REBOOT);
-        recordingStop();
-        transmissionStop();
         LOGGER.info("Reboot controller");
     }
 
     @Override
-    public void changeCommentOnExamination(String comment) {
+    public void setCommentForExamination(String comment) {
         this.comment = comment;
     }
 

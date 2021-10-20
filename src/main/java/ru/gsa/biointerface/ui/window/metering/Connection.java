@@ -1,12 +1,6 @@
 package ru.gsa.biointerface.ui.window.metering;
 
-import ru.gsa.biointerface.domain.Device;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Graph;
-import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.host.dataCash.Cash;
-
-import java.util.List;
+import ru.gsa.biointerface.domain.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -16,9 +10,9 @@ public interface Connection {
 
     Device getDevice();
 
-    Graph getGraph(int i) throws DomainException;
+    void setChannelInGraph(int numberOfChannel, Channel channel) throws DomainException;
 
-    Cash getCash(int i) throws DomainException;
+    void addListenerInCash(int numberOfChannel, DataListener listener) throws DomainException;
 
     boolean isConnected();
 
@@ -38,5 +32,5 @@ public interface Connection {
 
     boolean isRecording();
 
-    void changeCommentOnExamination(String comment) throws DomainException;
+    void setCommentForExamination(String comment) throws DomainException;
 }

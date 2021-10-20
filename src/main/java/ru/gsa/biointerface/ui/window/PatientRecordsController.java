@@ -10,7 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
@@ -20,7 +22,6 @@ import java.time.format.DateTimeFormatter;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordsController extends AbstractWindow {
-    private PatientRecord patientRecordSelected;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -35,7 +36,7 @@ public class PatientRecordsController extends AbstractWindow {
             return null;
         }
     };
-
+    private PatientRecord patientRecordSelected;
     @FXML
     private TableView<PatientRecord> tableView;
     @FXML

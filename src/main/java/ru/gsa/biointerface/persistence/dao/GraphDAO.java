@@ -2,8 +2,8 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.Examination;
-import ru.gsa.biointerface.domain.entity.*;
+import ru.gsa.biointerface.domain.entity.ExaminationEntity;
+import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.List;

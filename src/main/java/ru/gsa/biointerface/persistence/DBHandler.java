@@ -3,7 +3,6 @@ package ru.gsa.biointerface.persistence;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.*;
@@ -32,7 +31,7 @@ public class DBHandler implements DB {
 
             sessionFactory = cfg.buildSessionFactory();
             LOGGER.info("Successful database connection");
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new PersistenceException("Error connecting to database", e);
         }
     }

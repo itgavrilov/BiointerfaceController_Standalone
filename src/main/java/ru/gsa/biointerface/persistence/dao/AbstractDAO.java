@@ -2,11 +2,8 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import ru.gsa.biointerface.domain.entity.SampleEntity;
-import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.DBHandler;
-
-import java.util.List;
+import ru.gsa.biointerface.persistence.PersistenceException;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.

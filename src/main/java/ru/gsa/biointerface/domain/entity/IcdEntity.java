@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -12,11 +11,11 @@ import java.util.Objects;
 @Table(name = "icd")
 public class IcdEntity implements Comparable<IcdEntity> {
     @Id
-    @GeneratedValue(generator="sqlite_icd")
-    @TableGenerator(name="sqlite_icd", table="sqlite_sequence",
-            pkColumnName="name", valueColumnName="seq",
-            pkColumnValue="icd",
-            initialValue=1)
+    @GeneratedValue(generator = "sqlite_icd")
+    @TableGenerator(name = "sqlite_icd", table = "sqlite_sequence",
+            pkColumnName = "name", valueColumnName = "seq",
+            pkColumnValue = "icd",
+            initialValue = 1)
     private int id = -1;
 
     @Column(nullable = false, length = 35)

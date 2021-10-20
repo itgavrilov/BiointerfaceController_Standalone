@@ -13,20 +13,30 @@ import java.util.stream.Stream;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ConnectionFactory {
-    private static ConnectionFactory instance;
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionFactory.class);
+    private static ConnectionFactory instance;
     private Set<ConnectionToDevice> connections = new LinkedHashSet<>();
     private ConnectionToDevice connectionsActive;
 
-    public static ConnectionFactory getInstance(){
-        if(instance==null)
+    private ConnectionFactory() {
+
+    }
+
+    public static ConnectionFactory getInstance() {
+        if (instance == null)
             instance = new ConnectionFactory();
 
         return instance;
     }
 
-    private ConnectionFactory() {
-
+    public static void disconnectScanningSerialPort() throws DomainException {
+        if (getInstance().connections.size() > 0) {
+            for (ConnectionToDevice connectionToDevice : getInstance().connections) {
+                connectionToDevice.disconnect();
+            }
+            getInstance().connections.clear();
+            LOGGER.info("disconnect all serial ports");
+        }
     }
 
     private Stream<SerialPort> getSerialPortsWishDevises() {
@@ -36,8 +46,8 @@ public class ConnectionFactory {
     }
 
     public void scanningSerialPort() throws DomainException {
-        if(connectionsActive != null) {
-            connectionsActive.disconnect();
+        if (connectionsActive != null) {
+            connectionsActive.controllerReboot();
             connectionsActive = null;
         }
 
@@ -45,7 +55,8 @@ public class ConnectionFactory {
         getSerialPortsWishDevises()
                 .forEach(o -> {
                     try {
-                        connections.add(new ConnectionToDevice(o));
+                        ConnectionToDevice connection = new ConnectionToDevice(o);
+                        connections.add(connection);
                     } catch (DomainException e) {
                         e.printStackTrace();
                     }
@@ -64,7 +75,7 @@ public class ConnectionFactory {
                 .collect(Collectors.toList());
     }
 
-    public Connection getConnection(Device device) throws DomainException {
+    public Connection getConnection(Device device) {
         connectionsActive = connections.stream()
                 .peek(o -> {
                     if (!device.equals(o.getDevice())) {
@@ -80,15 +91,5 @@ public class ConnectionFactory {
                 .orElseThrow(NoSuchElementException::new);
 
         return connectionsActive;
-    }
-
-    public static void disconnectScanningSerialPort() throws DomainException {
-        if (getInstance().connections.size() > 0) {
-            for (ConnectionToDevice connectionToDevice : getInstance().connections) {
-                connectionToDevice.disconnect();
-            }
-            getInstance().connections.clear();
-            LOGGER.info("disconnect all serial ports");
-        }
     }
 }

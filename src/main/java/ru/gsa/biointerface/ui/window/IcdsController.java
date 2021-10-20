@@ -10,7 +10,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.ui.UIException;
 
 /**

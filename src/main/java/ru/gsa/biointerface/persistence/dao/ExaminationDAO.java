@@ -2,10 +2,13 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.entity.*;
+import ru.gsa.biointerface.domain.entity.DeviceEntity;
+import ru.gsa.biointerface.domain.entity.ExaminationEntity;
+import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 /**
@@ -26,16 +29,15 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
         return dao;
     }
 
+
     @Override
     public ExaminationEntity insert(ExaminationEntity entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("Entity is null");
-        if(!session.isOpen())
-            throw new PersistenceException("Session is not open");
-        if(!session.getTransaction().isActive())
+        if (!transactionIsOpen())
             throw new PersistenceException("Transaction is not active");
 
-        try  {
+        try {
             session.save(entity);
         } catch (Exception e) {
             throw new PersistenceException("Save " + entity + " error", e);
@@ -107,6 +109,7 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
         return entities;
     }
 
+
     public void beginTransaction() throws PersistenceException {
         try {
             session = sessionFactory.openSession();
@@ -115,28 +118,43 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
             } catch (Exception e) {
                 throw new PersistenceException("BeginTransaction error", e);
             }
-            if(!session.getTransaction().isActive())
-                throw new PersistenceException("Transaction is not active");
         } catch (Exception e) {
             throw new PersistenceException("OpenSession error", e);
         }
     }
 
     public void endTransaction() throws PersistenceException {
-        if(session.isOpen()) {
-            if(!session.getTransaction().isActive())
-                throw new PersistenceException("Transaction is not active");
+        if (!transactionIsOpen())
+            throw new PersistenceException("Transaction is not active");
 
+        try {
+            session.flush();
+            session.getTransaction().commit();
             try {
-                session.getTransaction().commit();
-                try {
-                    session.close();
-                } catch (Exception e) {
-                    throw new PersistenceException("CloseSession error", e);
-                }
+                session.close();
             } catch (Exception e) {
-                throw new PersistenceException("SetAutoCommit error", e);
+                throw new PersistenceException("CloseSession error", e);
             }
+        } catch (Exception e) {
+            throw new PersistenceException("SetAutoCommit error", e);
         }
+    }
+
+    public boolean sessionIsOpen() {
+        boolean result = false;
+
+        if (session != null)
+            result = session.isOpen();
+
+        return result;
+    }
+
+    public boolean transactionIsOpen() {
+        boolean result = false;
+
+        if (sessionIsOpen())
+            result = session.getTransaction().isActive();
+
+        return result;
     }
 }

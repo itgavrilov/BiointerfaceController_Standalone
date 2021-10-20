@@ -15,7 +15,6 @@ import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Examination;
 import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDateTime;

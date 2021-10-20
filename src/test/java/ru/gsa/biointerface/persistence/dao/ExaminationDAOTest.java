@@ -4,11 +4,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.gsa.biointerface.domain.Graph;
-import ru.gsa.biointerface.domain.entity.ExaminationEntity;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
+import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.host.dataCash.Cash;
+import ru.gsa.biointerface.domain.host.dataCash.SampleCash;
 import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.util.EntityUtil;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 class ExaminationDAOTest {
     private final ExaminationDAO examinationDAO;
@@ -18,30 +23,53 @@ class ExaminationDAOTest {
     }
 
     @BeforeEach
-    private void beginTransaction() throws PersistenceException {
-        examinationDAO.beginTransaction();
+    private void beginTransaction() {
+
     }
 
     @AfterEach
-    private void endTransaction() throws PersistenceException {
-        examinationDAO.endTransaction();
+    private void endTransaction() {
+
     }
 
 
     @Test
-    void insert() throws PersistenceException {
-        ExaminationEntity examination = EntityUtil.getExamination().getEntity();
+    void insert() throws DomainException, InterruptedException {
+        List<Cash> cashList = new ArrayList<>();
+        List<Graph> graphList = new ArrayList<>();
+        var patientRecord = new PatientRecord(1,
+                "G",
+                "S",
+                "A",
+                LocalDate.now(),
+                null,
+                "test");
+        var device = new Device(1, 1, "test");
 
-        examinationDAO.insert(examination);
+        for (int i = 0; i < device.getAmountChannels(); i++) {
+            Cash cash = new SampleCash();
+            Graph graph = new Graph(i);
 
-        Assertions.assertFalse(examination.getGraphEntities().isEmpty());
+            cash.addListener(graph);
 
-        GraphEntity graphEntity = examination.getGraphEntities().get(0);
-        var graph = new Graph(graphEntity);
-
-        for (int i = 0; i < 100; i++) {
-            graph.setNewSamples(EntityUtil.getSampleList());
+            cashList.add(cash);
+            graphList.add(graph);
         }
+
+        var examination = new Examination(patientRecord, device, graphList, "test");
+
+        Assertions.assertFalse(examination.getEntity().getGraphEntities().isEmpty());
+
+        examination.recordingStart();
+
+        for (int i = 1000; i > 0; i--) {
+            sleep(1);
+            for (Cash cash : cashList) {
+                cash.add(i);
+            }
+        }
+
+        examination.recordingStop();
     }
 
     @Test

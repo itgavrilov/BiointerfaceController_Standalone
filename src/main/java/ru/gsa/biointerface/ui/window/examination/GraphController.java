@@ -67,9 +67,10 @@ public final class GraphController implements ContentForWindow {
             e.printStackTrace();
         }
 
-        for (SampleEntity sample: sampleEntities){
+        for (SampleEntity sample : sampleEntities) {
             samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
         }
+
         Platform.runLater(() -> {
             dataLineGraphic.clear();
             dataLineGraphic.addAll(samples);

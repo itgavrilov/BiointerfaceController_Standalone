@@ -8,7 +8,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.Channel;
 import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.ui.UIException;

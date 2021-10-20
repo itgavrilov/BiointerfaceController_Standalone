@@ -6,23 +6,34 @@ import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.GraphDAO;
+import ru.gsa.biointerface.persistence.dao.SampleDAO;
 
+import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public class Graph implements DataListener, Comparable<Graph>{
+public class Graph implements DataListener, Comparable<Graph> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
     private final GraphEntity entity;
+    private final GraphDAO dao;
+    private final SampleDAO sampleDAO;
 
     public Graph(int numberOfChannel) {
         if (numberOfChannel < 0)
             throw new NullPointerException("numberOfChannel is less than 0");
 
-        entity = new GraphEntity(numberOfChannel, null,null, new LinkedList<>());
+        entity = new GraphEntity(numberOfChannel, null, null, new ArrayList<>());
+
+        try {
+            dao = GraphDAO.getInstance();
+            sampleDAO = SampleDAO.getInstance();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            throw new NullPointerException("DAO is null");
+        }
     }
 
     public Graph(GraphEntity entity) {
@@ -32,14 +43,13 @@ public class Graph implements DataListener, Comparable<Graph>{
             throw new NullPointerException("ExaminationEntity in GraphEntity is null");
 
         this.entity = entity;
-    }
 
-    public void update() throws DomainException {
         try {
-            GraphDAO.getInstance().update(entity);
-            LOGGER.info("{} is updated in database", entity);
+            dao = GraphDAO.getInstance();
+            sampleDAO = SampleDAO.getInstance();
         } catch (PersistenceException e) {
-            throw new DomainException("DAO update examination error");
+            e.printStackTrace();
+            throw new NullPointerException("DAO is null");
         }
     }
 
@@ -48,25 +58,26 @@ public class Graph implements DataListener, Comparable<Graph>{
     }
 
     public void setExamination(Examination examination) {
-        if (examination == null)
-            throw new NullPointerException("Examination is null");
-
-        LOGGER.info("Set {} in {}", examination, entity);
-        entity.setExaminationEntity(examination.getEntity());
+        if (examination != null) {
+            entity.setExaminationEntity(examination.getEntity());
+            LOGGER.info("Set {} in {}", examination, entity);
+        } else {
+            entity.setExaminationEntity(null);
+            LOGGER.info("Reset examinationEntity in {}", entity);
+        }
     }
 
     public void setChannel(Channel channel) throws DomainException {
-        if (channel == null)
-            throw new NullPointerException("Channel is null");
-        if (entity == null)
-            throw new DomainException("Examination is null. First call setExamination()");
+        if (entity.getExaminationEntity() == null)
+            throw new DomainException("ExaminationEntity is null. First call setExamination()");
 
-        LOGGER.info("Set {} in {}", channel, entity);
-        entity.setChannelEntity(channel.getEntity());
-    }
-
-    public int getNumberOfChannel() {
-        return entity.getNumberOfChannel();
+        if (channel != null) {
+            entity.setChannelEntity(channel.getEntity());
+            LOGGER.info("Set {} in {}", channel, entity);
+        } else {
+            entity.setChannelEntity(null);
+            LOGGER.info("Reset channelEntity in {}", entity);
+        }
     }
 
     public String getName() {
@@ -80,6 +91,9 @@ public class Graph implements DataListener, Comparable<Graph>{
 
     @Override
     public void setNewSamples(Deque<Integer> data) {
+        if (entity.getExaminationEntity() == null)
+            return;
+
         for (Integer sample : data) {
             SampleEntity sampleEntity =
                     new SampleEntity(
@@ -87,6 +101,7 @@ public class Graph implements DataListener, Comparable<Graph>{
                             entity,
                             sample
                     );
+
             entity.getSampleEntities().add(sampleEntity);
         }
     }
@@ -108,7 +123,7 @@ public class Graph implements DataListener, Comparable<Graph>{
     public int compareTo(Graph o) {
         long result = entity.getExaminationEntity().getId() - o.entity.getExaminationEntity().getId();
 
-        if(result == 0)
+        if (result == 0)
             result = entity.getNumberOfChannel() - o.entity.getNumberOfChannel();
 
         return (int) result;

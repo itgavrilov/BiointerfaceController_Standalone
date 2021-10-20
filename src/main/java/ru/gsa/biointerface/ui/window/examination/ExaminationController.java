@@ -9,7 +9,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.Graph;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.GraphDAO;
@@ -22,8 +24,6 @@ import ru.gsa.biointerface.ui.window.graph.CompositeNode;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
@@ -100,7 +100,6 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         timeScrollBar.setBlockIncrement(1);
 
         buildingChannelsGUIs();
-        drawChannelsGUI();
 
         transitionGUI.show();
     }

@@ -72,8 +72,8 @@ tasks.getByName('jar') {
 }
 
 dependencies {
-    annotationProcessor("javax.xml.bind:jaxb-api")
-    annotationProcessor("org.hibernate:hibernate-jpamodelgen:${hibernateVersion}")
+    //annotationProcessor("javax.xml.bind:jaxb-api")
+    //annotationProcessor("org.hibernate:hibernate-jpamodelgen:${hibernateVersion}")
 
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")

@@ -41,7 +41,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     private static Calendar localDateToDate(LocalDate localDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
-        calendar.set(localDate.getYear(), localDate.getMonthValue()-1, localDate.getDayOfMonth());
+        calendar.set(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
         return calendar;
     }
 

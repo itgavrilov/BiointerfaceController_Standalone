@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -12,11 +11,11 @@ import java.util.Objects;
 @Table(name = "channel")
 public class ChannelEntity implements Comparable<ChannelEntity> {
     @Id
-    @GeneratedValue(generator="sqlite_channel")
-    @TableGenerator(name="sqlite_channel", table="sqlite_sequence",
-            pkColumnName="name", valueColumnName="seq",
-            pkColumnValue="channel",
-            initialValue=1)
+    @GeneratedValue(generator = "sqlite_channel")
+    @TableGenerator(name = "sqlite_channel", table = "sqlite_sequence",
+            pkColumnName = "name", valueColumnName = "seq",
+            pkColumnValue = "channel",
+            initialValue = 1)
     private int id = -1;
 
     @Column(nullable = false, length = 35)
