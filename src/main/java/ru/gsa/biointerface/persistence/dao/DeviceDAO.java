@@ -18,7 +18,7 @@ public class DeviceDAO extends AbstractDAO<DeviceEntity, Integer> {
         super();
     }
 
-    public static DAO<DeviceEntity, Integer> getInstance() throws PersistenceException {
+    public static DeviceDAO getInstance() throws PersistenceException {
         if (dao == null)
             dao = new DeviceDAO();
 

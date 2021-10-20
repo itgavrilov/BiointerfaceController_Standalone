@@ -3,8 +3,10 @@ package ru.gsa.biointerface.domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
+import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.ChannelDAO;
+import ru.gsa.biointerface.persistence.dao.PatientRecordDAO;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +31,7 @@ public class Channel implements Comparable<Channel> {
         }
     }
 
-    private Channel(ChannelEntity entity) {
+    public Channel(ChannelEntity entity) {
         if(entity == null)
             throw new NullPointerException("Entity is null");
 
@@ -42,11 +44,17 @@ public class Channel implements Comparable<Channel> {
         if ("".equals(name))
             throw new IllegalArgumentException("Name is empty");
 
-        entity = new ChannelEntity(-1, name, comment);
-
         try {
-            ChannelDAO.getInstance().insert(entity);
-            LOGGER.info("{} is recorded in database", entity);
+            ChannelEntity readEntity = ChannelDAO.getInstance().read(name);
+
+            if (readEntity == null) {
+                entity = new ChannelEntity(name, comment);
+                ChannelDAO.getInstance().insert(entity);
+                LOGGER.info("{} is recorded in database", entity);
+            } else {
+                entity = readEntity;
+            }
+
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert channel error");
         }

@@ -22,7 +22,7 @@ public abstract class AbstractDAO<Entity, Key> implements DAO<Entity, Key> {
 
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.save(entity);
+            session.saveOrUpdate(entity);
             session.getTransaction().commit();
         } catch (Exception e) {
             throw new PersistenceException("Session error", e);

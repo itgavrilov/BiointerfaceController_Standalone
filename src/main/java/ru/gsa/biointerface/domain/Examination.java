@@ -18,6 +18,7 @@ public class Examination implements Comparable<Examination> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Examination.class);
     private final ExaminationEntity entity;
     private final ExaminationDAO dao;
+    private boolean recordingStart = false;
 
     static public Set<Examination> getAll() throws DomainException {
         try {
@@ -41,7 +42,7 @@ public class Examination implements Comparable<Examination> {
         }
     }
 
-    private Examination(ExaminationEntity entity) {
+    public Examination(ExaminationEntity entity) {
         if(entity == null)
             throw new NullPointerException("Entity is null");
 
@@ -79,7 +80,7 @@ public class Examination implements Comparable<Examination> {
             if(channelList.get(i) != null)
                 channelEntity = channelList.get(i).getEntity();
 
-            entity.getGraphEntities().add(new GraphEntity(i, entity, channelEntity, new ArrayList<>()));
+            entity.getGraphEntities().add(new GraphEntity(i, entity, channelEntity, new LinkedList<>()));
         }
 
         try {
@@ -158,8 +159,14 @@ public class Examination implements Comparable<Examination> {
 
         try {
             dao.beginTransaction();
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO beginTransaction error");
+        }
+
+        try {
             dao.insert(entity);
             LOGGER.info("{} is recorded in database", entity);
+            recordingStart = true;
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert " + entity + " error");
         }
@@ -167,6 +174,7 @@ public class Examination implements Comparable<Examination> {
 
     public void recordingStop() {
         try {
+            recordingStart = false;
             dao.endTransaction();
         } catch (PersistenceException e) {
             e.printStackTrace();
@@ -174,7 +182,7 @@ public class Examination implements Comparable<Examination> {
     }
 
     public boolean isRecording() {
-        return dao.transactionIsOpen();
+        return recordingStart;
     }
 
     public void setChannelInGraph(int numberOfChannel, Channel channel) {

@@ -2,9 +2,11 @@ package ru.gsa.biointerface.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.gsa.biointerface.domain.entity.DeviceEntity;
 import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
+import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 import ru.gsa.biointerface.persistence.dao.PatientRecordDAO;
 
 import java.time.LocalDate;
@@ -48,11 +50,24 @@ public class PatientRecord implements Comparable<PatientRecord> {
         if (birthday == null)
             throw new NullPointerException("Birthday is null");
 
-        entity = new PatientRecordEntity(id, secondName, firstName, middleName, localDateToDate(birthday), icdEntity, comment);
-
         try {
-            PatientRecordDAO.getInstance().insert(entity);
-            LOGGER.info("{} is recorded in database", entity);
+            PatientRecordEntity readEntity = PatientRecordDAO.getInstance().read(id);
+            if (readEntity == null) {
+                entity = new PatientRecordEntity(
+                        id,
+                        secondName,
+                        firstName,
+                        middleName,
+                        localDateToDate(birthday),
+                        icdEntity,
+                        comment
+                );
+                PatientRecordDAO.getInstance().insert(entity);
+                LOGGER.info("{} is recorded in database", entity);
+            } else {
+                entity = readEntity;
+            }
+
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert patientRecord error");
         }

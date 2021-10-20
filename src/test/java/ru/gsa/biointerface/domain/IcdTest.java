@@ -13,7 +13,8 @@ class IcdTest {
     private final Integer version = 10;
     private String comment = "commentTest";
 
-    private final IcdEntity entity = new IcdEntity(-1, name, version, comment);
+    private final IcdEntity entity =
+            new IcdEntity(-1, name, version, comment);
     private Icd icd;
     private IcdDAO dao;
 
@@ -25,7 +26,7 @@ class IcdTest {
             dao = IcdDAO.getInstance();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new NullPointerException("icd is null");
+            throw new NullPointerException("Error setUp");
         }
     }
 
@@ -63,6 +64,7 @@ class IcdTest {
 
     @Test
     void getEntity() {
+        entity.setId(icd.getEntity().getId());
         Assertions.assertEquals(entity, icd.getEntity());
     }
 
@@ -99,14 +101,14 @@ class IcdTest {
 
     @Test
     void testEquals() {
-        Icd testIcd;
+        Icd test;
         try {
-            testIcd = new Icd(dao.read(icd.getId()));
-            Assertions.assertEquals(testIcd, icd);
+            test = new Icd(dao.read(icd.getEntity().getId()));
+            Assertions.assertEquals(test, icd);
 
             entity.setId(-1);
-            testIcd = new Icd(entity);
-            Assertions.assertNotEquals(icd, testIcd);
+            test = new Icd(entity);
+            Assertions.assertNotEquals(test, icd);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -123,17 +125,27 @@ class IcdTest {
 
     @Test
     void compareTo() {
+        Icd test;
+
         entity.setId(icd.getEntity().getId()-1);
-        Icd testIcd = new Icd(entity);
-        Assertions.assertTrue(icd.compareTo(testIcd) > 0);
+        test = new Icd(entity);
+        Assertions.assertEquals(
+                icd.getEntity().compareTo(test.getEntity()),
+                icd.compareTo(test)
+        );
 
         entity.setId(icd.getEntity().getId());
-        testIcd = new Icd(entity);
-        Assertions.assertEquals(0, icd.compareTo(testIcd));
+        test = new Icd(entity);
+        Assertions.assertEquals(
+                icd.getEntity().compareTo(test.getEntity()),
+                icd.compareTo(test)
+        );
 
         entity.setId(icd.getEntity().getId() + 1);
-        testIcd = new Icd(entity);
-        Assertions.assertTrue(icd.compareTo(testIcd) < 0);
-
+        test = new Icd(entity);
+        Assertions.assertEquals(
+                icd.getEntity().compareTo(test.getEntity()),
+                icd.compareTo(test)
+        );
     }
 }

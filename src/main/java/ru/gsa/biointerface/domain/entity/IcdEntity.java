@@ -15,7 +15,7 @@ public class IcdEntity implements Comparable<IcdEntity> {
     @TableGenerator(name = "sqlite_icd", table = "sqlite_sequence",
             pkColumnName = "name", valueColumnName = "seq",
             pkColumnValue = "icd",
-            initialValue = 1)
+            initialValue = 1, allocationSize=1)
     private int id = -1;
 
     @Column(nullable = false, length = 35)

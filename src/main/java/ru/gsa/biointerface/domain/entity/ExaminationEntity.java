@@ -18,7 +18,7 @@ public class ExaminationEntity implements Comparable<ExaminationEntity> {
     @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
             pkColumnName = "name", valueColumnName = "seq",
             pkColumnValue = "examination",
-            initialValue = 1)
+            initialValue = 1, allocationSize=1)
     private long id = -1;
 
     @Temporal(TemporalType.TIMESTAMP)

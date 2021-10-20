@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class ChannelDAO extends AbstractDAO<ChannelEntity, Integer> {
+public class ChannelDAO extends AbstractDAO<ChannelEntity, String> {
     protected static ChannelDAO dao;
 
     private ChannelDAO() throws PersistenceException {
@@ -26,7 +26,7 @@ public class ChannelDAO extends AbstractDAO<ChannelEntity, Integer> {
     }
 
     @Override
-    public ChannelEntity read(Integer key) throws PersistenceException {
+    public ChannelEntity read(String key) throws PersistenceException {
         ChannelEntity entity;
 
         try (final Session session = sessionFactory.openSession()) {

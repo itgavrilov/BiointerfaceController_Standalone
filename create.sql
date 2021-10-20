@@ -1,25 +1,30 @@
-CREATE TABLE patientRecord (
-id INTEGER PRIMARY KEY NOT NULL,
-secondName VARCHAR(35)  NOT NULL,
-firstName VARCHAR(35)  NOT NULL,
-middleName VARCHAR(35)  NULL,
-birthday DATE  NOT NULL,
-icd_id INTEGER NULL,
-comment TEXT  NULL,
-FOREIGN KEY (icd_id) REFERENCES icd (id)
-);
-
 CREATE TABLE icd (
 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 icd VARCHAR(35) NOT NULL,
 version INTEGER NOT NULL,
-comment TEXT NULL
+comment TEXT
 );
 
 CREATE TABLE device (
 id INTEGER PRIMARY KEY NOT NULL,
 amountChannels INTEGER NOT NULL,
-comment TEXT NULL
+comment TEXT
+);
+
+CREATE TABLE channel (
+name VARCHAR(35) PRIMARY KEY NOT NULL,
+comment TEXT
+);
+
+CREATE TABLE patientRecord (
+id INTEGER PRIMARY KEY NOT NULL,
+secondName VARCHAR(35) NOT NULL,
+firstName VARCHAR(35) NOT NULL,
+middleName VARCHAR(35),
+birthday DATE  NOT NULL,
+icd_id INTEGER,
+comment TEXT,
+FOREIGN KEY (icd_id) REFERENCES icd (id)
 );
 
 CREATE TABLE examination (
@@ -32,19 +37,13 @@ FOREIGN KEY (patientRecord_id) REFERENCES patientRecord(id) ON DELETE CASCADE,
 FOREIGN KEY (device_id) REFERENCES device(id) ON DELETE CASCADE
 );
 
-CREATE TABLE channel (
-id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-name VARCHAR(35) UNIQUE NOT NULL,
-comment TEXT NULL
-);
-
 CREATE TABLE graph (
 numberOfChannel INTEGER NOT NULL,
 examination_id INTEGER NOT NULL,
-channel_id INTEGER  NULL,
-PRIMARY KEY (numberOfChannel, examination_id)
+channel_name VARCHAR(35),
+PRIMARY KEY (numberOfChannel, examination_id),
 FOREIGN KEY (examination_id) REFERENCES examination(id) ON DELETE CASCADE,
-FOREIGN KEY (channel_id) REFERENCES channel(id)
+FOREIGN KEY (channel_name) REFERENCES channel(name)
 );
 
 CREATE TABLE sample (

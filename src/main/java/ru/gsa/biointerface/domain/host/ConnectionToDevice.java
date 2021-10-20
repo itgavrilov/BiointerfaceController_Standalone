@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 public class ConnectionToDevice implements DataCollector, Connection {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionToDevice.class);
-    private final SerialPortHost serialPortHost;
+    private SerialPortHost serialPortHost;
     private Device device;
     private List<Cash> cashList;
     private PatientRecord patientRecord;
@@ -47,7 +47,6 @@ public class ConnectionToDevice implements DataCollector, Connection {
         } catch (Exception e) {
             throw new DomainException("SerialPortHost start error", e);
         }
-
         serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
     }
 
@@ -66,6 +65,10 @@ public class ConnectionToDevice implements DataCollector, Connection {
     }
 
     @Override
+    public int getAmountChannels() {
+        return device.getAmountChannels();
+    }
+
     public Device getDevice() {
         return device;
     }
@@ -152,23 +155,35 @@ public class ConnectionToDevice implements DataCollector, Connection {
     public boolean isConnected() {
         boolean result = false;
 
-        if (serialPortHost != null)
-            result = serialPortHost.isRunning();
+        if (serialPortHost != null && serialPortHost.isRunning())
+            result = serialPortHost.portIsOpen();
 
         return result;
     }
 
     @Override
     public void disconnect() throws DomainException {
-        if (serialPortHost != null) {
+        if (isConnected()) {
             try {
-                if (isTransmission())
+                if (isTransmission()) {
                     transmissionStop();
+                }
                 serialPortHost.stop();
                 LOGGER.info("Disconnecting from device");
             } catch (Exception e) {
                 throw new DomainException("SerialPortHost stop error", e);
             }
+        }
+    }
+
+    public void connect() throws DomainException {
+        if (!isConnected()) {
+            try {
+                serialPortHost.start();
+            } catch (Exception e) {
+                throw new DomainException("SerialPortHost start error", e);
+            }
+            serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
         }
     }
 
@@ -219,7 +234,9 @@ public class ConnectionToDevice implements DataCollector, Connection {
         if (isRecording())
             throw new DomainException("Recording is already in progress");
 
+
         examination = new Examination(patientRecord, device, channelList, comment);
+
         examination.recordingStart();
         LOGGER.info("Start recording");
     }

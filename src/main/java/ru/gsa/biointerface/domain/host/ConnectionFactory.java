@@ -18,7 +18,7 @@ public class ConnectionFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionFactory.class);
     private static ConnectionFactory instance;
     private Set<ConnectionToDevice> connections = new LinkedHashSet<>();
-    private ConnectionToDevice connectionsActive;
+    private ConnectionToDevice connectionSelect;
 
     private ConnectionFactory() {
 
@@ -48,12 +48,11 @@ public class ConnectionFactory {
     }
 
     public void scanningSerialPort() throws DomainException {
-        if (connectionsActive != null) {
-            connectionsActive.controllerReboot();
-            connectionsActive = null;
-        }
-
         connections.clear();
+
+        if(connectionSelect != null && connectionSelect.isConnected())
+            connectionSelect.disconnect();
+
         getSerialPortsWishDevises()
                 .forEach(o -> {
                     try {
@@ -67,20 +66,9 @@ public class ConnectionFactory {
     }
 
     public List<Device> getListDevices() {
-        connections = connections.stream()
-                .filter(ConnectionToDevice::isAvailableDevice)
-                .collect(Collectors.toSet());
-        LOGGER.info("Get available devices");
-        return connections.stream()
-                .map(ConnectionToDevice::getDevice)
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public Connection getConnection(Device device) {
-        connectionsActive = connections.stream()
+        List<Device> devices = connections.stream()
                 .peek(o -> {
-                    if (!device.equals(o.getDevice())) {
+                    if(o.isConnected()) {
                         try {
                             o.disconnect();
                         } catch (DomainException e) {
@@ -88,10 +76,28 @@ public class ConnectionFactory {
                         }
                     }
                 })
+                .filter(ConnectionToDevice::isAvailableDevice)
+                .map(ConnectionToDevice::getDevice)
+                .sorted()
+                .collect(Collectors.toList());
+
+        LOGGER.info("Get available devices");
+
+        return devices;
+    }
+
+    public Connection getConnection(Device device) {
+        connectionSelect = connections.stream()
                 .filter(o -> device.equals(o.getDevice()))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 
-        return connectionsActive;
+        try {
+            connectionSelect.connect();
+        } catch (DomainException e) {
+            e.printStackTrace();
+        }
+
+        return connectionSelect;
     }
 }

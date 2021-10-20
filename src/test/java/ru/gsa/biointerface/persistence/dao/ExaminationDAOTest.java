@@ -30,8 +30,7 @@ class ExaminationDAOTest {
 
 
     @Test
-    void insert() throws DomainException, InterruptedException {
-        List<Channel> channels = new ArrayList<>();
+    void insert() throws DomainException {
         var patientRecord = new PatientRecord(1,
                 "G",
                 "S",
@@ -39,11 +38,11 @@ class ExaminationDAOTest {
                 LocalDate.now(),
                 null,
                 "test");
+
         var device = new Device(1, 1);
         device.setComment("test");
 
-        Assertions.assertEquals(device.getAmountChannels(), 1);
-
+        List<Channel> channels = new ArrayList<>();
         for (int i = 0; i < device.getAmountChannels(); i++) {
             channels.add(null);
         }

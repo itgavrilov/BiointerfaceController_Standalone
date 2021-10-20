@@ -21,8 +21,12 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
         this.serialPort = serialPort;
     }
 
+    public boolean portIsOpen(){
+        return serialPort.isOpen();
+    }
+
     @Override
-    protected void doStart() {
+    protected void doStart() throws DomainException {
         try {
             super.doStart();
         } catch (Exception e) {
@@ -36,14 +40,20 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
         serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
 
         serialPort.openPort();
+
+        if(!serialPort.isOpen())
+            throw new DomainException("SerialPort is not opened");
+
         serialPort.addDataListener(this);
     }
 
     @Override
     protected void doStop() throws Exception {
         super.doStop();
-        if (serialPort.isOpen())
+        if (serialPort.isOpen()) {
             serialPort.closePort();
+            serialPort.removeDataListener();
+        }
     }
 
     @Override

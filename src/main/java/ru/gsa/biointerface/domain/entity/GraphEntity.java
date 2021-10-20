@@ -21,7 +21,7 @@ public class GraphEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", referencedColumnName = "id")
+    @JoinColumn(name = "channel_name", referencedColumnName = "name")
     private ChannelEntity channelEntity;
 
     @OneToMany(mappedBy = "graphEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

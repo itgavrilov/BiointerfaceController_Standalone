@@ -11,14 +11,7 @@ import java.util.Objects;
 @Table(name = "channel")
 public class ChannelEntity implements Comparable<ChannelEntity> {
     @Id
-    @GeneratedValue(generator = "sqlite_channel")
-    @TableGenerator(name = "sqlite_channel", table = "sqlite_sequence",
-            pkColumnName = "name", valueColumnName = "seq",
-            pkColumnValue = "channel",
-            initialValue = 1)
-    private int id = -1;
-
-    @Column(nullable = false, length = 35)
+    @Column(length = 35)
     private String name;
 
     @Column(length = 400)
@@ -30,18 +23,9 @@ public class ChannelEntity implements Comparable<ChannelEntity> {
     public ChannelEntity() {
     }
 
-    public ChannelEntity(int id, String name, String comment) {
-        this.id = id;
+    public ChannelEntity(String name, String comment) {
         this.name = name;
         this.comment = comment;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -89,8 +73,7 @@ public class ChannelEntity implements Comparable<ChannelEntity> {
     @Override
     public String toString() {
         return "ChannelEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

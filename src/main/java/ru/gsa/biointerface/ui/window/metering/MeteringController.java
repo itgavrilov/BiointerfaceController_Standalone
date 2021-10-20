@@ -132,19 +132,19 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     public void buttonScanningSerialPortsPush() {
-        clearInterface();
         try {
             connection = null;
-            connectionFactory.scanningSerialPort();
+            clearInterface();
             controlInterface(false);
+            connectionFactory.scanningSerialPort();
         } catch (DomainException e) {
             e.printStackTrace();
         }
     }
 
     public void availableDevicesComboBoxShowing() {
-        clearInterface();
-        controlInterface(false);
+        controlInterface(true);
+        availableDevicesComboBox.getItems().clear();
         availableDevicesComboBox.getItems().addAll(connectionFactory.getListDevices());
     }
 
@@ -169,7 +169,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
-        for (int i = 0; i < connection.getDevice().getAmountChannels(); i++) {
+        for (int i = 0; i < connection.getAmountChannels(); i++) {
             CompositeNode<AnchorPane, GraphForMeteringController> node =
                     new CompositeNode<>(
                             new FXMLLoader(
@@ -279,7 +279,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         try {
             if (connection != null && connection.isConnected()) {
                 try {
-                    connection.controllerReboot();
+                    connection.disconnect();
                 } catch (DomainException e) {
                     e.printStackTrace();
                 }
@@ -301,10 +301,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     private void clearInterface() {
+        availableDevicesComboBox.setValue(null);
         channelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().clear();
-        availableDevicesComboBox.getItems().clear();
-        availableDevicesComboBox.setValue(null);
     }
 
     private void controlInterface(boolean enableButtonScanning) {

@@ -43,11 +43,10 @@ public class Device implements Comparable<Device> {
         if (amountChannels == 0)
             throw new IllegalArgumentException("Amount channels is '0'");
 
-        entity = new DeviceEntity(id, amountChannels, "");
-
         try {
-            DeviceEntity readEntity = DeviceDAO.getInstance().read(entity.getId());
+            DeviceEntity readEntity = DeviceDAO.getInstance().read(id);
             if (readEntity == null) {
+                entity = new DeviceEntity(id, amountChannels, "");
                 DeviceDAO.getInstance().insert(entity);
                 LOGGER.info("{} is recorded in database", entity);
             } else {

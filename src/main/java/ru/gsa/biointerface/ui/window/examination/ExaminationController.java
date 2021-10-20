@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Examination;
+import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
@@ -81,20 +82,28 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         if (examination == null)
             throw new UIException("examination is null. First call setParameter()");
 
-        patientRecordIdText.setText(String.valueOf(examination.getPatientRecord().getId()));
-        secondNameText.setText(examination.getPatientRecord().getSecondName());
-        firstNameText.setText(examination.getPatientRecord().getFirstName());
-        middleNameText.setText(examination.getPatientRecord().getMiddleName());
-        if (examination.getPatientRecord().getIcd() != null)
-            icdText.setText(examination.getPatientRecord().getIcd().toString());
+        PatientRecord patientRecord = examination.getPatientRecord();
+
+        patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
+        secondNameText.setText(patientRecord.getSecondName());
+        firstNameText.setText(patientRecord.getFirstName());
+        middleNameText.setText(patientRecord.getMiddleName());
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        birthdayText.setText(examination.getPatientRecord().getBirthday().format(dateFormatter));
+        birthdayText.setText(patientRecord.getBirthday().format(dateFormatter));
+
+        if (patientRecord.getIcd() != null) {
+            Icd icd = patientRecord.getIcd();
+            icdText.setText(icd.getICD() + " (ICD-" + icd.getVersion() + ")");
+        } else {
+            icdText.setText("-");
+        }
 
         idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         dateTimeText.setText(examination.getDateTime().format(dateTimeFormatter));
+
         timeScrollBar.setMin(0);
         timeScrollBar.setValue(0);
         timeScrollBar.setBlockIncrement(1);

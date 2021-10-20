@@ -50,7 +50,6 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     private NumberAxis axisY;
     @FXML
     private LineChart<Integer, Integer> graphic;
-    private Boolean ready = true;
 
     private static String getChannelName(int numberOfChannel, Channel channel) {
         String str = "Channel " + (numberOfChannel + 1);
@@ -101,15 +100,14 @@ public final class GraphForMeteringController implements DataListener, ContentFo
 
     public void nameComboBoxSelect() {
         channelSelected = nameComboBox.getValue();
-        String channelName = getChannelName(numberOfChannel, channelSelected);
 
         try {
             connection.setChannelInGraph(numberOfChannel, channelSelected);
         } catch (DomainException e) {
             e.printStackTrace();
         }
-        nameComboBox.getEditor().setText(channelName);
-        checkBox.setText(channelName);
+
+        checkBox.setText(getChannelName(numberOfChannel, channelSelected));
     }
 
     public void setCheckBox(CheckBoxOfGraph checkBox) throws DomainException {
@@ -124,14 +122,8 @@ public final class GraphForMeteringController implements DataListener, ContentFo
 
     @Override
     public void setNewSamples(Deque<Integer> data) {
-        ready = false;
-
         samples.addAll(data);
-
-        Platform.runLater(() -> {
-            filling();
-            ready = true;
-        });
+        Platform.runLater(this::filling);
     }
 
     public void setCapacity(int capacity) throws DomainException {
