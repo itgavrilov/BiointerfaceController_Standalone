@@ -11,8 +11,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.Channel;
-import ru.gsa.biointerface.domain.host.cash.DataListener;
 import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.host.cash.DataListener;
 import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 

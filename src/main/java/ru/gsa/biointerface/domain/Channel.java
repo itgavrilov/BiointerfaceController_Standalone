@@ -3,13 +3,10 @@ package ru.gsa.biointerface.domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
-import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.ChannelDAO;
-import ru.gsa.biointerface.persistence.dao.PatientRecordDAO;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,21 +17,7 @@ public class Channel implements Comparable<Channel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Channel.class);
     private final ChannelEntity entity;
 
-    static public Set<Channel> getAll() throws DomainException {
-        try {
-            List<ChannelEntity> entities = ChannelDAO.getInstance().getAll();
-            Set<Channel> channels = new TreeSet<>();
-            entities.forEach(o -> channels.add(new Channel(o)));
-            return channels;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getAll channels error");
-        }
-    }
-
     public Channel(ChannelEntity entity) {
-        if(entity == null)
-            throw new NullPointerException("Entity is null");
-
         this.entity = entity;
     }
 
@@ -57,6 +40,17 @@ public class Channel implements Comparable<Channel> {
 
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert channel error");
+        }
+    }
+
+    static public Set<Channel> getAll() throws DomainException {
+        try {
+            List<ChannelEntity> entities = ChannelDAO.getInstance().getAll();
+            Set<Channel> channels = new TreeSet<>();
+            entities.forEach(o -> channels.add(new Channel(o)));
+            return channels;
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll channels error");
         }
     }
 

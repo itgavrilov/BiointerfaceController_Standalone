@@ -4,7 +4,7 @@ package ru.gsa.biointerface.domain.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class SampleEntityId implements Serializable {
+public class SampleEntityId implements Serializable, Comparable<SampleEntityId> {
     private long id = -1;
     private GraphEntity graphEntity;
 
@@ -35,5 +35,15 @@ public class SampleEntityId implements Serializable {
                 "id=" + id +
                 ", graphEntity=" + graphEntity +
                 '}';
+    }
+
+    @Override
+    public int compareTo(SampleEntityId o) {
+        long result = graphEntity.compareTo(o.graphEntity);
+
+        if (result == 0)
+            result = id - o.id;
+
+        return (int) result;
     }
 }

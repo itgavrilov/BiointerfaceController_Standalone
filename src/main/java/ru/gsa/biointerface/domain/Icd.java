@@ -17,15 +17,8 @@ public class Icd implements Comparable<Icd> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Icd.class);
     private IcdEntity entity;
 
-    static public Set<Icd> getAll() throws DomainException {
-        try {
-            List<IcdEntity> IcdEntity = IcdDAO.getInstance().getAll();
-            Set<Icd> icds = new TreeSet<>();
-            IcdEntity.forEach(o -> icds.add(new Icd(o)));
-            return icds;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getAll ICDs error");
-        }
+    public Icd(IcdEntity entity) {
+        this.entity = entity;
     }
 
     public Icd(String ICD, int version, String comment) throws DomainException {
@@ -46,11 +39,15 @@ public class Icd implements Comparable<Icd> {
         }
     }
 
-    public Icd(IcdEntity entity) {
-        if(entity == null)
-            throw new NullPointerException("Entity is null");
-
-        this.entity = entity;
+    static public Set<Icd> getAll() throws DomainException {
+        try {
+            List<IcdEntity> IcdEntity = IcdDAO.getInstance().getAll();
+            Set<Icd> icds = new TreeSet<>();
+            IcdEntity.forEach(o -> icds.add(new Icd(o)));
+            return icds;
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll ICDs error");
+        }
     }
 
     public void delete() throws DomainException {

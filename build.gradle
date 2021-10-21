@@ -8,7 +8,7 @@ plugins {
 def junitVersion = '5.8.1'
 def slf4jVersion = '1.7.32'
 def log4jVersion = '2.14.1'
-def hibernateVersion = '5.5.7.Final'
+def hibernateVersion = '5.5.8.Final'
 
 def defaultEncoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding

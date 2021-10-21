@@ -3,7 +3,7 @@ package ru.gsa.biointerface.domain.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class GraphEntityId implements Serializable {
+public class GraphEntityId implements Serializable, Comparable<GraphEntityId> {
     private int numberOfChannel = -1;
     private ExaminationEntity examinationEntity;
 
@@ -26,6 +26,16 @@ public class GraphEntityId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(numberOfChannel, examinationEntity);
+    }
+
+    @Override
+    public int compareTo(GraphEntityId o) {
+        int result = examinationEntity.compareTo(o.examinationEntity);
+
+        if (result == 0)
+            result = numberOfChannel - o.numberOfChannel;
+
+        return result;
     }
 
     @Override

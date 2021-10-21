@@ -31,6 +31,7 @@ public class SampleDAO extends AbstractDAO<SampleEntity, Integer> {
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             String hql = "FROM sample where numberOfChannel = :numberOfChannel and examination_id = :examination_id";
+            //noinspection unchecked
             Query<SampleEntity> query = session.createQuery(hql);
             query.setParameter("numberOfChannel", graphEntity.getNumberOfChannel());
             query.setParameter("examination_id", graphEntity.getExaminationEntity().getId());
@@ -42,15 +43,5 @@ public class SampleDAO extends AbstractDAO<SampleEntity, Integer> {
         }
 
         return entities;
-    }
-
-    @Override
-    public SampleEntity read(Integer key) {
-        return null;
-    }
-
-    @Override
-    public List<SampleEntity> getAll() throws PersistenceException {
-        return null;
     }
 }

@@ -2,17 +2,17 @@ package ru.gsa.biointerface.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
 import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 import ru.gsa.biointerface.persistence.dao.PatientRecordDAO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -21,18 +21,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecord.class);
     private final PatientRecordEntity entity;
 
-    private static Calendar localDateToDate(LocalDate localDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
-        return calendar;
-    }
-
-    private static LocalDate dateToLocalDate(Calendar calendar) {
-        return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()).toLocalDate();
-    }
-
-    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, IcdEntity icdEntity, String comment) throws DomainException {
+    public PatientRecord(int id, String secondName, String firstName, String middleName, LocalDate birthday, Icd icd, String comment) throws DomainException {
         if (id <= 0)
             throw new NullPointerException("Id <= 0");
         if (secondName == null)
@@ -49,6 +38,8 @@ public class PatientRecord implements Comparable<PatientRecord> {
             throw new NullPointerException("MiddleName is empty");
         if (birthday == null)
             throw new NullPointerException("Birthday is null");
+        if (icd == null)
+            throw new NullPointerException("icd is null");
 
         try {
             PatientRecordEntity readEntity = PatientRecordDAO.getInstance().read(id);
@@ -59,7 +50,7 @@ public class PatientRecord implements Comparable<PatientRecord> {
                         firstName,
                         middleName,
                         localDateToDate(birthday),
-                        icdEntity,
+                        icd.getEntity(),
                         comment
                 );
                 PatientRecordDAO.getInstance().insert(entity);
@@ -74,13 +65,26 @@ public class PatientRecord implements Comparable<PatientRecord> {
     }
 
     public PatientRecord(PatientRecordEntity entity) {
-        if(entity == null)
-            throw new NullPointerException("Entity is null");
-
         this.entity = entity;
     }
 
-    static public Set<PatientRecord> getSetAll() throws DomainException {
+    private static Calendar localDateToDate(LocalDate localDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        //noinspection MagicConstant
+        calendar.set(
+                localDate.getYear(),
+                localDate.getMonthValue() - 1,
+                localDate.getDayOfMonth()
+        );
+        return calendar;
+    }
+
+    private static LocalDate dateToLocalDate(Calendar calendar) {
+        return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()).toLocalDate();
+    }
+
+    static public Set<PatientRecord> getAll() throws DomainException {
         try {
             List<PatientRecordEntity> entitys = PatientRecordDAO.getInstance().getAll();
             Set<PatientRecord> result = new TreeSet<>();

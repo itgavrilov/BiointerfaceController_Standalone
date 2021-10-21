@@ -8,7 +8,6 @@ import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.DomainException;
 import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.entity.IcdEntity;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
@@ -241,10 +240,10 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        IcdEntity icdEntity = null;
+        Icd icd = null;
 
         if (icdComboBox.getValue() != null)
-            icdEntity = icdComboBox.getValue().getEntity();
+            icd = icdComboBox.getValue();
 
         try {
             new PatientRecord(
@@ -253,7 +252,7 @@ public class PatientRecordAddController extends AbstractWindow {
                     firstNameField.getText(),
                     middleNameField.getText(),
                     birthdayField.getValue(),
-                    icdEntity,
+                    icd,
                     commentField.getText()
             );
 

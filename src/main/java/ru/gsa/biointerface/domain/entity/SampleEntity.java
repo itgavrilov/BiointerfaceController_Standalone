@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Objects;
 @Entity(name = "sample")
 @Table(name = "sample")
 @IdClass(SampleEntityId.class)
-public class SampleEntity {
+public class SampleEntity implements Serializable, Comparable<SampleEntity> {
     @Id
     private long id = -1;
 
@@ -67,6 +68,16 @@ public class SampleEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, graphEntity);
+    }
+
+    @Override
+    public int compareTo(SampleEntity o) {
+        long result = graphEntity.compareTo(o.graphEntity);
+
+        if (result == 0)
+            result = id - o.id;
+
+        return (int) result;
     }
 
     @Override

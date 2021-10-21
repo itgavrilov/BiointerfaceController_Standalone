@@ -54,6 +54,14 @@ public class ExaminationsController extends AbstractWindow {
 
         tableView.getItems().clear();
 
+        ObservableList<Examination> list = FXCollections.observableArrayList();
+        try {
+            list.addAll(Examination.getAll());
+        } catch (DomainException e) {
+            throw new UIException("Error getting a list of examinations");
+        }
+        tableView.setItems(list);
+
         dateTimeCol.setCellValueFactory(param -> {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
             LocalDateTime dateTime = param.getValue().getDateTime();
@@ -69,14 +77,6 @@ public class ExaminationsController extends AbstractWindow {
             return new SimpleObjectProperty<>(Initials);
         });
         deviceIdCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getDevice().getId()));
-
-        ObservableList<Examination> list = FXCollections.observableArrayList();
-        try {
-            list.addAll(Examination.getAll());
-        } catch (DomainException e) {
-            throw new UIException("Error getting a list of examinations");
-        }
-        tableView.setItems(list);
 
         transitionGUI.show();
     }

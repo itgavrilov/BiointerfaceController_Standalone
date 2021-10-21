@@ -21,7 +21,7 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
         this.serialPort = serialPort;
     }
 
-    public boolean portIsOpen(){
+    public boolean portIsOpen() {
         return serialPort.isOpen();
     }
 
@@ -41,7 +41,7 @@ public class SerialPortHost extends AbstractServer<Packet, Packet, SerialPort> i
 
         serialPort.openPort();
 
-        if(!serialPort.isOpen())
+        if (!serialPort.isOpen())
             throw new DomainException("SerialPort is not opened");
 
         serialPort.addDataListener(this);

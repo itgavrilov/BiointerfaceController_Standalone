@@ -50,7 +50,7 @@ public class ConnectionFactory {
     public void scanningSerialPort() throws DomainException {
         connections.clear();
 
-        if(connectionSelect != null && connectionSelect.isConnected())
+        if (connectionSelect != null && connectionSelect.isConnected())
             connectionSelect.disconnect();
 
         getSerialPortsWishDevises()
@@ -68,7 +68,7 @@ public class ConnectionFactory {
     public List<Device> getListDevices() {
         List<Device> devices = connections.stream()
                 .peek(o -> {
-                    if(o.isConnected()) {
+                    if (o.isConnected()) {
                         try {
                             o.disconnect();
                         } catch (DomainException e) {

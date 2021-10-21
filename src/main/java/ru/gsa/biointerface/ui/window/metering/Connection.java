@@ -1,6 +1,8 @@
 package ru.gsa.biointerface.ui.window.metering;
 
-import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.Channel;
+import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.host.cash.DataListener;
 
 /**

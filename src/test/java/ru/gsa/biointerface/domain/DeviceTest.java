@@ -5,38 +5,35 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 
 class DeviceTest {
     private final int id = 1;
     private final int amountChannels = 1;
-    private String comment = "commentTest";
+    private final String comment = "commentTest";
 
-    private final DeviceEntity entity =
-            new DeviceEntity(id, amountChannels, comment);
+    private DeviceEntity entity;
     private Device device;
-    private DeviceDAO dao;
 
     @BeforeEach
     void setUp() {
         try {
             device = new Device(id, amountChannels);
             device.setComment(comment);
-            entity.setId(device.getEntity().getId());
-            dao = DeviceDAO.getInstance();
+            entity = new DeviceEntity(id, amountChannels, comment);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new NullPointerException("Error setUp");
+            throw new RuntimeException("Error setUp");
         }
     }
 
     @AfterEach
     void tearDown() {
         try {
-            device.delete();
+            if (device != null)
+                device.delete();
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error tearDown");
         }
     }
 
@@ -46,7 +43,7 @@ class DeviceTest {
             Assertions.assertTrue(Device.getAll().contains(device));
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error getAll");
+            throw new RuntimeException("Error getAll");
         }
     }
 
@@ -55,17 +52,15 @@ class DeviceTest {
         try {
             device.delete();
             Assertions.assertFalse(Device.getAll().contains(device));
-            device = new Device(id, amountChannels);
-            device.setComment(comment);
+            device = null;
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error delete");
+            throw new RuntimeException("Error delete");
         }
     }
 
     @Test
     void getEntity() {
-        entity.setId(id);
         Assertions.assertEquals(entity, device.getEntity());
     }
 
@@ -86,51 +81,45 @@ class DeviceTest {
 
     @Test
     void setComment() {
-        comment = "test_setComment";
+        String testComment = "test_setComment";
         try {
-            device.setComment(comment);
-            Assertions.assertEquals(comment, device.getComment());
+            device.setComment(testComment);
+            Assertions.assertEquals(testComment, device.getComment());
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error setComment");
         }
     }
 
     @Test
     void testEquals() {
-        Device test;
-        try {
-            test = new Device(dao.read(device.getEntity().getId()));
-            Assertions.assertEquals(test, device);
+        Device test = new Device(entity);
 
-            entity.setId(id + 1);
-            test = new Device(entity);
-            Assertions.assertNotEquals(test, device);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
+        Assertions.assertEquals(test, device);
+
+        entity.setId(id + 1);
+        test = new Device(entity);
+        Assertions.assertNotEquals(test, device);
     }
 
     @Test
     void testHashCode() {
+        Assertions.assertEquals(entity.hashCode(), device.hashCode());
+
         entity.setId(id + 1);
         Assertions.assertNotEquals(entity.hashCode(), device.hashCode());
-
-        entity.setId(id);
-        Assertions.assertEquals(entity.hashCode(), device.hashCode());
     }
 
     @Test
     void compareTo() {
-        Device test;
+        Device test = new Device(entity);
 
-        entity.setId(id - 1);
-        test = new Device(entity);
         Assertions.assertEquals(
                 device.getEntity().compareTo(test.getEntity()),
                 device.compareTo(test)
         );
 
-        entity.setId(id);
+        entity.setId(id - 1);
         test = new Device(entity);
         Assertions.assertEquals(
                 device.getEntity().compareTo(test.getEntity()),

@@ -2,10 +2,8 @@ package ru.gsa.biointerface.domain.host.cash;
 
 import ru.gsa.biointerface.domain.DomainException;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created  by Gavrilov Stepan on 07.11.2019.
@@ -13,11 +11,11 @@ import java.util.List;
  */
 
 public final class SampleCash implements Cash {
-    private DataListener listener;
     private final Deque<Integer> data = new LinkedList<>();
+    private DataListener listener;
 
     public void addListener(DataListener listener) {
-        if(listener == null)
+        if (listener == null)
             throw new NullPointerException("Listener is null");
 
         this.listener = listener;
@@ -27,7 +25,7 @@ public final class SampleCash implements Cash {
     public void add(int val) {
         data.add(val);
         if (data.size() > 15) {
-            if(listener != null){
+            if (listener != null) {
                 try {
                     listener.setNewSamples(data);
                 } catch (DomainException e) {

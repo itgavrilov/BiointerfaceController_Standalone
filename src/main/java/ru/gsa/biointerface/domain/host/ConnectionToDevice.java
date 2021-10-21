@@ -4,19 +4,16 @@ import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.*;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.domain.entity.SampleEntity;
+import ru.gsa.biointerface.domain.host.cash.Cash;
 import ru.gsa.biointerface.domain.host.cash.DataListener;
+import ru.gsa.biointerface.domain.host.cash.SampleCash;
 import ru.gsa.biointerface.domain.host.serialport.ControlMessages;
 import ru.gsa.biointerface.domain.host.serialport.DataCollector;
 import ru.gsa.biointerface.domain.host.serialport.Handler;
 import ru.gsa.biointerface.domain.host.serialport.SerialPortHost;
-import ru.gsa.biointerface.domain.host.cash.Cash;
-import ru.gsa.biointerface.domain.host.cash.SampleCash;
 import ru.gsa.biointerface.ui.window.metering.Connection;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,7 +78,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
             throw new IllegalArgumentException("Amount channels is '0'");
 
         if (device != null && device.getId() == serialNumber) {
-            if(device.getAmountChannels() != amountChannels)
+            if (device.getAmountChannels() != amountChannels)
                 throw new IllegalArgumentException("Amount of channels is different from saved");
 
             return;
@@ -130,7 +127,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
         cashList.get(numberOfChannel).add(value);
 
-        if(isRecording())
+        if (isRecording())
             examination.setNewSamplesInGraph(numberOfChannel, value);
     }
 
@@ -147,7 +144,7 @@ public class ConnectionToDevice implements DataCollector, Connection {
 
         channelList.set(numberOfChannel, channel);
 
-        if(examination != null)
+        if (examination != null)
             examination.setChannelInGraph(numberOfChannel, channel);
     }
 

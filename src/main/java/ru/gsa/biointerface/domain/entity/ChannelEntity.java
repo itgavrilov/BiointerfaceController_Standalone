@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
  */
 @Entity(name = "channel")
 @Table(name = "channel")
-public class ChannelEntity implements Comparable<ChannelEntity> {
+public class ChannelEntity implements Serializable, Comparable<ChannelEntity> {
     @Id
     @Column(length = 35)
     private String name;

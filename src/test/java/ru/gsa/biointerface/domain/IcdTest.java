@@ -5,37 +5,36 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.gsa.biointerface.domain.entity.IcdEntity;
-import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.persistence.dao.IcdDAO;
 
 class IcdTest {
     private final String name = "nameTest";
     private final Integer version = 10;
-    private String comment = "commentTest";
+    private final String comment = "commentTest";
+    private int id;
 
-    private final IcdEntity entity =
-            new IcdEntity(-1, name, version, comment);
+    private IcdEntity entity;
     private Icd icd;
-    private IcdDAO dao;
 
     @BeforeEach
     void setUp() {
         try {
             icd = new Icd(name, version, comment);
-            entity.setId(icd.getEntity().getId());
-            dao = IcdDAO.getInstance();
+            id = icd.getEntity().getId();
+            entity = new IcdEntity(id, name, version, comment);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new NullPointerException("Error setUp");
+            throw new RuntimeException("Error setUp");
         }
     }
 
     @AfterEach
     void tearDown() {
         try {
-            icd.delete();
+            if (icd != null)
+                icd.delete();
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error tearDown");
         }
     }
 
@@ -45,7 +44,7 @@ class IcdTest {
             Assertions.assertTrue(Icd.getAll().contains(icd));
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error getAll");
+            throw new RuntimeException("Error getAll");
         }
     }
 
@@ -54,17 +53,15 @@ class IcdTest {
         try {
             icd.delete();
             Assertions.assertFalse(Icd.getAll().contains(icd));
-            icd = new Icd(name, version, comment);
-            entity.setId(icd.getEntity().getId());
+            icd = null;
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error delete");
+            throw new RuntimeException("Error delete");
         }
     }
 
     @Test
     void getEntity() {
-        entity.setId(icd.getEntity().getId());
         Assertions.assertEquals(entity, icd.getEntity());
     }
 
@@ -90,58 +87,52 @@ class IcdTest {
 
     @Test
     void setComment() {
-        comment = "test_setComment";
+        String testComment = "test_setComment";
         try {
-            icd.setComment(comment);
-            Assertions.assertEquals(comment, icd.getComment());
+            icd.setComment(testComment);
+            Assertions.assertEquals(testComment, icd.getComment());
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error setComment");
         }
     }
 
     @Test
     void testEquals() {
-        Icd test;
-        try {
-            test = new Icd(dao.read(icd.getEntity().getId()));
-            Assertions.assertEquals(test, icd);
+        Icd test = new Icd(entity);
 
-            entity.setId(-1);
-            test = new Icd(entity);
-            Assertions.assertNotEquals(test, icd);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
+        Assertions.assertEquals(test, icd);
+
+        entity.setId(-1);
+        test = new Icd(entity);
+        Assertions.assertNotEquals(test, icd);
     }
 
     @Test
     void testHashCode() {
+        Assertions.assertEquals(entity.hashCode(), icd.hashCode());
+
         entity.setId(-1);
         Assertions.assertNotEquals(entity.hashCode(), icd.hashCode());
-
-        entity.setId(icd.getEntity().getId());
-        Assertions.assertEquals(entity.hashCode(), icd.hashCode());
     }
 
     @Test
     void compareTo() {
-        Icd test;
+        Icd test = new Icd(entity);
 
-        entity.setId(icd.getEntity().getId()-1);
+        Assertions.assertEquals(
+                icd.getEntity().compareTo(test.getEntity()),
+                icd.compareTo(test)
+        );
+
+        entity.setId(id - 1);
         test = new Icd(entity);
         Assertions.assertEquals(
                 icd.getEntity().compareTo(test.getEntity()),
                 icd.compareTo(test)
         );
 
-        entity.setId(icd.getEntity().getId());
-        test = new Icd(entity);
-        Assertions.assertEquals(
-                icd.getEntity().compareTo(test.getEntity()),
-                icd.compareTo(test)
-        );
-
-        entity.setId(icd.getEntity().getId() + 1);
+        entity.setId(id + 1);
         test = new Icd(entity);
         Assertions.assertEquals(
                 icd.getEntity().compareTo(test.getEntity()),

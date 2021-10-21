@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -12,13 +13,13 @@ import java.util.Objects;
  */
 @Entity(name = "examination")
 @Table(name = "examination")
-public class ExaminationEntity implements Comparable<ExaminationEntity> {
+public class ExaminationEntity implements Serializable, Comparable<ExaminationEntity> {
     @Id
     @GeneratedValue(generator = "sqlite_examination")
     @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
             pkColumnName = "name", valueColumnName = "seq",
             pkColumnValue = "examination",
-            initialValue = 1, allocationSize=1)
+            initialValue = 1, allocationSize = 1)
     private long id = -1;
 
     @Temporal(TemporalType.TIMESTAMP)

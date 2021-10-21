@@ -11,7 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.Device;
+import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.PatientRecord;
 import ru.gsa.biointerface.domain.host.ConnectionFactory;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
@@ -284,6 +287,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     e.printStackTrace();
                 }
             }
+            //noinspection unchecked
             ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();

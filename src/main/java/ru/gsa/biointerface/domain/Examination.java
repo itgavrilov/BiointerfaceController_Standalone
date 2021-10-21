@@ -20,32 +20,7 @@ public class Examination implements Comparable<Examination> {
     private final ExaminationDAO dao;
     private boolean recordingStart = false;
 
-    static public Set<Examination> getAll() throws DomainException {
-        try {
-            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getAll();
-            Set<Examination> result = new TreeSet<>();
-            entities.forEach(o -> result.add(new Examination(o)));
-            return result;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getAll examinations error");
-        }
-    }
-
-    static public Set<Examination> getByPatientRecordId(PatientRecordEntity patientRecordEntity) throws DomainException {
-        try {
-            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getByPatientRecord(patientRecordEntity);
-            Set<Examination> result = new TreeSet<>();
-            entities.forEach(o -> result.add(new Examination(o)));
-            return result;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getByPatientRecordId examinations error");
-        }
-    }
-
     public Examination(ExaminationEntity entity) {
-        if(entity == null)
-            throw new NullPointerException("Entity is null");
-
         this.entity = entity;
 
         try {
@@ -77,7 +52,7 @@ public class Examination implements Comparable<Examination> {
         for (int i = 0; i < device.getAmountChannels(); i++) {
             ChannelEntity channelEntity = null;
 
-            if(channelList.get(i) != null)
+            if (channelList.get(i) != null)
                 channelEntity = channelList.get(i).getEntity();
 
             entity.getGraphEntities().add(new GraphEntity(i, entity, channelEntity, new LinkedList<>()));
@@ -88,6 +63,31 @@ public class Examination implements Comparable<Examination> {
         } catch (PersistenceException e) {
             e.printStackTrace();
             throw new NullPointerException("DAO is null");
+        }
+    }
+
+    static public Set<Examination> getAll() throws DomainException {
+        try {
+            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getAll();
+            Set<Examination> result = new TreeSet<>();
+            entities.forEach(o -> result.add(new Examination(o)));
+            return result;
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll examinations error");
+        }
+    }
+
+    static public Set<Examination> getByPatientRecord(PatientRecord patientRecord) throws DomainException {
+        if(patientRecord == null || patientRecord.getEntity() == null)
+            throw new NullPointerException("patientRecord or patientRecord.getEntity() is null");
+
+        try {
+            List<ExaminationEntity> entities = ExaminationDAO.getInstance().getByPatientRecordEntity(patientRecord.getEntity());
+            Set<Examination> result = new TreeSet<>();
+            entities.forEach(o -> result.add(new Examination(o)));
+            return result;
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getByPatientRecordId examinations error");
         }
     }
 
@@ -158,7 +158,7 @@ public class Examination implements Comparable<Examination> {
             throw new DomainException("DeviceEntity is null");
 
         try {
-            dao.beginTransaction();
+            dao.transactionStart();
         } catch (PersistenceException e) {
             throw new DomainException("DAO beginTransaction error");
         }
@@ -175,7 +175,7 @@ public class Examination implements Comparable<Examination> {
     public void recordingStop() {
         try {
             recordingStart = false;
-            dao.endTransaction();
+            dao.transactionStop();
         } catch (PersistenceException e) {
             e.printStackTrace();
         }

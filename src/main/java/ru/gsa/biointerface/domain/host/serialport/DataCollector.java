@@ -1,6 +1,5 @@
 package ru.gsa.biointerface.domain.host.serialport;
 
-import ru.gsa.biointerface.domain.Device;
 import ru.gsa.biointerface.domain.DomainException;
 
 public interface DataCollector {

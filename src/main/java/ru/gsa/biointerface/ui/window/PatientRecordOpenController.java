@@ -94,7 +94,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         ObservableList<Examination> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Examination.getByPatientRecordId(patientRecord.getEntity()));
+            list.addAll(Examination.getByPatientRecord(patientRecord));
         } catch (DomainException e) {
             throw new UIException("Error getting a list of examinations");
         }
@@ -134,6 +134,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void onAddButtonPush() {
         try {
+            //noinspection unchecked
             ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/Metering.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
@@ -163,6 +164,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
         if (mouseEvent.getClickCount() == 2) {
             try {
+                //noinspection unchecked
                 ((WindowWithProperty<Examination>) generateNewWindow("fxml/Examination.fxml"))
                         .setProperty(examinationSelected)
                         .showWindow();

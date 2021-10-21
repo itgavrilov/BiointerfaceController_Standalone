@@ -5,35 +5,34 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
-import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.persistence.dao.ChannelDAO;
 
 class ChannelTest {
     private final String name = "nameTest";
-    private String comment = "commentTest";
+    private final String comment = "commentTest";
 
-    private final ChannelEntity entity =
-            new ChannelEntity(name, comment);
+    private ChannelEntity entity;
     private Channel channel;
-    private ChannelDAO dao;
 
     @BeforeEach
     void setUp() {
+        entity = new ChannelEntity(name, comment);
+
         try {
             channel = new Channel(name, comment);
-            dao = ChannelDAO.getInstance();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new NullPointerException("Error setUp");
+            throw new RuntimeException("Error setUp");
         }
     }
 
     @AfterEach
     void tearDown() {
         try {
-            channel.delete();
+            if (channel != null)
+                channel.delete();
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error tearDown");
         }
     }
 
@@ -43,7 +42,7 @@ class ChannelTest {
             Assertions.assertTrue(Channel.getAll().contains(channel));
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error getAll");
+            throw new RuntimeException("Error getAll");
         }
     }
 
@@ -52,10 +51,10 @@ class ChannelTest {
         try {
             channel.delete();
             Assertions.assertFalse(Channel.getAll().contains(channel));
-            channel = new Channel(name, comment);
+            channel = null;
         } catch (DomainException e) {
             e.printStackTrace();
-            throw new NullPointerException("Error delete");
+            throw new RuntimeException("Error delete");
         }
     }
 
@@ -76,54 +75,47 @@ class ChannelTest {
 
     @Test
     void setComment() {
-        comment = "test_setComment";
+        String testComment = "test_setComment";
         try {
-            channel.setComment(comment);
-            Assertions.assertEquals(comment, channel.getComment());
+            channel.setComment(testComment);
+            Assertions.assertEquals(testComment, channel.getComment());
         } catch (DomainException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error setComment");
         }
     }
 
     @Test
     void testEquals() {
-        Channel test;
-        try {
-            entity.setName("test");
-            test = new Channel(entity);
-            Assertions.assertNotEquals(test, channel);
+        Channel test = new Channel(entity);
 
-            entity.setName(name);
-            test = new Channel(dao.read(channel.getEntity().getName()));
-            Assertions.assertEquals(test, channel);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
+        Assertions.assertEquals(test, channel);
+
+        entity.setName("test");
+        test = new Channel(entity);
+        Assertions.assertNotEquals(test, channel);
     }
 
     @Test
     void testHashCode() {
+        Assertions.assertEquals(entity.hashCode(), channel.hashCode());
+
         entity.setName("test");
         Assertions.assertNotEquals(entity.hashCode(), channel.hashCode());
-
-        entity.setName(name);
-        Assertions.assertEquals(entity.hashCode(), channel.hashCode());
     }
 
     @Test
     void compareTo() {
-        Channel test;
+        Channel test = new Channel(entity);
+
+        Assertions.assertEquals(channel.getEntity().compareTo(test.getEntity()), channel.compareTo(test));
 
         entity.setName("");
         test = new Channel(entity);
         Assertions.assertEquals(channel.getEntity().compareTo(test.getEntity()), channel.compareTo(test));
 
-        entity.setName(name);
-        test = new Channel(entity);
-        Assertions.assertEquals(channel.getEntity().compareTo(test.getEntity()), channel.compareTo(test));
-
         entity.setName("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        test= new Channel(entity);
+        test = new Channel(entity);
         Assertions.assertEquals(channel.getEntity().compareTo(test.getEntity()), channel.compareTo(test));
     }
 }

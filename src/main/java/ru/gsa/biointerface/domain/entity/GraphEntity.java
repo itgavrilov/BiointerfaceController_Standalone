@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Entity(name = "graph")
 @Table(name = "graph")
 @IdClass(GraphEntityId.class)
-public class GraphEntity {
+public class GraphEntity implements Serializable, Comparable<GraphEntity> {
     @Id
     int numberOfChannel;
 
@@ -81,6 +82,16 @@ public class GraphEntity {
     @Override
     public int hashCode() {
         return Objects.hash(numberOfChannel, examinationEntity);
+    }
+
+    @Override
+    public int compareTo(GraphEntity o) {
+        int result = examinationEntity.compareTo(o.examinationEntity);
+
+        if (result == 0)
+            result = numberOfChannel - o.numberOfChannel;
+
+        return result;
     }
 
     @Override

@@ -25,21 +25,12 @@ public class GraphDAO extends AbstractDAO<GraphEntity, Integer> {
         return dao;
     }
 
-    @Override
-    public GraphEntity read(Integer key) {
-        return null;
-    }
-
-    @Override
-    public List<GraphEntity> getAll() throws PersistenceException {
-        return null;
-    }
-
     public List<GraphEntity> getAllByExamination(ExaminationEntity examinationEntity) throws PersistenceException {
         List<GraphEntity> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             String hql = "FROM graph where examination_id  = :id";
+            //noinspection unchecked
             Query<GraphEntity> query = session.createQuery(hql);
             query.setParameter("id", examinationEntity.getId());
 

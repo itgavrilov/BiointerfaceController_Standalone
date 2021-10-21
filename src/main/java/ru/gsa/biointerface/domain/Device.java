@@ -3,12 +3,10 @@ package ru.gsa.biointerface.domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.domain.host.serialport.DeviceConfig;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.DeviceDAO;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,21 +17,7 @@ public class Device implements Comparable<Device> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Device.class);
     private DeviceEntity entity;
 
-    static public Set<Device> getAll() throws DomainException {
-        try {
-            List<DeviceEntity> entitys = DeviceDAO.getInstance().getAll();
-            Set<Device> result = new TreeSet<>();
-            entitys.forEach(o -> result.add(new Device(o)));
-            return result;
-        } catch (PersistenceException e) {
-            throw new DomainException("DAO getAll devices error");
-        }
-    }
-
     public Device(DeviceEntity entity) {
-        if(entity == null)
-            throw new NullPointerException("Entity is null");
-
         this.entity = entity;
     }
 
@@ -54,6 +38,17 @@ public class Device implements Comparable<Device> {
             }
         } catch (PersistenceException e) {
             throw new DomainException("DAO insert devices error");
+        }
+    }
+
+    static public Set<Device> getAll() throws DomainException {
+        try {
+            List<DeviceEntity> entitys = DeviceDAO.getInstance().getAll();
+            Set<Device> result = new TreeSet<>();
+            entitys.forEach(o -> result.add(new Device(o)));
+            return result;
+        } catch (PersistenceException e) {
+            throw new DomainException("DAO getAll devices error");
         }
     }
 

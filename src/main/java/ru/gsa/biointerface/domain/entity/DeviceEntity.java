@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
  */
 @Entity(name = "device")
 @Table(name = "device")
-public class DeviceEntity implements Comparable<DeviceEntity> {
+public class DeviceEntity implements Serializable, Comparable<DeviceEntity> {
     @Id
     private int id = -1;
 

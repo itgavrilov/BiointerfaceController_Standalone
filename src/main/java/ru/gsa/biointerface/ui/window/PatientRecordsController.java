@@ -118,7 +118,7 @@ public class PatientRecordsController extends AbstractWindow {
 
         ObservableList<PatientRecord> listPatientRecord = FXCollections.observableArrayList();
         try {
-            listPatientRecord.addAll(PatientRecord.getSetAll());
+            listPatientRecord.addAll(PatientRecord.getAll());
         } catch (DomainException e) {
             e.printStackTrace();
         }
@@ -147,6 +147,7 @@ public class PatientRecordsController extends AbstractWindow {
 
         if (mouseEvent.getClickCount() == 2) {
             try {
+                //noinspection unchecked
                 ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                         .setProperty(patientRecordSelected)
                         .showWindow();

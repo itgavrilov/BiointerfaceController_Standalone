@@ -9,7 +9,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.Icd;
 import ru.gsa.biointerface.domain.entity.ChannelEntity;
 import ru.gsa.biointerface.domain.entity.GraphEntity;
 import ru.gsa.biointerface.domain.entity.SampleEntity;
@@ -86,7 +85,7 @@ public final class GraphController implements ContentForWindow {
         this.graphEntity = graphEntity;
     }
 
-    public String getName(){
+    public String getName() {
         return nameText.getText();
     }
 
