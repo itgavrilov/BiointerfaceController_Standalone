@@ -5,9 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.services.ServiceIcd;
+import ru.gsa.biointerface.services.ServicePatientRecord;
+import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
@@ -17,12 +19,14 @@ import java.time.format.DateTimeFormatter;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordAddController extends AbstractWindow {
+    private ServicePatientRecord servicePatientRecord;
+    private ServiceIcd serviceIcd;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
             String str = "";
             if (icd != null)
-                str = icd.getICD() + " (ICD-" + icd.getVersion() + ")";
+                str = icd.getName() + " (ICD-" + icd.getVersion() + ")";
             return str;
         }
 
@@ -52,10 +56,14 @@ public class PatientRecordAddController extends AbstractWindow {
     public void showWindow() throws UIException {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
-
-        icdComboBox.setConverter(converter);
-
-        transitionGUI.show();
+        try {
+            servicePatientRecord = ServicePatientRecord.getInstance();
+            serviceIcd = ServiceIcd.getInstance();
+            icdComboBox.setConverter(converter);
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
+        }
     }
 
     @Override
@@ -96,7 +104,6 @@ public class PatientRecordAddController extends AbstractWindow {
             commentField.setDisable(true);
             registerAndOpenButton.setDisable(true);
         }
-
     }
 
     public void secondNameFieldChange() {
@@ -117,7 +124,6 @@ public class PatientRecordAddController extends AbstractWindow {
 
         if (str.length() > 0) {
             firstNameField.setDisable(false);
-            middleNameField.setDisable(false);
             secondNameField.setStyle(null);
         } else {
             secondNameField.setStyle("-fx-background-color: red;");
@@ -147,10 +153,12 @@ public class PatientRecordAddController extends AbstractWindow {
         }
 
         if (str.length() > 0) {
+            middleNameField.setDisable(false);
             birthdayField.setDisable(false);
             firstNameField.setStyle(null);
         } else {
             firstNameField.setStyle("-fx-background-color: red;");
+            middleNameField.setDisable(true);
             birthdayField.setDisable(true);
             icdComboBox.setDisable(true);
             icdComboBox.getItems().clear();
@@ -223,14 +231,15 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     private void setIcdComboBox() {
-        ObservableList<Icd> list = FXCollections.observableArrayList();
-        list.add(null);
+        ObservableList<Icd> icds = FXCollections.observableArrayList();
+        icds.add(null);
         try {
-            list.addAll(Icd.getAll());
-        } catch (DomainException e) {
+            icds.addAll(serviceIcd.getAll());
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
-        icdComboBox.getItems().addAll(list);
+        icdComboBox.getItems().clear();
+        icdComboBox.getItems().addAll(icds);
     }
 
     public void commentFieldChange() {
@@ -240,24 +249,19 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        Icd icd = null;
-
-        if (icdComboBox.getValue() != null)
-            icd = icdComboBox.getValue();
-
+        PatientRecord patientRecord = servicePatientRecord.create(
+            Integer.parseInt(externalIDField.getText()),
+            secondNameField.getText(),
+            firstNameField.getText(),
+            middleNameField.getText(),
+            birthdayField.getValue(),
+            icdComboBox.getValue(),
+            commentField.getText()
+        );
         try {
-            new PatientRecord(
-                    Integer.parseInt(externalIDField.getText()),
-                    secondNameField.getText(),
-                    firstNameField.getText(),
-                    middleNameField.getText(),
-                    birthdayField.getValue(),
-                    icd,
-                    commentField.getText()
-            );
-
+            servicePatientRecord.save(patientRecord);
             onBackButtonPush();
-        } catch (DomainException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
     }

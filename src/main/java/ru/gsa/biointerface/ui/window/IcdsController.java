@@ -8,15 +8,20 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.services.ServiceIcd;
+import ru.gsa.biointerface.services.ServiceException;
+import ru.gsa.biointerface.services.ServicePatientRecord;
 import ru.gsa.biointerface.ui.UIException;
+
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdsController extends AbstractWindow {
-    private Icd icdSelected;
+    private ServiceIcd serviceIcd;
+    private Icd icd;
     @FXML
     private TableView<Icd> tableView;
     @FXML
@@ -44,35 +49,39 @@ public class IcdsController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        tableView.getItems().clear();
-        icdCol.setCellValueFactory(new PropertyValueFactory<>("ICD"));
-        versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
-        versionCol.setStyle("-fx-alignment: center;");
-
-        ObservableList<Icd> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Icd.getAll());
-        } catch (DomainException e) {
-            throw new UIException("Error getting a list of ICDs");
+            serviceIcd = ServiceIcd.getInstance();
+            ObservableList<Icd> icds = FXCollections.observableArrayList();
+            icds.addAll(serviceIcd.getAll());
+            tableView.setItems(icds);
+            icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+            versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
+            versionCol.setStyle("-fx-alignment: center;");
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
         }
-        tableView.setItems(list);
-        transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (icdSelected != tableView.getFocusModel().getFocusedItem()) {
-            icdSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(icdSelected.getComment());
+        if (icd != tableView.getFocusModel().getFocusedItem()) {
+            icd = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(icd.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        try {
-            icdSelected.setComment(commentField.getText());
-        } catch (DomainException e) {
-            e.printStackTrace();
+        String comment = icd.getComment();
+        if (Objects.equals(comment, commentField.getText())) {
+            try {
+                icd.setComment(commentField.getText());
+                serviceIcd.update(icd);
+            } catch (ServiceException e) {
+                icd.setComment(comment);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -94,10 +103,10 @@ public class IcdsController extends AbstractWindow {
 
     public void onDeleteButtonPush() {
         try {
-            icdSelected.delete();
-            tableView.getItems().remove(icdSelected);
+            serviceIcd.delete(icd);
+            tableView.getItems().remove(icd);
             commentField.setText("");
-        } catch (DomainException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
     }

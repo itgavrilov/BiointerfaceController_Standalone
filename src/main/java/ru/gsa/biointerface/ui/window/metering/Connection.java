@@ -1,41 +1,44 @@
 package ru.gsa.biointerface.ui.window.metering;
 
-import ru.gsa.biointerface.domain.Channel;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.host.cash.DataListener;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.HostException;
+import ru.gsa.biointerface.services.ServiceChannel;
+import ru.gsa.biointerface.services.ServicePatientRecord;
+import ru.gsa.biointerface.services.ServiceException;
+import ru.gsa.biointerface.host.cash.DataListener;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface Connection {
-    void setPatientRecord(PatientRecord patientRecord) throws DomainException;
+    void setPatientRecord(PatientRecord patientRecord) throws HostException;
 
     int getAmountChannels();
 
-    void setChannelInGraph(int numberOfChannel, Channel channel) throws DomainException;
+    void setChannelInGraph(int numberOfChannel, Channel channel) throws HostException;
 
-    void addListenerInCash(int numberOfChannel, DataListener listener) throws DomainException;
+    void addListenerInCash(int numberOfChannel, DataListener listener) throws HostException;
 
-    void connect() throws DomainException;
+    void connect() throws HostException;
 
-    void disconnect() throws DomainException;
+    void disconnect() throws HostException;
 
     boolean isConnected();
 
-    void transmissionStart() throws DomainException;
+    void transmissionStart() throws HostException;
 
-    void transmissionStop() throws DomainException;
+    void transmissionStop() throws HostException;
 
     boolean isTransmission();
 
-    void controllerReboot() throws DomainException;
+    void controllerReboot() throws HostException;
 
-    void recordingStart() throws DomainException;
+    void recordingStart() throws HostException;
 
-    void recordingStop() throws DomainException;
+    void recordingStop() throws HostException;
 
     boolean isRecording();
 
-    void setCommentForExamination(String comment) throws DomainException;
+    String setCommentForExamination(String comment) throws HostException;
 }

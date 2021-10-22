@@ -10,24 +10,30 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.services.ServiceIcd;
+import ru.gsa.biointerface.services.ServicePatientRecord;
+import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.ui.UIException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordsController extends AbstractWindow {
+    private ServicePatientRecord servicePatientRecord;
+    private ServiceIcd serviceIcd;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
             String str = "";
             if (icd != null)
-                str = icd.getICD() + " (ICD-" + icd.getVersion() + ")";
+                str = icd.getName() + " (ICD-" + icd.getVersion() + ")";
             return str;
         }
 
@@ -36,7 +42,7 @@ public class PatientRecordsController extends AbstractWindow {
             return null;
         }
     };
-    private PatientRecord patientRecordSelected;
+    private PatientRecord patientRecord;
     @FXML
     private TableView<PatientRecord> tableView;
     @FXML
@@ -61,70 +67,67 @@ public class PatientRecordsController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        tableView.getItems().clear();
-        tableView.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                onMouseClickedTableView(mouseEvent);
-            }
-        });
+        try {
+            servicePatientRecord = ServicePatientRecord.getInstance();
+            serviceIcd = ServiceIcd.getInstance();
+            ObservableList<PatientRecord> patientRecords = FXCollections.observableArrayList();
+            patientRecords.addAll(servicePatientRecord.getAll());
+            tableView.setItems(patientRecords);
+            tableView.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                    onMouseClickedTableView(mouseEvent);
+                }
+            });
+            idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+            idCol.setStyle("-fx-alignment: center-right;");
+            secondNameCol.setCellValueFactory(new PropertyValueFactory<>("secondName"));
+            firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+            middleNameCol.setCellValueFactory(new PropertyValueFactory<>("middleName"));
+            birthdayCol.setCellValueFactory(param -> {
+                PatientRecord patientRecord = param.getValue();
+                LocalDate birthday = patientRecord.getBirthdayInLocalDate();
+                return new SimpleObjectProperty<>(birthday.format(dateFormatter));
+            });
+            birthdayCol.setStyle("-fx-alignment: center;");
+            setIcdComboBox();
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
+        }
+    }
 
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idCol.setStyle("-fx-alignment: center-right;");
-        secondNameCol.setCellValueFactory(new PropertyValueFactory<>("secondName"));
-        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        middleNameCol.setCellValueFactory(new PropertyValueFactory<>("middleName"));
-        birthdayCol.setCellValueFactory(param -> {
-            PatientRecord patientRecord = param.getValue();
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate birthday = patientRecord.getBirthday();
-            return new SimpleObjectProperty<>(birthday.format(dateFormatter));
-        });
-        birthdayCol.setStyle("-fx-alignment: center;");
-
+    private void setIcdComboBox() {
+        ObservableList<Icd> icds = FXCollections.observableArrayList();
+        icds.add(null);
+        try {
+            icds.addAll(serviceIcd.getAll());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, icds));
         icdCol.setCellValueFactory(param -> {
             PatientRecord patientRecord = param.getValue();
             Icd icd = patientRecord.getIcd();
             return new SimpleObjectProperty<>(icd);
         });
-
-
-        ObservableList<Icd> listIcd = FXCollections.observableArrayList();
-        listIcd.add(null);
-        try {
-            listIcd.addAll(Icd.getAll());
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-
-        icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, listIcd));
-
         icdCol.setOnEditCommit((TableColumn.CellEditEvent<PatientRecord, Icd> event) -> {
-            TablePosition<PatientRecord, Icd> pos = event.getTablePosition();
-
+            PatientRecord patientRecord = event
+                    .getTableView()
+                    .getSelectionModel()
+                    .getSelectedItem();
+            Icd icd = patientRecord.getIcd();
             Icd newIcd = event.getNewValue();
 
-            int row = pos.getRow();
-            PatientRecord patientRecord = event.getTableView().getItems().get(row);
-
-            if (newIcd != null && (!newIcd.equals(patientRecord.getIcd()))
-                    || patientRecord.getIcd() != null && (!patientRecord.getIcd().equals(newIcd))) {
+            if (!Objects.equals(newIcd, icd)) {
                 try {
                     patientRecord.setIcd(newIcd);
-                } catch (DomainException e) {
+                    servicePatientRecord.update(patientRecord);
+                } catch (ServiceException e) {
+                    patientRecord.setIcd(icd);
                     e.printStackTrace();
                 }
             }
         });
-
-        ObservableList<PatientRecord> listPatientRecord = FXCollections.observableArrayList();
-        try {
-            listPatientRecord.addAll(PatientRecord.getAll());
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-        tableView.setItems(listPatientRecord);
-
-        transitionGUI.show();
     }
 
     @Override
@@ -133,14 +136,12 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     @Override
-    public void resizeWindow(double height, double width) {
-
-    }
+    public void resizeWindow(double height, double width) {}
 
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
-        if (patientRecordSelected != tableView.getFocusModel().getFocusedItem()) {
-            patientRecordSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(patientRecordSelected.getComment());
+        if (patientRecord != tableView.getFocusModel().getFocusedItem()) {
+            patientRecord = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(patientRecord.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
@@ -149,7 +150,7 @@ public class PatientRecordsController extends AbstractWindow {
             try {
                 //noinspection unchecked
                 ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
-                        .setProperty(patientRecordSelected)
+                        .setProperty(patientRecord)
                         .showWindow();
             } catch (UIException e) {
                 e.printStackTrace();
@@ -166,19 +167,24 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        try {
-            patientRecordSelected.setComment(commentField.getText());
-        } catch (DomainException e) {
-            e.printStackTrace();
+        String comment = patientRecord.getComment();
+        if (Objects.equals(comment, commentField.getText())) {
+            try {
+                patientRecord.setComment(commentField.getText());
+                servicePatientRecord.update(patientRecord);
+            } catch (ServiceException e) {
+                patientRecord.setComment(comment);
+                e.printStackTrace();
+            }
         }
     }
 
     public void onDeleteButtonPush() {
         try {
-            patientRecordSelected.delete();
-            tableView.getItems().remove(patientRecordSelected);
+            servicePatientRecord.delete(patientRecord);
+            tableView.getItems().remove(patientRecord);
             commentField.setText("");
-        } catch (DomainException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
     }

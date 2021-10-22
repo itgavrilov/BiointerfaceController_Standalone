@@ -32,7 +32,7 @@ public abstract class AbstractDAO<Entity, Key> implements DAO<Entity, Key> {
 
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.saveOrUpdate(entity);
+            session.save(entity);
             session.getTransaction().commit();
         } catch (Exception e) {
             throw new PersistenceException("Session error", e);
@@ -73,7 +73,7 @@ public abstract class AbstractDAO<Entity, Key> implements DAO<Entity, Key> {
     @Override
     public boolean delete(Entity entity) throws PersistenceException {
         if (entity == null)
-            throw new NullPointerException("PatientRecord is null");
+            throw new NullPointerException("ServicePatientRecord is null");
 
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();

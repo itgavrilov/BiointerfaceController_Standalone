@@ -9,13 +9,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Examination;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.persistence.PersistenceException;
-import ru.gsa.biointerface.persistence.dao.GraphDAO;
+import ru.gsa.biointerface.domain.entity.Examination;
+import ru.gsa.biointerface.domain.entity.Graph;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.services.ServiceExamination;
+import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
@@ -25,14 +24,18 @@ import ru.gsa.biointerface.ui.window.graph.CompositeNode;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class ExaminationController extends AbstractWindow implements WindowWithProperty<Examination> {
+    private ServiceExamination serviceExamination;
+    private Examination examination;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private final List<CompositeNode<AnchorPane, GraphController>> channelGUIs = new LinkedList<>();
     private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
-    private Examination examination;
     private double graphSize = 0;
     private double graphCapacity = 0;
     private double graphStart = 0;
@@ -68,7 +71,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
     public WindowWithProperty<Examination> setProperty(Examination examination) {
         if (examination == null)
-            throw new NullPointerException("examination is null");
+            throw new NullPointerException("serviceExamination is null");
 
         this.examination = examination;
 
@@ -80,103 +83,88 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
         if (examination == null)
-            throw new UIException("examination is null. First call setParameter()");
+            throw new UIException("serviceExamination is null. First call setParameter()");
 
-        PatientRecord patientRecord = examination.getPatientRecord();
 
-        patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
-        secondNameText.setText(patientRecord.getSecondName());
-        firstNameText.setText(patientRecord.getFirstName());
-        middleNameText.setText(patientRecord.getMiddleName());
+        try {
+            serviceExamination = ServiceExamination.getInstance();
+            examination = serviceExamination.loadFromDatabaseWithGraphsById(examination.getId());
+            idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
+            dateTimeText.setText(examination.getStartTimeInLocalDateTime().format(dateTimeFormatter));
+            PatientRecord patientRecord = examination.getPatientRecord();
+            patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
+            secondNameText.setText(patientRecord.getSecondName());
+            firstNameText.setText(patientRecord.getFirstName());
+            middleNameText.setText(patientRecord.getMiddleName());
+            birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        birthdayText.setText(patientRecord.getBirthday().format(dateFormatter));
+            if (patientRecord.getIcd() != null) {
+                Icd icd = patientRecord.getIcd();
+                icdText.setText(icd.getName() + " (ICD-" + icd.getVersion() + ")");
+            } else {
+                icdText.setText("-");
+            }
 
-        if (patientRecord.getIcd() != null) {
-            Icd icd = patientRecord.getIcd();
-            icdText.setText(icd.getICD() + " (ICD-" + icd.getVersion() + ")");
-        } else {
-            icdText.setText("-");
+            timeScrollBar.setMin(0);
+            timeScrollBar.setValue(0);
+            timeScrollBar.setBlockIncrement(1);
+            buildingChannelsGUIs();
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
         }
-
-        idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        dateTimeText.setText(examination.getDateTime().format(dateTimeFormatter));
-
-        timeScrollBar.setMin(0);
-        timeScrollBar.setValue(0);
-        timeScrollBar.setBlockIncrement(1);
-
-        buildingChannelsGUIs();
-
-        transitionGUI.show();
     }
 
     public void buildingChannelsGUIs() {
-        List<GraphEntity> graphEntities;
-        channelGUIs.clear();
-        checkBoxesOfChannel.clear();
+        List<Graph> graphs = examination.getGraphs();
+        graphCapacity = allSliderZoom.getValue();
 
-        try {
-            graphEntities = GraphDAO.getInstance().getAllByExamination(examination.getEntity());
+        for (Graph graph : graphs) {
+            CompositeNode<AnchorPane, GraphController> node =
+                    new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
+            GraphController graphController = node.getController();
+            graphController.setGraph(graph);
+            graphController.setStart(0);
+            graphController.setCapacity((int) graphCapacity);
 
-            graphCapacity = allSliderZoom.getValue();
-
-            for (GraphEntity graphEntity : graphEntities) {
-                CompositeNode<AnchorPane, GraphController> node =
-                        new CompositeNode<>(new FXMLLoader(resourceSource.getResource("fxml/Graph.fxml")));
-                GraphController graph = node.getController();
-
-                graph.setGraphEntity(graphEntity);
-                graph.setStart(0);
-                graph.setCapacity((int) graphCapacity);
-
-                if (graphSize > graph.getLengthGraphic() || graphSize == 0) {
-                    graphSize = graph.getLengthGraphic();
-                }
-                channelGUIs.add(node);
-
-                CheckBoxOfGraph checkBox = new CheckBoxOfGraph(graphEntity.getNumberOfChannel());
-                checkBox.setText(graph.getName());
-                checkBox.setOnAction(event -> {
-                    node.getNode().setVisible(checkBox.isSelected());
-                    drawChannelsGUI();
-                });
-                checkBoxesOfChannel.add(checkBox);
+            if (graphSize > graphController.getLengthGraphic() || graphSize == 0) {
+                graphSize = graphController.getLengthGraphic();
             }
 
-            allSliderZoom.setMax(graphSize);
+            channelGUIs.add(node);
+            CheckBoxOfGraph checkBox = new CheckBoxOfGraph(graph.getNumberOfChannel());
+            checkBox.setText(graphController.getName());
+            checkBox.setOnAction(event -> {
+                node.getNode().setVisible(checkBox.isSelected());
+                drawChannelsGUI();
+            });
+            checkBoxesOfChannel.add(checkBox);
+        }
+
+        allSliderZoom.setMax(graphSize);
+        timeScrollBar.setMax(graphSize - graphCapacity);
+        timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
+        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> {
+            graphCapacity = new_val.intValue();
+            graphStart = timeScrollBar.getValue();
+
+            if (graphStart > graphSize - graphCapacity) {
+                graphStart = graphSize - graphCapacity;
+                timeScrollBar.setValue(graphStart);
+            }
+
             timeScrollBar.setMax(graphSize - graphCapacity);
             timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
-
-            allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> {
-                graphCapacity = new_val.intValue();
-                graphStart = timeScrollBar.getValue();
-
-                if (graphStart > graphSize - graphCapacity) {
-                    graphStart = graphSize - graphCapacity;
-                    timeScrollBar.setValue(graphStart);
-                }
-
-                timeScrollBar.setMax(graphSize - graphCapacity);
-                timeScrollBar.setVisibleAmount(timeScrollBar.getMax() * graphCapacity / graphSize);
-
-                channelGUIs.forEach(o -> {
-                    o.getController().setStart((int) graphStart);
-                    o.getController().setCapacity((int) graphCapacity);
-                });
+            channelGUIs.forEach(o -> {
+                o.getController().setStart((int) graphStart);
+                o.getController().setCapacity((int) graphCapacity);
             });
-
-            timeScrollBar.valueProperty().addListener((ov, old_val, new_val) -> {
-                graphStart = new_val.intValue();
-                channelGUIs.forEach(o -> o.getController().setStart((int) graphStart));
-            });
-
-            drawChannelsGUI();
-        } catch (PersistenceException | UIException e) {
-            e.printStackTrace();
-        }
+        });
+        timeScrollBar.valueProperty().addListener((ov, old_val, new_val) -> {
+            graphStart = new_val.intValue();
+            channelGUIs.forEach(o -> o.getController().setStart((int) graphStart));
+        });
+        drawChannelsGUI();
     }
 
     public void drawChannelsGUI() {
@@ -194,6 +182,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
     public void onBack() {
         try {
+            //noinspection unchecked
             ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(examination.getPatientRecord())
                     .showWindow();
@@ -203,10 +192,15 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     }
 
     public void commentFieldChange() {
-        try {
-            examination.setComment(commentField.getText());
-        } catch (DomainException e) {
-            e.printStackTrace();
+        String comment = examination.getComment();
+        if (Objects.equals(comment, commentField.getText())) {
+            try {
+                examination.setComment(commentField.getText());
+                serviceExamination.update(examination);
+            } catch (ServiceException e) {
+                examination.setComment(comment);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -229,7 +223,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
     @Override
     public String getTitleWindow() {
-        return ": examination";
+        return ": serviceExamination";
     }
 }
 

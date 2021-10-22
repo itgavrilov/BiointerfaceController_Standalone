@@ -14,6 +14,12 @@ public class DBHandler implements DB {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBHandler.class);
     private static DBHandler instance = null;
 
+    public static DB getInstance() throws PersistenceException {
+        if (instance == null)
+            instance = new DBHandler();
+        return instance;
+    }
+
     private final SessionFactory sessionFactory;
 
     private DBHandler() throws PersistenceException {
@@ -21,25 +27,19 @@ public class DBHandler implements DB {
         try {
             System.out.println(StandardServiceRegistryBuilder.DEFAULT_CFG_RESOURCE_NAME);
             Configuration cfg = new Configuration()
-                    .addAnnotatedClass(SampleEntity.class)
-                    .addAnnotatedClass(GraphEntity.class)
-                    .addAnnotatedClass(ExaminationEntity.class)
-                    .addAnnotatedClass(DeviceEntity.class)
-                    .addAnnotatedClass(ChannelEntity.class)
-                    .addAnnotatedClass(PatientRecordEntity.class)
-                    .addAnnotatedClass(IcdEntity.class);
+                    .addAnnotatedClass(Sample.class)
+                    .addAnnotatedClass(Graph.class)
+                    .addAnnotatedClass(Examination.class)
+                    .addAnnotatedClass(Device.class)
+                    .addAnnotatedClass(Channel.class)
+                    .addAnnotatedClass(PatientRecord.class)
+                    .addAnnotatedClass(Icd.class);
 
             sessionFactory = cfg.buildSessionFactory();
             LOGGER.info("Successful database connection");
         } catch (Exception e) {
             throw new PersistenceException("Error connecting to database", e);
         }
-    }
-
-    public static DB getInstance() throws PersistenceException {
-        if (instance == null)
-            instance = new DBHandler();
-        return instance;
     }
 
     @Override

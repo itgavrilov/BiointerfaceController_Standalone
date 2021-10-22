@@ -2,9 +2,9 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.entity.DeviceEntity;
-import ru.gsa.biointerface.domain.entity.ExaminationEntity;
-import ru.gsa.biointerface.domain.entity.PatientRecordEntity;
+import ru.gsa.biointerface.domain.entity.Device;
+import ru.gsa.biointerface.domain.entity.Examination;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
+public class ExaminationDAO extends AbstractDAO<Examination, Long> {
     protected static ExaminationDAO dao;
     private static Session session;
 
@@ -29,7 +29,7 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
 
 
     @Override
-    public ExaminationEntity insert(ExaminationEntity entity) throws PersistenceException {
+    public Examination insert(Examination entity) throws PersistenceException {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (!transactionIsOpen())
@@ -44,13 +44,13 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
         return entity;
     }
 
-    public List<ExaminationEntity> getByDevice(DeviceEntity device) throws PersistenceException {
-        List<ExaminationEntity> entities;
+    public List<Examination> getByDevice(Device device) throws PersistenceException {
+        List<Examination> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             String hql = "FROM examination where device_id  = :id";
             //noinspection unchecked
-            Query<ExaminationEntity> query = session.createQuery(hql);
+            Query<Examination> query = session.createQuery(hql);
             query.setParameter("id", device.getId());
 
             entities = query.list();
@@ -61,14 +61,14 @@ public class ExaminationDAO extends AbstractDAO<ExaminationEntity, Integer> {
         return entities;
     }
 
-    public List<ExaminationEntity> getByPatientRecordEntity(PatientRecordEntity patientRecordEntity) throws PersistenceException {
-        List<ExaminationEntity> entities;
+    public List<Examination> getByPatientRecord(PatientRecord patientRecord) throws PersistenceException {
+        List<Examination> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             String hql = "FROM examination where patientRecord_id = :id";
             //noinspection unchecked
-            Query<ExaminationEntity> query = session.createQuery(hql);
-            query.setParameter("id", patientRecordEntity.getId());
+            Query<Examination> query = session.createQuery(hql);
+            query.setParameter("id", patientRecord.getId());
 
             entities = query.list();
         } catch (Exception e) {

@@ -9,9 +9,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.entity.ChannelEntity;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.domain.entity.SampleEntity;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.Graph;
+import ru.gsa.biointerface.domain.entity.Sample;
 import ru.gsa.biointerface.persistence.PersistenceException;
 import ru.gsa.biointerface.persistence.dao.SampleDAO;
 import ru.gsa.biointerface.ui.UIException;
@@ -26,7 +26,7 @@ import java.util.*;
 public final class GraphController implements ContentForWindow {
     private final ArrayList<XYChart.Data<Long, Integer>> samples = new ArrayList<>();
     private final ObservableList<XYChart.Data<Long, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private GraphEntity graphEntity;
+    private Graph graph;
     private int start = 0;
     private int capacity = 0;
 
@@ -55,25 +55,25 @@ public final class GraphController implements ContentForWindow {
         graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
     }
 
-    public void setGraphEntity(GraphEntity graphEntity) throws UIException {
-        if (graphEntity == null)
+    public void setGraph(Graph graph) {
+        if (graph == null)
             throw new NullPointerException("graph is null");
 
-        if (graphEntity.getChannelEntity() != null) {
-            ChannelEntity channelEntity = graphEntity.getChannelEntity();
-            nameText.setText(channelEntity.getName());
+        if (graph.getChannelEntity() != null) {
+            Channel channel = graph.getChannelEntity();
+            nameText.setText(channel.getName());
         } else {
-            nameText.setText("Channel " + (graphEntity.getNumberOfChannel() + 1));
+            nameText.setText("ServiceChannel " + (graph.getNumberOfChannel() + 1));
         }
 
-        List<SampleEntity> sampleEntities = new LinkedList<>();
+        List<Sample> sampleEntities = new LinkedList<>();
         try {
-            sampleEntities = SampleDAO.getInstance().getAllByGraph(graphEntity);
+            sampleEntities = SampleDAO.getInstance().getAllByGraph(graph);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
 
-        for (SampleEntity sample : sampleEntities) {
+        for (Sample sample : sampleEntities) {
             samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
         }
 
@@ -82,7 +82,7 @@ public final class GraphController implements ContentForWindow {
             dataLineGraphic.addAll(samples);
         });
 
-        this.graphEntity = graphEntity;
+        this.graph = graph;
     }
 
     public String getName() {
@@ -127,11 +127,11 @@ public final class GraphController implements ContentForWindow {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GraphController graphController = (GraphController) o;
-        return Objects.equals(graphEntity, graphController.graphEntity);
+        return Objects.equals(graph, graphController.graph);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(graphEntity);
+        return Objects.hash(graph);
     }
 }

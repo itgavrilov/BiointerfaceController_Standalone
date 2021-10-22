@@ -10,9 +10,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.Channel;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.host.cash.DataListener;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.host.HostException;
+import ru.gsa.biointerface.services.ServiceChannel;
+import ru.gsa.biointerface.services.ServiceException;
+import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
 import ru.gsa.biointerface.ui.window.graph.ContentForWindow;
 
@@ -23,6 +25,10 @@ import java.util.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class GraphForMeteringController implements DataListener, ContentForWindow {
+    private ServiceChannel serviceChannel;
+    private Channel channel;
+    private Connection connection;
+    private CheckBoxOfGraph checkBox;
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private final List<Integer> samples = new ArrayList<>();
     private int numberOfChannel;
@@ -37,9 +43,6 @@ public final class GraphForMeteringController implements DataListener, ContentFo
             return null;
         }
     };
-    private Channel channelSelected;
-    private Connection connection;
-    private CheckBoxOfGraph checkBox;
     @FXML
     private AnchorPane anchorPaneRoot;
     @FXML
@@ -52,7 +55,7 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     private LineChart<Integer, Integer> graphic;
 
     private static String getChannelName(int numberOfChannel, Channel channel) {
-        String str = "Channel " + (numberOfChannel + 1);
+        String str = "ServiceChannel " + (numberOfChannel + 1);
         if (channel != null)
             str = channel.getName();
         return str;
@@ -64,13 +67,17 @@ public final class GraphForMeteringController implements DataListener, ContentFo
                 max = 2047,
                 tickUnit = max / 4,
                 tickCount = (max - min) / tickUnit;
-
-        axisY.setTickUnit(tickUnit);
-        axisY.setMinorTickCount(tickCount);
-        axisY.setUpperBound(max);
-        axisY.setLowerBound(min);
-        graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
-        nameComboBox.setConverter(converter);
+        try {
+            serviceChannel = ServiceChannel.getInstance();
+            axisY.setTickUnit(tickUnit);
+            axisY.setMinorTickCount(tickCount);
+            axisY.setUpperBound(max);
+            axisY.setLowerBound(min);
+            graphic.getData().add(new XYChart.Series<>(dataLineGraphic));
+            nameComboBox.setConverter(converter);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setNumberOfChannel(int numberOfChannel) {
@@ -88,33 +95,33 @@ public final class GraphForMeteringController implements DataListener, ContentFo
     }
 
     public void onNameComboBoxShowing() {
-        ObservableList<Channel> list = FXCollections.observableArrayList();
+        ObservableList<Channel> channels = FXCollections.observableArrayList();
         try {
-            list.addAll(Channel.getAll());
-        } catch (DomainException e) {
+            channels.addAll(serviceChannel.getAll());
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
         nameComboBox.getItems().clear();
-        nameComboBox.getItems().addAll(list);
+        nameComboBox.getItems().addAll(channels);
     }
 
     public void nameComboBoxSelect() {
-        channelSelected = nameComboBox.getValue();
+        channel = nameComboBox.getValue();
 
         try {
-            connection.setChannelInGraph(numberOfChannel, channelSelected);
-        } catch (DomainException e) {
+            connection.setChannelInGraph(numberOfChannel, channel);
+        } catch (HostException e) {
             e.printStackTrace();
         }
 
-        checkBox.setText(getChannelName(numberOfChannel, channelSelected));
+        checkBox.setText(getChannelName(numberOfChannel, channel));
     }
 
-    public void setCheckBox(CheckBoxOfGraph checkBox) throws DomainException {
+    public void setCheckBox(CheckBoxOfGraph checkBox) throws ServiceException {
         if (checkBox == null)
             throw new NullPointerException("checkBox is null");
 
-        String channelName = getChannelName(numberOfChannel, channelSelected);
+        String channelName = getChannelName(numberOfChannel, channel);
 
         this.checkBox = checkBox;
         checkBox.setText(channelName);
@@ -126,9 +133,9 @@ public final class GraphForMeteringController implements DataListener, ContentFo
         Platform.runLater(this::filling);
     }
 
-    public void setCapacity(int capacity) throws DomainException {
+    public void setCapacity(int capacity) throws ServiceException {
         if (capacity < 128)
-            throw new DomainException("Capacity must be greater than 127");
+            throw new ServiceException("Capacity must be greater than 127");
 
         if (dataLineGraphic.size() > capacity) {
             Platform.runLater(() -> {

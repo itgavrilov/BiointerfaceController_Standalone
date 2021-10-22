@@ -8,15 +8,21 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.Channel;
-import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.services.ServiceChannel;
+import ru.gsa.biointerface.services.ServiceException;
+import ru.gsa.biointerface.services.ServiceIcd;
 import ru.gsa.biointerface.ui.UIException;
+
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ChannelsController extends AbstractWindow {
-    private Channel channelSelected;
+    private ServiceChannel serviceChannel;
+    private Channel channel;
     @FXML
     private TableView<Channel> tableView;
     @FXML
@@ -42,33 +48,36 @@ public class ChannelsController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        tableView.getItems().clear();
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        ObservableList<Channel> list = FXCollections.observableArrayList();
         try {
-            list.addAll(Channel.getAll());
-        } catch (DomainException e) {
-            throw new UIException("Error getting a list of channels");
+            serviceChannel = ServiceChannel.getInstance();
+            ObservableList<Channel> icds = FXCollections.observableArrayList();
+            icds.addAll(serviceChannel.getAll());
+            nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
         }
-        tableView.setItems(list);
-        transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (channelSelected != tableView.getFocusModel().getFocusedItem()) {
-            channelSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(channelSelected.getComment());
+        if (channel != tableView.getFocusModel().getFocusedItem()) {
+            channel = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(channel.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        try {
-            channelSelected.setComment(commentField.getText());
-        } catch (DomainException e) {
-            e.printStackTrace();
+        String comment = channel.getComment();
+        if (Objects.equals(comment, commentField.getText())) {
+            try {
+                channel.setComment(commentField.getText());
+                serviceChannel.update(channel);
+            } catch (ServiceException e) {
+                channel.setComment(comment);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -90,10 +99,10 @@ public class ChannelsController extends AbstractWindow {
 
     public void onDeleteButtonPush() {
         try {
-            channelSelected.delete();
-            tableView.getItems().remove(channelSelected);
+            serviceChannel.delete(channel);
+            tableView.getItems().remove(channel);
             commentField.setText("");
-        } catch (DomainException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
     }

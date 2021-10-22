@@ -11,11 +11,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.Device;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.domain.host.ConnectionFactory;
+import ru.gsa.biointerface.domain.entity.Device;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.ConnectionFactory;
+import ru.gsa.biointerface.host.HostException;
+import ru.gsa.biointerface.services.*;
 import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
@@ -31,6 +32,9 @@ import java.util.List;
  */
 public class MeteringController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
     static private MeteringController instants;
+    private Connection connection;
+    private PatientRecord patientRecord;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
     private final List<CompositeNode<AnchorPane, GraphForMeteringController>> channelGUIs = new LinkedList<>();
     private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
@@ -48,8 +52,6 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             return null;
         }
     };
-    private Connection connection;
-    private PatientRecord patientRecord;
     @FXML
     private AnchorPane anchorPaneControl;
     @FXML
@@ -69,7 +71,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     @FXML
     private Button scanningSerialPortsButton;
     @FXML
-    private ComboBox<Device> availableDevicesComboBox;
+    private ComboBox<Device> deviceComboBox;
     @FXML
     private Button startButton;
     @FXML
@@ -92,7 +94,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 if (instants.connection.isTransmission()) {
                     instants.connection.transmissionStop();
                 }
-            } catch (DomainException e) {
+            } catch (HostException e) {
                 e.printStackTrace();
             }
         }
@@ -113,24 +115,23 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
         if (patientRecord == null)
-            throw new UIException("patientRecord is null. First call setParameter()");
+            throw new UIException("servicePatientRecord is null. First call setParameter()");
 
         patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
         secondNameText.setText(patientRecord.getSecondName());
         firstNameText.setText(patientRecord.getFirstName());
         middleNameText.setText(patientRecord.getMiddleName());
+        birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
+        deviceComboBox.setConverter(converter);
+
         if (patientRecord.getIcd() != null) {
             Icd icd = patientRecord.getIcd();
-            icdText.setText(icd.getICD() + " (ICD-" + icd.getVersion() + ")");
+            icdText.setText(icd.getName() + " (ICD-" + icd.getVersion() + ")");
         } else {
             icdText.setText("-");
         }
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        birthdayText.setText(patientRecord.getBirthday().format(dateFormatter));
-
-        availableDevicesComboBox.setConverter(converter);
-
+        instants = this;
         transitionGUI.show();
     }
 
@@ -140,21 +141,21 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             clearInterface();
             controlInterface(false);
             connectionFactory.scanningSerialPort();
-        } catch (DomainException e) {
+        } catch (HostException e) {
             e.printStackTrace();
         }
     }
 
-    public void availableDevicesComboBoxShowing() {
+    public void devicesComboBoxShowing() {
         controlInterface(true);
-        availableDevicesComboBox.getItems().clear();
-        availableDevicesComboBox.getItems().addAll(connectionFactory.getListDevices());
+        deviceComboBox.getItems().clear();
+        deviceComboBox.getItems().addAll(connectionFactory.getDevices());
     }
 
-    public void availableDevicesComboBoxSelect() {
-        if (availableDevicesComboBox.getValue() != null) {
+    public void devicesComboBoxSelect() {
+        if (deviceComboBox.getValue() != null) {
             try {
-                connection = connectionFactory.getConnection(availableDevicesComboBox.getValue());
+                connection = connectionFactory.getConnection(deviceComboBox.getValue());
                 connection.setPatientRecord(patientRecord);
                 buildingChannelsGUIs();
                 if (connection.isConnected()) {
@@ -197,10 +198,10 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 try {
                     graphController.setCheckBox(checkBox);
                     checkBoxesOfChannel.add(checkBox);
-                } catch (DomainException e) {
+                } catch (ServiceException e) {
                     throw new UIException("Graph checkbox setting error");
                 }
-            } catch (DomainException e) {
+            } catch (ServiceException | HostException e) {
                 throw new UIException("Graph setting error");
             }
         }
@@ -208,7 +209,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> channelGUIs.forEach(o -> {
             try {
                 o.getController().setCapacity(new_val.intValue());
-            } catch (DomainException e) {
+            } catch (ServiceException e) {
                 e.printStackTrace();
             }
         }));
@@ -235,14 +236,14 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 try {
                     connection.transmissionStop();
                     controlInterface(true);
-                } catch (DomainException e) {
+                } catch (HostException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
                     connection.transmissionStart();
                     controlInterface(false);
-                } catch (DomainException e) {
+                } catch (HostException e) {
                     e.printStackTrace();
                 }
             }
@@ -255,7 +256,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (connection.isConnected()) {
             try {
                 connection.controllerReboot();
-            } catch (DomainException e) {
+            } catch (HostException e) {
                 e.printStackTrace();
             }
         }
@@ -265,13 +266,13 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (connection.isRecording()) {
             try {
                 connection.recordingStop();
-            } catch (DomainException e) {
+            } catch (HostException e) {
                 e.printStackTrace();
             }
         } else {
             try {
                 connection.recordingStart();
-            } catch (DomainException e) {
+            } catch (HostException e) {
                 e.printStackTrace();
             }
         }
@@ -283,7 +284,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             if (connection != null && connection.isConnected()) {
                 try {
                     connection.disconnect();
-                } catch (DomainException e) {
+                } catch (HostException e) {
                     e.printStackTrace();
                 }
             }
@@ -298,21 +299,22 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     public void commentFieldChange() throws UIException {
         try {
-            connection.setCommentForExamination(commentField.getText());
-        } catch (DomainException e) {
+            String comment = connection.setCommentForExamination(commentField.getText());
+            commentField.setText(comment);
+        } catch (HostException e) {
             throw new UIException("Error updating comment to examination");
         }
     }
 
     private void clearInterface() {
-        availableDevicesComboBox.setValue(null);
+        deviceComboBox.setValue(null);
         channelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().clear();
     }
 
     private void controlInterface(boolean enableButtonScanning) {
         scanningSerialPortsButton.setDisable(!enableButtonScanning);
-        availableDevicesComboBox.setDisable(connection != null);
+        deviceComboBox.setDisable(connection != null);
 
         if (connection != null && connection.isConnected()) {
             startButton.setDisable(false);

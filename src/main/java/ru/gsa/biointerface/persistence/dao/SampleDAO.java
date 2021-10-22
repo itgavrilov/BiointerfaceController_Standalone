@@ -2,8 +2,8 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
-import ru.gsa.biointerface.domain.entity.SampleEntity;
+import ru.gsa.biointerface.domain.entity.Graph;
+import ru.gsa.biointerface.domain.entity.Sample;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class SampleDAO extends AbstractDAO<SampleEntity, Integer> {
+public class SampleDAO extends AbstractDAO<Sample, Long> {
     protected static SampleDAO dao;
 
     private SampleDAO() throws PersistenceException {
@@ -25,16 +25,16 @@ public class SampleDAO extends AbstractDAO<SampleEntity, Integer> {
         return dao;
     }
 
-    public List<SampleEntity> getAllByGraph(GraphEntity graphEntity) throws PersistenceException {
-        List<SampleEntity> entities;
+    public List<Sample> getAllByGraph(Graph graph) throws PersistenceException {
+        List<Sample> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             String hql = "FROM sample where numberOfChannel = :numberOfChannel and examination_id = :examination_id";
             //noinspection unchecked
-            Query<SampleEntity> query = session.createQuery(hql);
-            query.setParameter("numberOfChannel", graphEntity.getNumberOfChannel());
-            query.setParameter("examination_id", graphEntity.getExaminationEntity().getId());
+            Query<Sample> query = session.createQuery(hql);
+            query.setParameter("numberOfChannel", graph.getNumberOfChannel());
+            query.setParameter("examination_id", graph.getExaminationEntity().getId());
 
             entities = query.list();
             session.getTransaction().commit();

@@ -4,14 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import ru.gsa.biointerface.domain.Channel;
-import ru.gsa.biointerface.domain.DomainException;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.services.ServiceChannel;
+import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.ui.UIException;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ChannelAddController extends AbstractWindow {
+    private ServiceChannel serviceChannel;
     @FXML
     private TextField channelField;
     @FXML
@@ -24,7 +26,12 @@ public class ChannelAddController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        transitionGUI.show();
+        try {
+            serviceChannel = ServiceChannel.getInstance();
+            transitionGUI.show();
+        } catch (ServiceException e) {
+            throw new UIException("Error connection to database", e);
+        }
     }
 
     @Override
@@ -63,16 +70,17 @@ public class ChannelAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
+        Channel channel = serviceChannel.create(
+                channelField.getText(),
+                commentField.getText()
+        );
+
         try {
-            new Channel(
-                    channelField.getText(),
-                    commentField.getText()
-            );
-        } catch (DomainException e) {
+            serviceChannel.save(channel);
+            onBackButtonPush();
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
-
-        onBackButtonPush();
     }
 
     public void onBackButtonPush() {

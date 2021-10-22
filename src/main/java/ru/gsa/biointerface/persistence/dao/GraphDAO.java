@@ -2,8 +2,8 @@ package ru.gsa.biointerface.persistence.dao;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.gsa.biointerface.domain.entity.ExaminationEntity;
-import ru.gsa.biointerface.domain.entity.GraphEntity;
+import ru.gsa.biointerface.domain.entity.Examination;
+import ru.gsa.biointerface.domain.entity.Graph;
 import ru.gsa.biointerface.persistence.PersistenceException;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class GraphDAO extends AbstractDAO<GraphEntity, Integer> {
+public class GraphDAO extends AbstractDAO<Graph, Long> {
     protected static GraphDAO dao;
 
     private GraphDAO() throws PersistenceException {
@@ -25,14 +25,14 @@ public class GraphDAO extends AbstractDAO<GraphEntity, Integer> {
         return dao;
     }
 
-    public List<GraphEntity> getAllByExamination(ExaminationEntity examinationEntity) throws PersistenceException {
-        List<GraphEntity> entities;
+    public List<Graph> getAllByExamination(Examination examination) throws PersistenceException {
+        List<Graph> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             String hql = "FROM graph where examination_id  = :id";
             //noinspection unchecked
-            Query<GraphEntity> query = session.createQuery(hql);
-            query.setParameter("id", examinationEntity.getId());
+            Query<Graph> query = session.createQuery(hql);
+            query.setParameter("id", examination.getId());
 
             entities = query.list();
         } catch (Exception e) {
