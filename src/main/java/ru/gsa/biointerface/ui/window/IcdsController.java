@@ -9,10 +9,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.services.ServiceIcd;
-import ru.gsa.biointerface.services.ServiceException;
-import ru.gsa.biointerface.services.ServicePatientRecord;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.repository.exception.NoConnectionException;
+import ru.gsa.biointerface.services.IcdService;
 
 import java.util.Objects;
 
@@ -20,7 +18,7 @@ import java.util.Objects;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdsController extends AbstractWindow {
-    private ServiceIcd serviceIcd;
+    private final IcdService icdService;
     private Icd icd;
     @FXML
     private TableView<Icd> tableView;
@@ -33,6 +31,9 @@ public class IcdsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
+    public IcdsController() throws NoConnectionException {
+        icdService = IcdService.getInstance();
+    }
 
     @Override
     public String getTitleWindow() {
@@ -45,22 +46,21 @@ public class IcdsController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
+        ObservableList<Icd> icds = FXCollections.observableArrayList();
         try {
-            serviceIcd = ServiceIcd.getInstance();
-            ObservableList<Icd> icds = FXCollections.observableArrayList();
-            icds.addAll(serviceIcd.getAll());
-            tableView.setItems(icds);
-            icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-            versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
-            versionCol.setStyle("-fx-alignment: center;");
-            transitionGUI.show();
-        } catch (ServiceException e) {
-            throw new UIException("Error connection to database", e);
+            icds.addAll(icdService.getAll());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        tableView.setItems(icds);
+        icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
+        versionCol.setStyle("-fx-alignment: center;");
+        transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
@@ -73,12 +73,13 @@ public class IcdsController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        String comment = icd.getComment();
-        if (Objects.equals(comment, commentField.getText())) {
+        if (Objects.equals(icd.getComment(), commentField.getText())) {
+            String comment = icd.getComment();
+            icd.setComment(commentField.getText());
             try {
-                icd.setComment(commentField.getText());
-                serviceIcd.update(icd);
-            } catch (ServiceException e) {
+                icdService.update(icd);
+            } catch (Exception e) {
+                commentField.setText(comment);
                 icd.setComment(comment);
                 e.printStackTrace();
             }
@@ -88,7 +89,7 @@ public class IcdsController extends AbstractWindow {
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -96,17 +97,17 @@ public class IcdsController extends AbstractWindow {
     public void onAddButtonPush() {
         try {
             generateNewWindow("fxml/IcdAdd.fxml").showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void onDeleteButtonPush() {
         try {
-            serviceIcd.delete(icd);
+            icdService.delete(icd);
             tableView.getItems().remove(icd);
             commentField.setText("");
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

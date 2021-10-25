@@ -1,6 +1,6 @@
 package ru.gsa.biointerface.host.serialport.serverByPuchkov;
 
-import ru.gsa.biointerface.services.ServiceException;
+import ru.gsa.biointerface.host.serialport.SerialPortNotOpenException;
 import ru.gsa.biointerface.host.serialport.serverByPuchkov.util.AbstractLifeCycle;
 
 import java.io.IOException;
@@ -93,7 +93,7 @@ public abstract class AbstractServer<Input, Output, Interface> extends AbstractL
      * @param message - пакет
      * @throws IOException - ошибка ввода
      */
-    protected abstract void send(Output message) throws IOException, ServiceException;
+    protected abstract void send(Output message) throws IOException, SerialPortNotOpenException;
 
     /**
      * Поток зписи

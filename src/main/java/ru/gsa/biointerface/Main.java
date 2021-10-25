@@ -5,8 +5,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.gsa.biointerface.persistence.DBHandler;
-import ru.gsa.biointerface.persistence.PersistenceException;
+import ru.gsa.biointerface.repository.database.DatabaseHandler;
+import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.ui.ProxyGUI;
 import ru.gsa.biointerface.ui.window.metering.MeteringController;
 
@@ -20,8 +20,8 @@ public class Main extends Application implements ResourceSource {
     private static void handle(javafx.stage.WindowEvent event) {
         MeteringController.disconnect();
         try {
-            DBHandler.getInstance().getSessionFactory().close();
-        } catch (PersistenceException e) {
+            DatabaseHandler.getInstance().getSessionFactory().close();
+        } catch (NoConnectionException e) {
             e.printStackTrace();
         }
         Platform.exit();

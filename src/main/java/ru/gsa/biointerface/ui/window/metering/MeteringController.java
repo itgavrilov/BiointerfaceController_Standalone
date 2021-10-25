@@ -11,17 +11,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.host.ConnectionFactory;
-import ru.gsa.biointerface.host.HostException;
-import ru.gsa.biointerface.services.*;
-import ru.gsa.biointerface.ui.UIException;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
-import ru.gsa.biointerface.ui.window.graph.CheckBoxOfGraph;
-import ru.gsa.biointerface.ui.window.graph.CompositeNode;
+import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
+import ru.gsa.biointerface.ui.window.channel.CompositeNode;
 
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -31,13 +30,12 @@ import java.util.List;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
 public class MeteringController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
-    static private MeteringController instants;
-    private Connection connection;
-    private PatientRecord patientRecord;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeteringController.class);
+    private static MeteringController instants;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
-    private final List<CompositeNode<AnchorPane, GraphForMeteringController>> channelGUIs = new LinkedList<>();
-    private final List<CheckBoxOfGraph> checkBoxesOfChannel = new LinkedList<>();
+    private final List<CompositeNode<AnchorPane, ChannelForMeteringController>> channelGUIs = new LinkedList<>();
+    private final List<ChannelCheckBox> checkBoxesOfChannel = new LinkedList<>();
     private final StringConverter<Device> converter = new StringConverter<>() {
         @Override
         public String toString(Device device) {
@@ -52,6 +50,8 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             return null;
         }
     };
+    private Connection connection;
+    private PatientRecord patientRecord;
     @FXML
     private AnchorPane anchorPaneControl;
     @FXML
@@ -85,17 +85,19 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     @FXML
     private Button recordingButton;
 
+    public MeteringController() {
+    }
+
     static public void disconnect() {
         if (instants != null && instants.connection != null) {
+            ConnectionFactory.disconnectScanningSerialPort();
             try {
-                ConnectionFactory.disconnectScanningSerialPort();
                 instants.connection.disconnect();
-
                 if (instants.connection.isTransmission()) {
                     instants.connection.transmissionStop();
                 }
-            } catch (HostException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error("Error disconnect from host", e);
             }
         }
     }
@@ -111,11 +113,11 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
         if (patientRecord == null)
-            throw new UIException("servicePatientRecord is null. First call setParameter()");
+            throw new NullPointerException("servicePatientRecord is null. First call setParameter()");
 
         patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
         secondNameText.setText(patientRecord.getSecondName());
@@ -131,19 +133,15 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             icdText.setText("-");
         }
 
-        instants = this;
         transitionGUI.show();
+        instants = this;
     }
 
     public void buttonScanningSerialPortsPush() {
-        try {
-            connection = null;
-            clearInterface();
-            controlInterface(false);
-            connectionFactory.scanningSerialPort();
-        } catch (HostException e) {
-            e.printStackTrace();
-        }
+        connection = null;
+        clearInterface();
+        controlInterface(false);
+        connectionFactory.scanningSerialPort();
     }
 
     public void devicesComboBoxShowing() {
@@ -156,6 +154,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         if (deviceComboBox.getValue() != null) {
             try {
                 connection = connectionFactory.getConnection(deviceComboBox.getValue());
+                connection.connect();
                 connection.setPatientRecord(patientRecord);
                 buildingChannelsGUIs();
                 if (connection.isConnected()) {
@@ -167,53 +166,42 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
     }
 
-    public void buildingChannelsGUIs() throws UIException {
+    public void buildingChannelsGUIs() {
         int capacity = (int) allSliderZoom.getValue();
-
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
         for (int i = 0; i < connection.getAmountChannels(); i++) {
-            CompositeNode<AnchorPane, GraphForMeteringController> node =
+            CompositeNode<AnchorPane, ChannelForMeteringController> node =
                     new CompositeNode<>(
                             new FXMLLoader(
-                                    resourceSource.getResource("fxml/GraphForMetering.fxml"
+                                    resourceSource.getResource("fxml/ChannelForMetering.fxml"
                                     )
                             )
                     );
-            GraphForMeteringController graphController = node.getController();
+            ChannelForMeteringController graphController = node.getController();
 
-            try {
-                graphController.setNumberOfChannel(i);
-                graphController.setConnection(connection);
-                graphController.setCapacity(capacity);
-                connection.addListenerInCash(i, graphController);
-                channelGUIs.add(node);
+            graphController.setNumberOfChannel(i);
+            graphController.setConnection(connection);
+            graphController.setCapacity(capacity);
+            connection.setListenerInChannel(i, graphController);
+            channelGUIs.add(node);
 
-                CheckBoxOfGraph checkBox = new CheckBoxOfGraph(i);
-                checkBox.setOnAction(event -> {
-                    node.getNode().setVisible(checkBox.isSelected());
-                    drawChannelsGUI();
-                });
-                try {
-                    graphController.setCheckBox(checkBox);
-                    checkBoxesOfChannel.add(checkBox);
-                } catch (ServiceException e) {
-                    throw new UIException("Graph checkbox setting error");
-                }
-            } catch (ServiceException | HostException e) {
-                throw new UIException("Graph setting error");
-            }
+            ChannelCheckBox checkBox = new ChannelCheckBox(i);
+            checkBox.setOnAction(event -> {
+                node.getNode().setVisible(checkBox.isSelected());
+                drawChannelsGUI();
+            });
+
+            graphController.setCheckBox(checkBox);
+            checkBoxesOfChannel.add(checkBox);
         }
 
-        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) -> channelGUIs.forEach(o -> {
-            try {
-                o.getController().setCapacity(new_val.intValue());
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }));
-
+        allSliderZoom.valueProperty().addListener((ov, old_val, new_val) ->
+                        channelGUIs.forEach(o ->
+                                o.getController().setCapacity(new_val.intValue())
+                        )
+        );
         drawChannelsGUI();
     }
 
@@ -223,86 +211,92 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             if (n.getNode().isVisible())
                 channelVBox.getChildren().add(n.getNode());
         });
-
         checkBoxOfChannelVBox.getChildren().clear();
         checkBoxOfChannelVBox.getChildren().addAll(checkBoxesOfChannel);
-
         resizeWindow(anchorPaneRoot.getHeight(), anchorPaneRoot.getWidth());
     }
 
     public void onStartButtonPush() {
+        LOGGER.info("Start button push");
+
         if (connection.isConnected()) {
             if (connection.isTransmission()) {
                 try {
                     connection.transmissionStop();
                     controlInterface(true);
-                } catch (HostException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    LOGGER.error("Host is not running", e);
                 }
             } else {
                 try {
                     connection.transmissionStart();
                     controlInterface(false);
-                } catch (HostException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    LOGGER.error("Host is not running", e);
                 }
             }
         }
     }
 
     public void onRebootButtonPush() {
+        LOGGER.info("Reboot button push");
         clearInterface();
         controlInterface(true);
+
         if (connection.isConnected()) {
             try {
                 connection.controllerReboot();
-            } catch (HostException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error("Host is not running", e);
             }
         }
     }
 
     public void onRecordingButtonPush() {
+        LOGGER.info("Recording button push");
+
         if (connection.isRecording()) {
             try {
                 connection.recordingStop();
-            } catch (HostException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error("Host is not running", e);
             }
         } else {
             try {
                 connection.recordingStart();
-            } catch (HostException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error("Host is not transmission", e);
             }
         }
+
         controlInterface(true);
     }
 
     public void onBackButtonPush() {
-        try {
-            if (connection != null && connection.isConnected()) {
-                try {
-                    connection.disconnect();
-                } catch (HostException e) {
-                    e.printStackTrace();
-                }
+        LOGGER.info("Back button push");
+        if (connection != null && connection.isConnected()) {
+            try {
+                connection.disconnect();
+            } catch (Exception e) {
+                LOGGER.error("Error disconnected host", e);
             }
+        }
+        try {
             //noinspection unchecked
             ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
                     .setProperty(patientRecord)
                     .showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void commentFieldChange() throws UIException {
+    public void commentFieldChange() {
+        LOGGER.info("Change commentField for Examination");
         try {
-            String comment = connection.setCommentForExamination(commentField.getText());
-            commentField.setText(comment);
-        } catch (HostException e) {
-            throw new UIException("Error updating comment to examination");
+            connection.setCommentForExamination(commentField.getText());
+        } catch (Exception e) {
+            LOGGER.error("Error comment change", e);
         }
     }
 
@@ -331,11 +325,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
 
         rebootButton.setDisable(connection == null || !connection.isConnected());
-
         allSliderZoom.setDisable(connection == null || !connection.isConnected() || connection.isTransmission());
         channelGUIs.forEach(o -> o.getController().setEnable(!allSliderZoom.isDisable()));
         checkBoxesOfChannel.forEach(o -> o.setDisable(allSliderZoom.isDisable()));
-
         recordingButton.setDisable(connection == null || !connection.isTransmission());
 
         if (connection != null && connection.isRecording()) {
@@ -350,16 +342,14 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         long count = channelGUIs.stream().
                 map(CompositeNode::getNode).
                 filter(Node::isVisible).count();
-
         double heightChannelGUIs = height / count;
 
         channelVBox.setPrefHeight(heightChannelGUIs);
         channelVBox.setPrefWidth(width - anchorPaneControl.getWidth());
 
-        for (CompositeNode<AnchorPane, GraphForMeteringController> o : channelGUIs) {
+        for (CompositeNode<AnchorPane, ChannelForMeteringController> o : channelGUIs) {
             o.getController().resizeWindow(heightChannelGUIs, width - anchorPaneControl.getWidth() + 13);
         }
-
     }
 
     @Override

@@ -26,20 +26,28 @@ public class ConnectionFactory {
         return instance;
     }
 
-    public static void disconnectScanningSerialPort() throws HostException {
+    public static void disconnectScanningSerialPort() {
         if (getInstance().connections.size() > 0) {
-            for (ConnectionHandler connectionHandler : getInstance().connections) {
-                connectionHandler.disconnect();
+            for (Connection connection : getInstance().connections) {
+                try {
+                    connection.disconnect();
+                } catch (Exception e) {
+                    LOGGER.error("Device disconnect error", e);
+                }
             }
             getInstance().connections.clear();
             LOGGER.info("disconnect all serial ports");
         }
     }
 
-    public void scanningSerialPort() throws HostException {
+    public void scanningSerialPort() {
         if (connection != null ) {
             if(connection.isConnected()) {
-                connection.disconnect();
+                try {
+                    connection.disconnect();
+                } catch (Exception e) {
+                    LOGGER.error("Device disconnect error", e);
+                }
             }
             connection = null;
         }
@@ -47,8 +55,12 @@ public class ConnectionFactory {
         connections.clear();
         List<SerialPort> serialPorts = getSerialPortsWithDevises();
         for(SerialPort serialPort: serialPorts) {
-            ConnectionHandler connection = new ConnectionHandler(serialPort);
-            connections.add(connection);
+            try {
+                ConnectionHandler connection = new ConnectionHandler(serialPort);
+                connections.add(connection);
+            } catch (Exception e) {
+                LOGGER.error("Error connection to serialPort(SystemPortName={})", serialPort.getSystemPortName(), e);
+            }
         }
         LOGGER.info("Scanning devices");
     }
@@ -65,8 +77,8 @@ public class ConnectionFactory {
                     if (o.isConnected()) {
                         try {
                             o.disconnect();
-                        } catch (HostException e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
+                            LOGGER.error("Device disconnect error", e);
                         }
                     }
                 })
@@ -76,12 +88,11 @@ public class ConnectionFactory {
                 .collect(Collectors.toList());
     }
 
-    public Connection getConnection(Device device) throws HostException {
+    public Connection getConnection(Device device) {
         connection = connections.stream()
                 .filter(o -> device.equals(o.getDevice()))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
-        connection.connect();
         LOGGER.info("Get available devices");
 
         return connection;

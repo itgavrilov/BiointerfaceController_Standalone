@@ -12,11 +12,12 @@ import java.util.Objects;
 @Table(name = "icd")
 public class Icd implements Serializable, Comparable<Icd> {
     @Id
-    @GeneratedValue(generator = "sqlite_icd")
-    @TableGenerator(name = "sqlite_icd", table = "sqlite_sequence",
-            pkColumnName = "name", valueColumnName = "seq",
-            pkColumnValue = "icd",
-            initialValue = 1, allocationSize = 1)
+    @GeneratedValue()
+//    @GeneratedValue(generator = "sqlite_icd")
+//    @TableGenerator(name = "sqlite_icd", table = "sqlite_sequence",
+//            pkColumnName = "name", valueColumnName = "seq",
+//            pkColumnValue = "icd",
+//            initialValue = 1, allocationSize = 1)
     private long id;
 
     @Column(nullable = false, length = 35)

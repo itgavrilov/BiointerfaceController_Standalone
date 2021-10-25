@@ -1,8 +1,6 @@
 package ru.gsa.biointerface.host.serialport;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ru.gsa.biointerface.host.HostException;
-import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.host.serialport.packets.ChannelPacket;
 import ru.gsa.biointerface.host.serialport.packets.ConfigPacket;
 import ru.gsa.biointerface.host.serialport.packets.Packet;
@@ -37,18 +35,12 @@ public class SerialPortHandler implements ChannelHandler<Packet, Packet, SerialP
             }
             case DATA -> {
                 ChannelPacket msg = (ChannelPacket) message;
-
                 dataCollector.setFlagTransmission();
 
                 for (char i = 0; i < msg.getCountChannelInPacket(); i++) {
                     int scale = msg.getScale(i);
                     int simple = msg.getSample(i);
-
-                    try {
-                        dataCollector.addInCash(i, simple);
-                    } catch (HostException e) {
-                        e.printStackTrace();
-                    }
+                    dataCollector.setSampleInChannel(i, simple);
                 }
             }
             default -> throw new IllegalStateException("Unexpected packageType value: " + message.getPackageType());

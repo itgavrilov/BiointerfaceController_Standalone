@@ -1,7 +1,5 @@
 package ru.gsa.biointerface.domain.entity;
 
-import ru.gsa.biointerface.services.ServiceException;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,11 +16,12 @@ import java.util.Objects;
 @Table(name = "examination")
 public class Examination implements Serializable, Comparable<Examination> {
     @Id
-    @GeneratedValue(generator = "sqlite_examination")
-    @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
-            pkColumnName = "name", valueColumnName = "seq",
-            pkColumnValue = "examination",
-            initialValue = 1, allocationSize = 1)
+    @GeneratedValue()
+//    @GeneratedValue(generator = "sqlite_examination")
+//    @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
+//            pkColumnName = "name", valueColumnName = "seq",
+//            pkColumnValue = "examination",
+//            initialValue = 1, allocationSize = 1)
     private long id;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,7 +40,7 @@ public class Examination implements Serializable, Comparable<Examination> {
     private String comment;
 
     @OneToMany(mappedBy = "examination", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Graph> graphs;
+    private List<Channel> channels;
 
     @Transient
     private boolean recording = false;
@@ -49,13 +48,13 @@ public class Examination implements Serializable, Comparable<Examination> {
     public Examination() {
     }
 
-    public Examination(long id, Date startTime, PatientRecord patientRecord, Device device, String comment, List<Graph> graphs) {
+    public Examination(long id, Date startTime, PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
         this.id = id;
         this.startTime = startTime;
         this.patientRecord = patientRecord;
         this.device = device;
         this.comment = comment;
-        this.graphs = graphs;
+        this.channels = channels;
     }
 
     public long getId() {
@@ -69,6 +68,7 @@ public class Examination implements Serializable, Comparable<Examination> {
     public Date getStartTime() {
         return startTime;
     }
+
     public LocalDateTime getStartTimeInLocalDateTime() {
         return startTime.toInstant()
                 .atZone(ZoneId.systemDefault())
@@ -103,35 +103,35 @@ public class Examination implements Serializable, Comparable<Examination> {
         this.comment = comment;
     }
 
-    public List<Graph> getGraphs() {
-        return graphs;
+    public List<Channel> getChannels() {
+        return channels;
     }
 
-    public void setGraphs(List<Graph> graphs) {
-        this.graphs = graphs;
+    public void setChannels(List<Channel> channels) {
+        this.channels = channels;
     }
 
-    public void setChannelInGraph(int numberOfChannel, Channel channel) throws ServiceException {
-        if (numberOfChannel < 0)
-            throw new IllegalArgumentException("numberOfChannel < 0");
-        if (graphs == null)
-            throw new ServiceException("Graphs is null");
-        if (numberOfChannel >= graphs.size())
-            throw new IllegalArgumentException("I > amount graphs");
+    public void setNameInChannel(int number, ChannelName channelName) {
+        if (channels == null)
+            throw new NullPointerException("Channels is null");
+        if (number < 0)
+            throw new IllegalArgumentException("number < 0");
+        if (number >= channels.size())
+            throw new IllegalArgumentException("I > amount channels");
 
-        graphs.get(numberOfChannel).setChannel(channel);
+        channels.get(number).setChannelName(channelName);
     }
 
-    public void setSampleInGraph(int numberOfChannel, int value) throws ServiceException {
-        if (numberOfChannel >= graphs.size() || numberOfChannel < 0)
-            throw new ServiceException("NumberOfChannel < 0 or > amount graphs");
+    public void setSampleInChannel(int numberOfChannel, int value) {
+        if (numberOfChannel >= channels.size() || numberOfChannel < 0)
+            throw new IllegalArgumentException("NumberOfChannel < 0 or > amount channels");
 
-        Graph graph = graphs.get(numberOfChannel);
-        List<Sample> entities = graph.getSamples();
+        Channel channel = channels.get(numberOfChannel);
+        List<Sample> entities = channel.getSamples();
         Sample sample =
                 new Sample(
                         entities.size(),
-                        graph,
+                        channel,
                         value
                 );
         entities.add(entities.size(), sample);

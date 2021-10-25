@@ -1,44 +1,40 @@
 package ru.gsa.biointerface.ui.window.metering;
 
-import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.host.HostException;
-import ru.gsa.biointerface.services.ServiceChannel;
-import ru.gsa.biointerface.services.ServicePatientRecord;
-import ru.gsa.biointerface.services.ServiceException;
 import ru.gsa.biointerface.host.cash.DataListener;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface Connection {
-    void setPatientRecord(PatientRecord patientRecord) throws HostException;
+    void setPatientRecord(PatientRecord patientRecord);
 
     int getAmountChannels();
 
-    void setChannelInGraph(int numberOfChannel, Channel channel) throws HostException;
+    void setNameInChannel(int numberOfChannel, ChannelName channelName);
 
-    void addListenerInCash(int numberOfChannel, DataListener listener) throws HostException;
+    void setListenerInChannel(int numberOfChannel, DataListener listener);
 
-    void connect() throws HostException;
+    void connect() throws Exception;
 
-    void disconnect() throws HostException;
+    void disconnect() throws Exception;
 
     boolean isConnected();
 
-    void transmissionStart() throws HostException;
+    void transmissionStart() throws Exception;
 
-    void transmissionStop() throws HostException;
+    void transmissionStop() throws Exception;
 
     boolean isTransmission();
 
-    void controllerReboot() throws HostException;
+    void controllerReboot() throws Exception;
 
-    void recordingStart() throws HostException;
+    void recordingStart() throws Exception;
 
-    void recordingStop() throws HostException;
+    void recordingStop() throws Exception;
 
     boolean isRecording();
 
-    String setCommentForExamination(String comment) throws HostException;
+    void setCommentForExamination(String comment) throws Exception;
 }

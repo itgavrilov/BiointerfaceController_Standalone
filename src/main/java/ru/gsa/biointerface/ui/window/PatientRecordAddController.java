@@ -7,20 +7,20 @@ import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.services.ServiceIcd;
-import ru.gsa.biointerface.services.ServicePatientRecord;
-import ru.gsa.biointerface.services.ServiceException;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.repository.exception.NoConnectionException;
+import ru.gsa.biointerface.services.IcdService;
+import ru.gsa.biointerface.services.PatientRecordService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordAddController extends AbstractWindow {
-    private ServicePatientRecord servicePatientRecord;
-    private ServiceIcd serviceIcd;
+    private final PatientRecordService patientRecordService;
+    private IcdService icdService;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -53,17 +53,17 @@ public class PatientRecordAddController extends AbstractWindow {
     @FXML
     private Button registerAndOpenButton;
 
-    public void showWindow() throws UIException {
+    public PatientRecordAddController() throws NoConnectionException {
+        patientRecordService = PatientRecordService.getInstance();
+    }
+
+    public void showWindow() throws NoConnectionException {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
-        try {
-            servicePatientRecord = ServicePatientRecord.getInstance();
-            serviceIcd = ServiceIcd.getInstance();
-            icdComboBox.setConverter(converter);
-            transitionGUI.show();
-        } catch (ServiceException e) {
-            throw new UIException("Error connection to database", e);
-        }
+            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+
+        icdService = IcdService.getInstance();
+        icdComboBox.setConverter(converter);
+        transitionGUI.show();
     }
 
     @Override
@@ -232,10 +232,11 @@ public class PatientRecordAddController extends AbstractWindow {
 
     private void setIcdComboBox() {
         ObservableList<Icd> icds = FXCollections.observableArrayList();
-        icds.add(null);
         try {
-            icds.addAll(serviceIcd.getAll());
-        } catch (ServiceException e) {
+            List<Icd> icdList = icdService.getAll();
+            icds.add(null);
+            icds.addAll(icdList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         icdComboBox.getItems().clear();
@@ -249,27 +250,27 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        PatientRecord patientRecord = servicePatientRecord.create(
-            Integer.parseInt(externalIDField.getText()),
-            secondNameField.getText(),
-            firstNameField.getText(),
-            middleNameField.getText(),
-            birthdayField.getValue(),
-            icdComboBox.getValue(),
-            commentField.getText()
-        );
         try {
-            servicePatientRecord.save(patientRecord);
-            onBackButtonPush();
-        } catch (ServiceException e) {
+            PatientRecord patientRecord = patientRecordService.create(
+                Integer.parseInt(externalIDField.getText()),
+                secondNameField.getText(),
+                firstNameField.getText(),
+                middleNameField.getText(),
+                birthdayField.getValue(),
+                icdComboBox.getValue(),
+                commentField.getText()
+            );
+            patientRecordService.save(patientRecord);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        onBackButtonPush();
     }
 
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

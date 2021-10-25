@@ -3,10 +3,13 @@ package ru.gsa.biointerface.host;
 import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.exception.HostException;
+import ru.gsa.biointerface.host.exception.HostNotRunningException;
+import ru.gsa.biointerface.host.exception.HostNotTransmissionException;
 import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.cash.Cash;
 import ru.gsa.biointerface.host.cash.DataListener;
@@ -27,10 +30,10 @@ import java.util.Objects;
 public class ConnectionHandler implements DataCollector, Connection {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionHandler.class);
     private final SerialPortHost serialPortHost;
-    private final ServiceExamination serviceExamination;
-    private final ServiceDevice serviceDevice;
+    private final ExaminationService examinationService;
+    private final DeviceService deviceService;
     private final List<Cash> cashList = new ArrayList<>();
-    private final List<Channel> channels = new ArrayList<>();
+    private final List<ChannelName> channelNames = new ArrayList<>();
 
     private Device device;
     private PatientRecord patientRecord;
@@ -38,25 +41,17 @@ public class ConnectionHandler implements DataCollector, Connection {
     private String comment;
     private boolean flagTransmission = false;
 
-    public ConnectionHandler(SerialPort serialPort) throws HostException {
+    public ConnectionHandler(SerialPort serialPort) throws Exception {
         if (serialPort == null)
             throw new NullPointerException("SerialPort is null");
 
-        try {
-            serviceExamination = ServiceExamination.getInstance();
-            serviceDevice = ServiceDevice.getInstance();
-            serialPortHost = new SerialPortHost(serialPort);
-            serialPortHost.handler(new SerialPortHandler(this));
+        examinationService = ExaminationService.getInstance();
+        deviceService = DeviceService.getInstance();
+        serialPortHost = new SerialPortHost(serialPort);
+        serialPortHost.handler(new SerialPortHandler(this));
 
-            try {
-                serialPortHost.start();
-                serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
-            } catch (Exception e) {
-                throw new HostException("SerialPortHost start error", e);
-            }
-        } catch (ServiceException e) {
-            throw new HostException("Error connection to database", e);
-        }
+        serialPortHost.start();
+        serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
     }
 
     public PatientRecord getPatientRecord() {
@@ -64,11 +59,11 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void setPatientRecord(PatientRecord patientRecord) throws HostException {
+    public void setPatientRecord(PatientRecord patientRecord) {
         if (patientRecord == null)
             throw new NullPointerException("PatientRecord is null");
         if (device == null)
-            throw new HostException("Device null");
+            throw new NullPointerException("Device null");
 
         this.patientRecord = patientRecord;
     }
@@ -90,13 +85,13 @@ public class ConnectionHandler implements DataCollector, Connection {
             throw new IllegalArgumentException("amountChannels <= 0 or > 8");
 
         if(device == null || device.getId() != serialNumber) {
-            device = serviceDevice.create(serialNumber, amountChannels);
+            device = deviceService.create(serialNumber, amountChannels);
             examination = null;
             patientRecord = null;
 
             for (int i = 0; i < device.getAmountChannels(); i++) {
                 cashList.add(new SampleCash());
-                channels.add(null);
+                channelNames.add(null);
             }
         }
     }
@@ -107,105 +102,99 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void addListenerInCash(int numberOfChannel, DataListener listener) {
+    public void setListenerInChannel(int number, DataListener listener) {
         if (listener == null)
             throw new NullPointerException("Listener null");
-        if (numberOfChannel >= cashList.size() || numberOfChannel < 0)
-            throw new IllegalArgumentException("I > amount cashList");
+        if (number >= cashList.size() || number < 0)
+            throw new IllegalArgumentException("Number > amount cashList");
         if (device == null)
             throw new NullPointerException("Device is null");
 
-        cashList.get(numberOfChannel).addListener(listener);
+        cashList.get(number).setListener(listener);
     }
 
     @Override
-    public void addInCash(int numberOfChannel, int value) throws HostException {
-        if (numberOfChannel >= cashList.size() || numberOfChannel < 0)
-            throw new IllegalArgumentException("NumberOfChannel > amount cashList");
+    public void setSampleInChannel(int number, int value) {
+        if (number >= cashList.size() || number < 0)
+            throw new IllegalArgumentException("Number > amount cashList");
         if (device == null)
             throw new NullPointerException("Device is null");
 
-        cashList.get(numberOfChannel).add(value);
+        cashList.get(number).add(value);
 
         if (isRecording()) {
-            try {
-                examination.setSampleInGraph(numberOfChannel, value);
-            } catch (ServiceException e) {
-                throw new HostException("Error set sample", e);
-            }
+            examination.setSampleInChannel(number, value);
         }
     }
 
     @Override
-    public void setChannelInGraph(int numberOfChannel, Channel channel) throws HostException {
-        if (numberOfChannel < 0)
-            throw new IllegalArgumentException("NumberOfChannel < 0");
+    public void setNameInChannel(int number, ChannelName channelName) {
+        if (number < 0)
+            throw new IllegalArgumentException("Number < 0");
         if (device == null)
             throw new NullPointerException("Device is null");
-        if (numberOfChannel >= channels.size())
-            throw new HostException("I > amount serviceChannelList");
+        if (number >= channelNames.size())
+            throw new IllegalArgumentException("Number > amount serviceChannelList");
 
-        channels.set(numberOfChannel, channel);
+        channelNames.set(number, channelName);
 
         if (examination != null) {
-            try {
-                examination.setChannelInGraph(numberOfChannel, channel);
-            } catch (ServiceException e) {
-                throw new HostException("Error set channel", e);
-            }
+            examination.setNameInChannel(number, channelName);
         }
 
-        if(channel != null) {
-            LOGGER.info("{} for graph {} is set", channel, numberOfChannel);
+        if(channelName != null) {
+            LOGGER.info("ChannelName(id={}) is set in channel(number={})", channelName.getId(), number);
         } else {
-            LOGGER.info("Channel for graph {} is reset", numberOfChannel);
+            LOGGER.info("ChannelName is reset in channel(number={})", number);
         }
     }
 
     @Override
-    public String setCommentForExamination(String newComment) {
+    public void setCommentForExamination(String newComment) throws Exception {
         this.comment = newComment;
+        LOGGER.info("Set new comment for examination");
 
         if (examination != null) {
             String comment = examination.getComment();
             if (Objects.equals(comment, newComment)) {
                 try {
                     examination.setComment(newComment);
-                    serviceExamination.update(examination);
-                } catch (ServiceException e) {
+                    examinationService.update(examination);
+                    LOGGER.info("New comment is set in examination(number={})", examination.getId());
+                } catch (Exception e) {
                     examination.setComment(comment);
-                    this.comment = examination.getComment();
-                    e.printStackTrace();
+                    LOGGER.error("Error update examination(number={})", examination.getId(), e);
+                    throw e;
                 }
             }
         }
-
-        return this.comment;
     }
 
-    public void connect() throws HostException {
+    public void connect() throws Exception {
         if (!isConnected()) {
             try {
                 serialPortHost.start();
+                serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
+                LOGGER.info("Connecting to device");
             } catch (Exception e) {
-                throw new HostException("SerialPortHost start error", e);
+                LOGGER.error("Host is not running", e);
+                throw e;
             }
-            serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
+        } else {
+            LOGGER.warn("Device is already connected");
         }
     }
 
     @Override
-    public void disconnect() throws HostException {
+    public void disconnect() throws Exception {
         if (isConnected()) {
-            try {
-                if (isTransmission()) {
-                    transmissionStop();
-                }
-                serialPortHost.stop();
-                LOGGER.info("Disconnecting from serviceDevice");
-            } catch (Exception e) {
-                throw new HostException("SerialPortHost stop error", e);
+            if (isTransmission()) {
+                transmissionStop();
             }
+            serialPortHost.stop();
+            LOGGER.info("Disconnecting from device");
+        } else {
+            LOGGER.warn("Device is already disconnected");
         }
     }
 
@@ -220,15 +209,15 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void transmissionStart() throws HostException {
+    public void transmissionStart() throws Exception {
         if (serialPortHost == null)
-            throw new NullPointerException("Server is not initialized (null)");
+            throw new NullPointerException("Host is null");
         if (!serialPortHost.isRunning())
-            throw new HostException("Server is not running");
+            throw new HostNotRunningException();
         if (device == null)
             throw new NullPointerException("Device null");
         if (patientRecord == null)
-            throw new HostException("ServicePatientRecord is not init. First call setPatientRecord()");
+            throw new NullPointerException("PatientRecordService is not init. First call setPatientRecord()");
 
         serialPortHost.sendPackage(ControlMessages.START_TRANSMISSION);
         flagTransmission = true;
@@ -236,11 +225,11 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void transmissionStop() throws HostException {
+    public void transmissionStop() throws Exception {
         if (serialPortHost == null)
-            throw new HostException("Server is not initialized (null)");
+            throw new NullPointerException("Host is null");
         if (!serialPortHost.isRunning())
-            throw new HostException("Server is not running");
+            throw new HostNotRunningException();
 
         serialPortHost.sendPackage(ControlMessages.STOP_TRANSMISSION);
         flagTransmission = false;
@@ -258,32 +247,36 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void recordingStart() throws HostException {
+    public void recordingStart() throws Exception {
         if (device == null)
             throw new NullPointerException("Device null");
         if (patientRecord == null)
-            throw new HostException("ServicePatientRecord is not init. First call setPatientRecord()");
+            throw new NullPointerException("PatientRecordService is not init. First call setPatientRecord()");
         if (!flagTransmission)
-            throw new HostException("Transmission is stop");
-        if (isRecording())
-            throw new HostException("Recording is already in progress");
+            throw new HostNotTransmissionException();
 
-        examination = serviceExamination.create(patientRecord, device, channels, comment);
-        try {
-            serviceDevice.save(device);
-            serviceExamination.recordingStart(examination);
-            LOGGER.info("Start recording");
-        } catch (ServiceException e) {
-            examination = null;
-            throw new HostException("Error start recording", e);
+        if (!isRecording()) {
+            examination = examinationService.create(patientRecord, device, channelNames, comment);
+            try {
+                deviceService.save(device);
+                examinationService.recordingStart(examination);
+                LOGGER.info("Start recording");
+            } catch (Exception e) {
+                examination = null;
+                LOGGER.error("Error recording started", e);
+                throw new HostException("Error recording started",e);
+            }
+        } else {
+            LOGGER.warn("Recording is already in progress");
         }
     }
 
     @Override
-    public void recordingStop() throws HostException {
+    public void recordingStop() throws Exception {
         if (!isRecording())
-            throw new HostException("Recording is stop");
-        serviceExamination.recordingStop(examination);
+            throw new HostNotRunningException();
+
+        examinationService.recordingStop(examination);
         examination = null;
         LOGGER.info("Stop recording");
     }
@@ -300,22 +293,14 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void controllerReboot() throws HostException {
+    public void controllerReboot() throws Exception {
         if (serialPortHost == null)
-            throw new HostException("Server is not initialized (null)");
-
-        if (isTransmission()) {
-            try {
-                if (isRecording()) {
-                    recordingStop();
-                }
-                transmissionStop();
-            } catch (HostException e) {
-                throw new HostException("Error stop transmission/recording", e);
-            }
-        }
+            throw new NullPointerException("Host is null");
+        if (!serialPortHost.isRunning())
+            throw new HostNotRunningException();
 
         serialPortHost.sendPackage(ControlMessages.REBOOT);
+        disconnect();
         LOGGER.info("Reboot controller");
     }
 

@@ -5,15 +5,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.services.ServiceIcd;
-import ru.gsa.biointerface.services.ServiceException;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.repository.exception.NoConnectionException;
+import ru.gsa.biointerface.services.IcdService;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdAddController extends AbstractWindow {
-    private ServiceIcd serviceIcd;
+    private final IcdService icdService;
     @FXML
     private TextField nameField;
     @FXML
@@ -23,17 +22,18 @@ public class IcdAddController extends AbstractWindow {
     @FXML
     private Button addButton;
 
-    @Override
-    public void showWindow() throws UIException {
-        if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+    public IcdAddController() throws NoConnectionException {
+        icdService = IcdService.getInstance();
+    }
 
-        try {
-            serviceIcd = ServiceIcd.getInstance();
-            transitionGUI.show();
-        } catch (ServiceException e) {
-            throw new UIException("Error connection to database", e);
-        }
+    @Override
+    public void showWindow() {
+        if (resourceSource == null || transitionGUI == null)
+            throw new NullPointerException(
+                    "resourceSource or transitionGUI is null. First call setResourceAndTransition()"
+            );
+
+        transitionGUI.show();
     }
 
     @Override
@@ -90,24 +90,24 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        Icd icd = serviceIcd.create(
-                nameField.getText(),
-                Integer.parseInt(versionField.getText()),
-                commentField.getText()
-        );
-
         try {
-            serviceIcd.save(icd);
-            onBackButtonPush();
-        } catch (ServiceException e) {
+            Icd icd = icdService.create(
+                    nameField.getText(),
+                    Integer.parseInt(versionField.getText()),
+                    commentField.getText()
+            );
+            icdService.save(icd);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        onBackButtonPush();
     }
 
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/Icds.fxml").showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

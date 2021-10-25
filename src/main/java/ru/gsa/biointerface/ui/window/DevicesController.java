@@ -9,11 +9,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.services.ServiceDevice;
-import ru.gsa.biointerface.services.ServiceException;
-import ru.gsa.biointerface.services.ServiceIcd;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.repository.exception.NoConnectionException;
+import ru.gsa.biointerface.services.DeviceService;
 
 import java.util.Objects;
 
@@ -21,7 +18,7 @@ import java.util.Objects;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class DevicesController extends AbstractWindow {
-    private ServiceDevice serviceDevice;
+    private final DeviceService deviceService;
     private Device device;
 
     @FXML
@@ -35,6 +32,9 @@ public class DevicesController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
+    public DevicesController() throws NoConnectionException {
+        deviceService = DeviceService.getInstance();
+    }
 
     @Override
     public String getTitleWindow() {
@@ -47,22 +47,23 @@ public class DevicesController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException(
+                    "resourceSource or transitionGUI is null. First call setResourceAndTransition()"
+            );
 
+        ObservableList<Device> devices = FXCollections.observableArrayList();
         try {
-            serviceDevice = ServiceDevice.getInstance();
-            ObservableList<Device> devices = FXCollections.observableArrayList();
-            devices.addAll(serviceDevice.getAll());
-            tableView.setItems(devices);
-            idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-            amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
-            amountChannelsCol.setStyle("-fx-alignment: center;");
-            transitionGUI.show();
-        } catch (ServiceException e) {
-            throw new UIException("Error connection to database", e);
+            devices.addAll(deviceService.getAll());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        tableView.setItems(devices);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
+        amountChannelsCol.setStyle("-fx-alignment: center;");
+        transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
@@ -75,13 +76,14 @@ public class DevicesController extends AbstractWindow {
     }
 
     public void commentFieldChange() {
-        String comment = device.getComment();
-        if (Objects.equals(comment, commentField.getText())) {
+        if (Objects.equals(device.getComment(), commentField.getText())) {
+            String comment = device.getComment();
+            device.setComment(commentField.getText());
             try {
-                device.setComment(commentField.getText());
-                serviceDevice.update(device);
-            } catch (ServiceException e) {
+                deviceService.update(device);
+            } catch (Exception e) {
                 device.setComment(comment);
+                commentField.setText(comment);
                 e.printStackTrace();
             }
         }
@@ -90,17 +92,17 @@ public class DevicesController extends AbstractWindow {
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
-        } catch (UIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void onDeleteButtonPush() {
         try {
-            serviceDevice.delete(device);
+            deviceService.delete(device);
             tableView.getItems().remove(device);
             commentField.setText("");
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 @Entity(name = "sample")
 @Table(name = "sample")
-@IdClass(SampleId.class)
+@IdClass(SampleID.class)
 public class Sample implements Serializable, Comparable<Sample> {
     @Id
     private long id;
@@ -18,18 +18,18 @@ public class Sample implements Serializable, Comparable<Sample> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "examination_id", referencedColumnName = "examination_id"),
-            @JoinColumn(name = "numberOfChannel", referencedColumnName = "numberOfChannel")
+            @JoinColumn(name = "number", referencedColumnName = "number")
     })
-    private Graph graph;
+    private Channel channel;
 
     private int value;
 
     public Sample() {
     }
 
-    public Sample(long id, Graph graph, int value) {
+    public Sample(long id, Channel channel, int value) {
         this.id = id;
-        this.graph = graph;
+        this.channel = channel;
         this.value = value;
     }
 
@@ -41,12 +41,12 @@ public class Sample implements Serializable, Comparable<Sample> {
         this.id = id;
     }
 
-    public Graph getGraphEntity() {
-        return graph;
+    public Channel getGraphEntity() {
+        return channel;
     }
 
-    public void setGraphEntity(Graph graph) {
-        this.graph = graph;
+    public void setGraphEntity(Channel channel) {
+        this.channel = channel;
     }
 
     public int getValue() {
@@ -62,17 +62,17 @@ public class Sample implements Serializable, Comparable<Sample> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sample that = (Sample) o;
-        return id == that.id && Objects.equals(graph, that.graph);
+        return id == that.id && Objects.equals(channel, that.channel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, graph);
+        return Objects.hash(id, channel);
     }
 
     @Override
     public int compareTo(Sample o) {
-        int result = graph.compareTo(o.graph);
+        int result = channel.compareTo(o.channel);
 
         if (result == 0) {
             if(id > o.id) {
@@ -89,8 +89,8 @@ public class Sample implements Serializable, Comparable<Sample> {
     public String toString() {
         return "Sample{" +
                 "id=" + id +
-                ", examination_id=" + graph.getExaminationEntity().getId() +
-                ", numberOfChannel=" + graph.getNumberOfChannel() +
+                ", examination_id=" + channel.getExamination().getId() +
+                ", numberOfChannel=" + channel.getNumber() +
                 ", value=" + value +
                 '}';
     }

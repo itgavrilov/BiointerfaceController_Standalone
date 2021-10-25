@@ -7,7 +7,7 @@
     <MenuBar fx:id="toolbar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="Edit">
             <MenuItem mnemonicParsing="false" onAction="#onICDs" text="ICDs" />
-            <MenuItem mnemonicParsing="false" onAction="#onChannels" text="channels" />
+            <MenuItem mnemonicParsing="false" onAction="#onChannels" text="channel names" />
             <MenuItem mnemonicParsing="false" onAction="#onDevices" text="devices" />
             <MenuItem mnemonicParsing="false" onAction="#onExaminations" text="examinations" />
         </Menu>

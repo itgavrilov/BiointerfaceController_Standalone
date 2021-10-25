@@ -10,64 +10,65 @@ import java.util.Objects;
  */
 @Entity(name = "channel")
 @Table(name = "channel")
+@IdClass(ChannelID.class)
 public class Channel implements Serializable, Comparable<Channel> {
     @Id
-    @GeneratedValue(generator = "sqlite_channel")
-    @TableGenerator(name = "sqlite_channel", table = "sqlite_sequence",
-            pkColumnName = "name", valueColumnName = "seq",
-            pkColumnValue = "channel",
-            initialValue = 1, allocationSize = 1)
-    private long id;
+    int number;
 
-    @Column(length = 35, unique = true)
-    private String name;
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "examination_id", referencedColumnName = "id")
+    private Examination examination;
 
-    @Column(length = 400)
-    private String comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channelName_id", referencedColumnName = "id")
+    private ChannelName channelName;
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Graph> graphs;
+    private List<Sample> samples;
 
     public Channel() {
+
     }
 
-    public Channel(long id, String name, String comment, List<Graph> graphs) {
-        this.id = id;
-        this.name = name;
-        this.comment = comment;
-        this.graphs = graphs;
+    public Channel(int number, Examination examination, ChannelName channelName, List<Sample> samples) {
+        this.number = number;
+        this.examination = examination;
+        this.channelName = channelName;
+        this.samples = samples;
     }
 
-    public long getId() {
-        return id;
+    public int getNumber() {
+        return number;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
-    public String getName() {
-        return name;
+    public Examination getExamination() {
+        return examination;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setExamination(Examination examination) {
+        this.examination = examination;
     }
 
-    public String getComment() {
-        return comment;
+    public ChannelName getChannelName() {
+        return channelName;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setChannelName(ChannelName channelName) {
+        this.channelName = channelName;
     }
 
-    public List<Graph> getGraphs() {
-        return graphs;
+    public List<Sample> getSamples() {
+        return samples;
     }
 
-    public void setGraphs(List<Graph> graphs) {
-        this.graphs = graphs;
+    public void setSamples(List<Sample> samples) {
+        this.samples = samples;
     }
 
     @Override
@@ -75,31 +76,40 @@ public class Channel implements Serializable, Comparable<Channel> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Channel that = (Channel) o;
-        return Objects.equals(name, that.name);
+        return number == that.number && Objects.equals(examination, that.examination);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(number, examination);
     }
 
     @Override
     public int compareTo(Channel o) {
-        int result =  0;
+        int result = examination.compareTo(o.examination);
 
-        if(id > o.id) {
-            result = 1;
-        } else if(id < o.id){
-            result = -1;
-        }
+        if (result == 0)
+            result = number - o.number;
 
         return result;
     }
 
     @Override
     public String toString() {
+        String channelId = "-";
+        String examinationId = "-";
+
+        if (channelName != null)
+            channelId = String.valueOf(channelName.getId());
+
+        if (examination != null)
+            examinationId = String.valueOf(examination.getId());
+
         return "Channel{" +
-                "name='" + name + '\'' +
+                "number=" + number +
+                ", examinationEntity_id=" + examinationId +
+                ", channelName_id=" + channelId +
                 '}';
     }
 }
+

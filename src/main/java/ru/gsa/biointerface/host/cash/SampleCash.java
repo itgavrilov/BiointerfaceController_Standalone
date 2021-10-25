@@ -12,7 +12,7 @@ public final class SampleCash implements Cash {
     private final Deque<Integer> data = new LinkedList<>();
     private DataListener listener;
 
-    public void addListener(DataListener listener) {
+    public void setListener(DataListener listener) {
         if (listener == null)
             throw new NullPointerException("Listener is null");
 
