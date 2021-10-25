@@ -14,6 +14,7 @@ import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.host.cash.DataListener;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.ContentForWindow;
 
@@ -61,6 +62,7 @@ public final class ChannelForMeteringController implements DataListener, Content
         String str = "Channel " + (numberOfChannel + 1);
         if (channelName != null)
             str = channelName.getName();
+        
         return str;
     }
 
@@ -101,7 +103,7 @@ public final class ChannelForMeteringController implements DataListener, Content
         try {
             channelNames.addAll(channelNameService.getAll());
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load list channel names: " + e.getMessage());
         }
         nameComboBox.getItems().clear();
         nameComboBox.getItems().addAll(channelNames);

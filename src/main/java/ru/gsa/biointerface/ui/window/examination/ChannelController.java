@@ -15,6 +15,7 @@ import ru.gsa.biointerface.domain.entity.Sample;
 import ru.gsa.biointerface.repository.SampleRepository;
 import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.repository.exception.ReadException;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.channel.ContentForWindow;
 
 import java.net.URL;
@@ -76,7 +77,7 @@ public final class ChannelController implements ContentForWindow {
                 samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
             }
         } catch (ReadException | NoConnectionException e) {
-            e.printStackTrace();
+            new AlertError("Error load samples for channels: " + e.getMessage());
         }
 
         Platform.runLater(() -> {

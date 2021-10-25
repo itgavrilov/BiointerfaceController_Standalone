@@ -47,18 +47,14 @@ public class DevicesController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException(
                     "resourceSource or transitionGUI is null. First call setResourceAndTransition()"
             );
 
         ObservableList<Device> devices = FXCollections.observableArrayList();
-        try {
-            devices.addAll(deviceService.getAll());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        devices.addAll(deviceService.getAll());
         tableView.setItems(devices);
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
@@ -84,7 +80,7 @@ public class DevicesController extends AbstractWindow {
             } catch (Exception e) {
                 device.setComment(comment);
                 commentField.setText(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for device: " + e.getMessage());
             }
         }
     }
@@ -93,7 +89,7 @@ public class DevicesController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -103,7 +99,7 @@ public class DevicesController extends AbstractWindow {
             tableView.getItems().remove(device);
             commentField.setText("");
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error delete device: " + e.getMessage());
         }
     }
 }

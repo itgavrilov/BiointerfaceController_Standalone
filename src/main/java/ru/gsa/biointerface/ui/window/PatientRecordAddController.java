@@ -237,7 +237,7 @@ public class PatientRecordAddController extends AbstractWindow {
             icds.add(null);
             icds.addAll(icdList);
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load list ICDs: " + e.getMessage());
         }
         icdComboBox.getItems().clear();
         icdComboBox.getItems().addAll(icds);
@@ -262,7 +262,7 @@ public class PatientRecordAddController extends AbstractWindow {
             );
             patientRecordService.save(patientRecord);
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error create new patient record: " + e.getMessage());
         }
         onBackButtonPush();
     }
@@ -271,7 +271,7 @@ public class PatientRecordAddController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 

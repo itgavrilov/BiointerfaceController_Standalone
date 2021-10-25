@@ -44,16 +44,12 @@ public class ChannelNamesController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<ChannelName> icds = FXCollections.observableArrayList();
-        try {
-            icds.addAll(channelNameService.getAll());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        icds.addAll(channelNameService.getAll());
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         transitionGUI.show();
     }
@@ -76,7 +72,7 @@ public class ChannelNamesController extends AbstractWindow {
             } catch (Exception e) {
                 channelName.setComment(comment);
                 commentField.setText(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for channel name: " + e.getMessage());
             }
         }
     }
@@ -85,7 +81,7 @@ public class ChannelNamesController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -93,7 +89,7 @@ public class ChannelNamesController extends AbstractWindow {
         try {
             generateNewWindow("fxml/ChannelAdd.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load form for add channel name: " + e.getMessage());
         }
     }
 
@@ -103,7 +99,7 @@ public class ChannelNamesController extends AbstractWindow {
             tableView.getItems().remove(channelName);
             commentField.setText("");
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error delete channel name: " + e.getMessage());
         }
     }
 }

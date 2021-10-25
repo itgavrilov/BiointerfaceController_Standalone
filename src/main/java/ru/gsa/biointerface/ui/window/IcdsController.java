@@ -46,16 +46,12 @@ public class IcdsController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<Icd> icds = FXCollections.observableArrayList();
-        try {
-            icds.addAll(icdService.getAll());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        icds.addAll(icdService.getAll());
         tableView.setItems(icds);
         icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
@@ -81,7 +77,7 @@ public class IcdsController extends AbstractWindow {
             } catch (Exception e) {
                 commentField.setText(comment);
                 icd.setComment(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for ICD: " + e.getMessage());
             }
         }
     }
@@ -90,7 +86,7 @@ public class IcdsController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -98,7 +94,7 @@ public class IcdsController extends AbstractWindow {
         try {
             generateNewWindow("fxml/IcdAdd.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load form for add ICD: " + e.getMessage());
         }
     }
 
@@ -108,7 +104,7 @@ public class IcdsController extends AbstractWindow {
             tableView.getItems().remove(icd);
             commentField.setText("");
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error delete ICD: " + e.getMessage());
         }
     }
 }

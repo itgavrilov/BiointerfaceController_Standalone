@@ -75,7 +75,7 @@ public class ChannelNameAddController extends AbstractWindow {
             );
             channelNameService.save(channelName);
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error create new channel name: " + e.getMessage());
         }
 
         onBackButtonPush();
@@ -83,9 +83,9 @@ public class ChannelNameAddController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/Channels.fxml").showWindow();
+            generateNewWindow("fxml/ChannelNames.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load channel names: " + e.getMessage());
         }
     }
 }

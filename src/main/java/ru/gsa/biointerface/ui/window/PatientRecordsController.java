@@ -106,7 +106,7 @@ public class PatientRecordsController extends AbstractWindow {
             icds.add(null);
             icds.addAll(icdList);
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load icds: " + e.getMessage());
         }
         icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, icds));
         icdCol.setCellValueFactory(param -> {
@@ -130,6 +130,7 @@ public class PatientRecordsController extends AbstractWindow {
                 } catch (Exception e){
                     patientRecord.setIcd(icd);
                     LOGGER.error("Error set new icd in patientRecord(number={})", patientRecord.getId());
+                    new AlertError("Error set new icd: " + e.getMessage());
                 }
             }
         });
@@ -158,7 +159,7 @@ public class PatientRecordsController extends AbstractWindow {
                         .setProperty(patientRecord)
                         .showWindow();
             } catch (Exception e) {
-                e.printStackTrace();
+                new AlertError("Error load patient record: " + e.getMessage());
             }
         }
     }
@@ -167,7 +168,7 @@ public class PatientRecordsController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecordAdd.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load form for add patient record: " + e.getMessage());
         }
     }
 
@@ -180,7 +181,8 @@ public class PatientRecordsController extends AbstractWindow {
                 LOGGER.info("New comment is set in patientRecord(number={})", patientRecord.getId());
             } catch (Exception e){
                 commentField.setText(patientRecord.getComment());
-                LOGGER.error("Error udate patientRecord(number={})", patientRecord.getId(), e);
+                LOGGER.error("Error update patientRecord(number={})", patientRecord.getId(), e);
+                new AlertError("Error update patient record: " + e.getMessage());
             }
         }
     }
@@ -193,6 +195,7 @@ public class PatientRecordsController extends AbstractWindow {
             commentField.setText("");
         } catch (Exception e) {
             LOGGER.error("Error delete patientRecord(number={})", patientRecord.getId(), e);
+            new AlertError("Error delete patient record: " + e.getMessage());
         }
     }
 }

@@ -3,6 +3,7 @@ package ru.gsa.biointerface.ui;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.ResourceSource;
 import ru.gsa.biointerface.services.PatientRecordService;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.Window;
 
 import java.io.IOException;
@@ -41,7 +43,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load ICDs: " + e.getMessage());
         }
     }
 
@@ -52,7 +54,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load channel names: " + e.getMessage());
         }
     }
 
@@ -63,7 +65,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load devices: " + e.getMessage());
         }
     }
 
@@ -74,7 +76,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load examinations: " + e.getMessage());
         }
     }
 
@@ -107,7 +109,7 @@ public class ProxyGUI implements TransitionGUI {
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -123,24 +125,21 @@ public class ProxyGUI implements TransitionGUI {
         if (stage == null)
             throw new NullPointerException("Stage is null");
 
-        stage.close();
-        fieldForWindow.getChildren().clear();
-
         try {
             AnchorPane node = loader.load();
             controller = loader.getController();
 
+            stage.close();
+            fieldForWindow.getChildren().clear();
             fieldForWindow.getChildren().add(node);
             setTopAnchor(node, 0.0);
             setBottomAnchor(node, 0.0);
             setLeftAnchor(node, 0.0);
             setRightAnchor(node, 0.0);
-
             stage.setTitle("BiointerfaceController(standalone)".concat(controller.getTitleWindow()));
             stage.setMinHeight(node.getMinHeight() + toolbar.getPrefHeight() + 36);
             stage.setHeight(node.getPrefHeight() + toolbar.getPrefHeight() + 36);
             stage.setMaxHeight(node.getMaxHeight() + toolbar.getPrefHeight() + 36);
-
             stage.setMinWidth(node.getMinWidth() + 14);
             stage.setWidth(node.getPrefWidth() + 14);
             stage.setMaxWidth(node.getMaxWidth() + 14);

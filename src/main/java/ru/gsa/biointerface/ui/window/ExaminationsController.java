@@ -53,16 +53,12 @@ public class ExaminationsController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
-        try {
-            examinations.addAll(examinationService.getAll());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        examinations.addAll(examinationService.getAll());
         tableView.setItems(examinations);
         startTimeCol.setCellValueFactory(param -> {
             LocalDateTime dateTime = param.getValue().getStartTimeInLocalDateTime();
@@ -99,7 +95,7 @@ public class ExaminationsController extends AbstractWindow {
             } catch (Exception e) {
                 examination.setComment(comment);
                 commentField.setText(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for examination: " + e.getMessage());
             }
         }
     }
@@ -108,7 +104,7 @@ public class ExaminationsController extends AbstractWindow {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -118,7 +114,7 @@ public class ExaminationsController extends AbstractWindow {
             tableView.getItems().remove(examination);
             commentField.setText("");
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error delete examination: " + e.getMessage());
         }
     }
 }

@@ -98,7 +98,7 @@ public class IcdAddController extends AbstractWindow {
             );
             icdService.save(icd);
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error create new ICD: " + e.getMessage());
         }
 
         onBackButtonPush();
@@ -108,7 +108,7 @@ public class IcdAddController extends AbstractWindow {
         try {
             generateNewWindow("fxml/Icds.fxml").showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load ICDs: " + e.getMessage());
         }
     }
 }

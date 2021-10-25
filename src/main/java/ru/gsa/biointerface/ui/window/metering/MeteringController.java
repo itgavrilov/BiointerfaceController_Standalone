@@ -18,6 +18,7 @@ import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.host.ConnectionFactory;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.CompositeNode;
@@ -98,6 +99,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 }
             } catch (Exception e) {
                 LOGGER.error("Error disconnect from host", e);
+                new AlertError("Error disconnect from host: " + e.getMessage());
             }
         }
     }
@@ -161,7 +163,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     controlInterface(true);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                new AlertError("Error host running: " + e.getMessage());
             }
         }
     }
@@ -226,6 +228,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     controlInterface(true);
                 } catch (Exception e) {
                     LOGGER.error("Host is not running", e);
+                    new AlertError("Host is not running: " + e.getMessage());
                 }
             } else {
                 try {
@@ -233,6 +236,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     controlInterface(false);
                 } catch (Exception e) {
                     LOGGER.error("Host is not running", e);
+                    new AlertError("Host is not running: " + e.getMessage());
                 }
             }
         }
@@ -248,6 +252,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 connection.controllerReboot();
             } catch (Exception e) {
                 LOGGER.error("Host is not running", e);
+                new AlertError("Host is not running: " + e.getMessage());
             }
         }
     }
@@ -260,12 +265,14 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 connection.recordingStop();
             } catch (Exception e) {
                 LOGGER.error("Host is not running", e);
+                new AlertError("Host is not running: " + e.getMessage());
             }
         } else {
             try {
                 connection.recordingStart();
             } catch (Exception e) {
                 LOGGER.error("Host is not transmission", e);
+                new AlertError("Host is not transmission: " + e.getMessage());
             }
         }
 
@@ -279,6 +286,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 connection.disconnect();
             } catch (Exception e) {
                 LOGGER.error("Error disconnected host", e);
+                new AlertError("Error disconnect wish device: " + e.getMessage());
             }
         }
         try {
@@ -287,7 +295,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient record: " + e.getMessage());
         }
     }
 
@@ -297,6 +305,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             connection.setCommentForExamination(commentField.getText());
         } catch (Exception e) {
             LOGGER.error("Error comment change", e);
+            new AlertError("Error comment change: " + e.getMessage());
         }
     }
 

@@ -2,6 +2,7 @@ package ru.gsa.biointerface.ui.window.channel;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import ru.gsa.biointerface.ui.window.AlertError;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public class CompositeNode<N extends Node, C> {
         try {
             this.node = loader.load();
         } catch (IOException e) {
+            new AlertError("Error load node: " + e.getMessage());
             throw new NullPointerException("node is null");
         }
         controller = loader.getController();

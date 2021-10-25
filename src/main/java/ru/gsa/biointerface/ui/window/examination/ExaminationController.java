@@ -16,6 +16,7 @@ import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.CompositeNode;
@@ -184,12 +185,11 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
                     .setProperty(examination.getPatientRecord())
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient record: " + e.getMessage());
         }
     }
 
     public void commentFieldChange() {
-
         if (Objects.equals(examination.getComment(), commentField.getText())) {
             String comment = examination.getComment();
             examination.setComment(commentField.getText());
@@ -198,7 +198,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
             } catch (Exception e) {
                 examination.setComment(comment);
                 commentField.setText(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for examination: " + e.getMessage());
             }
         }
     }

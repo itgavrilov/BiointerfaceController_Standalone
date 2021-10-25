@@ -90,7 +90,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         try {
             examinations.addAll(ExaminationService.getInstance().getByPatientRecord(patientRecord));
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load list examinations: " + e.getMessage());
         }
         tableView.setItems(examinations);
         startTimeCol.setCellValueFactory(param -> {
@@ -126,7 +126,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             } catch (Exception e) {
                 commentField.setText(comment);
                 patientRecord.setComment(comment);
-                e.printStackTrace();
+                new AlertError("Error change comment for patient record: " + e.getMessage());
             }
         }
     }
@@ -138,7 +138,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
                     .setProperty(patientRecord)
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load form for metering: " + e.getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
                         .setProperty(examination)
                         .showWindow();
             } catch (Exception e) {
-                e.printStackTrace();
+                new AlertError("Error load examination: " + e.getMessage());
             }
         }
     }
@@ -169,7 +169,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             tableView.getItems().remove(examination);
             examination = null;
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error delete examination: " + e.getMessage());
         }
     }
 
@@ -178,7 +178,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             generateNewWindow("fxml/PatientRecords.fxml")
                     .showWindow();
         } catch (Exception e) {
-            e.printStackTrace();
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 }
