@@ -11,30 +11,25 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
-import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.host.cash.DataListener;
+import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.ContentForWindow;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class ChannelForMeteringController implements DataListener, ContentForWindow {
     private final ChannelNameService channelNameService;
+    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
+    private final List<Integer> samples = new ArrayList<>();
     private ChannelName channelName;
     private Connection connection;
     private ChannelCheckBox checkBox;
-    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
-    private final List<Integer> samples = new ArrayList<>();
     private int numberOfChannel;
     private final StringConverter<ChannelName> converter = new StringConverter<>() {
         @Override
@@ -58,16 +53,16 @@ public final class ChannelForMeteringController implements DataListener, Content
     @FXML
     private LineChart<Integer, Integer> graphic;
 
+    public ChannelForMeteringController() throws Exception {
+        channelNameService = ChannelNameService.getInstance();
+    }
+
     private static String getChannelName(int numberOfChannel, ChannelName channelName) {
         String str = "Channel " + (numberOfChannel + 1);
         if (channelName != null)
             str = channelName.getName();
-        
-        return str;
-    }
 
-    public ChannelForMeteringController() throws NoConnectionException {
-        channelNameService = ChannelNameService.getInstance();
+        return str;
     }
 
     @Override

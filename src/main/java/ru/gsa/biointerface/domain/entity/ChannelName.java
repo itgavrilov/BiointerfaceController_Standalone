@@ -86,11 +86,11 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
 
     @Override
     public int compareTo(ChannelName o) {
-        int result =  0;
+        int result = 0;
 
-        if(id > o.id) {
+        if (id > o.id) {
             result = 1;
-        } else if(id < o.id){
+        } else if (id < o.id) {
             result = -1;
         }
 

@@ -9,7 +9,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ChannelNameService;
 
 import java.util.Objects;
@@ -29,7 +28,7 @@ public class ChannelNamesController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    public ChannelNamesController() throws NoConnectionException {
+    public ChannelNamesController() throws Exception {
         channelNameService = ChannelNameService.getInstance();
     }
 
@@ -48,8 +47,9 @@ public class ChannelNamesController extends AbstractWindow {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        ObservableList<ChannelName> icds = FXCollections.observableArrayList();
-        icds.addAll(channelNameService.getAll());
+        ObservableList<ChannelName> channelNames = FXCollections.observableArrayList();
+        channelNames.addAll(channelNameService.getAll());
+        tableView.setItems(channelNames);
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         transitionGUI.show();
     }
@@ -87,7 +87,7 @@ public class ChannelNamesController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            generateNewWindow("fxml/ChannelAdd.fxml").showWindow();
+            generateNewWindow("fxml/ChannelNameAdd.fxml").showWindow();
         } catch (Exception e) {
             new AlertError("Error load form for add channel name: " + e.getMessage());
         }

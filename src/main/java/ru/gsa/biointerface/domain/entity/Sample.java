@@ -15,10 +15,10 @@ public class Sample implements Serializable, Comparable<Sample> {
     private long id;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
             @JoinColumn(name = "examination_id", referencedColumnName = "examination_id"),
-            @JoinColumn(name = "number", referencedColumnName = "number")
+            @JoinColumn(name = "channel_id", referencedColumnName = "id")
     })
     private Channel channel;
 
@@ -41,11 +41,11 @@ public class Sample implements Serializable, Comparable<Sample> {
         this.id = id;
     }
 
-    public Channel getGraphEntity() {
+    public Channel getChannel() {
         return channel;
     }
 
-    public void setGraphEntity(Channel channel) {
+    public void setChannel(Channel channel) {
         this.channel = channel;
     }
 
@@ -75,9 +75,9 @@ public class Sample implements Serializable, Comparable<Sample> {
         int result = channel.compareTo(o.channel);
 
         if (result == 0) {
-            if(id > o.id) {
+            if (id > o.id) {
                 result = 1;
-            } else if(id < o.id){
+            } else if (id < o.id) {
                 result = -1;
             }
         }
@@ -90,7 +90,7 @@ public class Sample implements Serializable, Comparable<Sample> {
         return "Sample{" +
                 "id=" + id +
                 ", examination_id=" + channel.getExamination().getId() +
-                ", numberOfChannel=" + channel.getNumber() +
+                ", numberOfChannel=" + channel.getId() +
                 ", value=" + value +
                 '}';
     }

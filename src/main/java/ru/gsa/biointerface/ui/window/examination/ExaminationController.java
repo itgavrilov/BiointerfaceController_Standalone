@@ -9,11 +9,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.AlertError;
@@ -69,7 +68,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     @FXML
     private ScrollBar timeScrollBar;
 
-    public ExaminationController() throws NoConnectionException {
+    public ExaminationController() throws Exception {
         examinationService = ExaminationService.getInstance();
     }
 
@@ -130,7 +129,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
             }
 
             channelGUIs.add(node);
-            ChannelCheckBox checkBox = new ChannelCheckBox(channel.getNumber());
+            ChannelCheckBox checkBox = new ChannelCheckBox(channel.getId());
             checkBox.setText(channelController.getName());
             checkBox.setOnAction(event -> {
                 node.getNode().setVisible(checkBox.isSelected());

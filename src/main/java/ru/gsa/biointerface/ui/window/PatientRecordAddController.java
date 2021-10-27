@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.IcdService;
 import ru.gsa.biointerface.services.PatientRecordService;
 
@@ -20,7 +19,6 @@ import java.util.List;
  */
 public class PatientRecordAddController extends AbstractWindow {
     private final PatientRecordService patientRecordService;
-    private IcdService icdService;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -35,7 +33,7 @@ public class PatientRecordAddController extends AbstractWindow {
             return null;
         }
     };
-
+    private IcdService icdService;
     @FXML
     private TextField externalIDField;
     @FXML
@@ -53,11 +51,11 @@ public class PatientRecordAddController extends AbstractWindow {
     @FXML
     private Button registerAndOpenButton;
 
-    public PatientRecordAddController() throws NoConnectionException {
+    public PatientRecordAddController() throws Exception {
         patientRecordService = PatientRecordService.getInstance();
     }
 
-    public void showWindow() throws NoConnectionException {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
@@ -78,19 +76,13 @@ public class PatientRecordAddController extends AbstractWindow {
 
     public void idFieldChange() {
         String str = externalIDField.getText()
-                .trim()
                 .replaceAll("\s.*", "")
                 .replaceAll("[^0-9]", "");
 
         if (str.length() > 35)
             str = str.substring(0, 35);
 
-        if (!externalIDField.getText().equals(str)) {
-            externalIDField.setText(str);
-            externalIDField.positionCaret(str.length());
-        }
-
-        if (str.length() > 0) {
+        if (str.equals(externalIDField.getText())) {
             secondNameField.setDisable(false);
             externalIDField.setStyle(null);
         } else {
@@ -109,7 +101,6 @@ public class PatientRecordAddController extends AbstractWindow {
     public void secondNameFieldChange() {
         String str = firstUpperCase(
                 secondNameField.getText()
-                        .trim()
                         .replaceAll("\s.*", "")
                         .replaceAll("[^a-zA-Zа-яА-Я]", "")
         );
@@ -117,12 +108,7 @@ public class PatientRecordAddController extends AbstractWindow {
         if (str.length() > 35)
             str = str.substring(0, 35);
 
-        if (!secondNameField.getText().equals(str)) {
-            secondNameField.setText(str);
-            secondNameField.positionCaret(str.length());
-        }
-
-        if (str.length() > 0) {
+        if (str.equals(secondNameField.getText())) {
             firstNameField.setDisable(false);
             secondNameField.setStyle(null);
         } else {
@@ -140,19 +126,13 @@ public class PatientRecordAddController extends AbstractWindow {
     public void firstNameFieldChange() {
         String str = firstUpperCase(
                 firstNameField.getText()
-                        .trim()
                         .replaceAll("\s.*", "")
                         .replaceAll("[^a-zA-Zа-яА-Я]", "")
         );
         if (str.length() > 35)
             str = str.substring(0, 35);
 
-        if (!firstNameField.getText().equals(str)) {
-            firstNameField.setText(str);
-            firstNameField.positionCaret(str.length());
-        }
-
-        if (str.length() > 0) {
+        if (str.equals(firstNameField.getText())) {
             middleNameField.setDisable(false);
             birthdayField.setDisable(false);
             firstNameField.setStyle(null);
@@ -170,16 +150,25 @@ public class PatientRecordAddController extends AbstractWindow {
     public void middleNameFieldChange() {
         String str = firstUpperCase(
                 middleNameField.getText()
-                        .trim()
                         .replaceAll("\s.*", "")
                         .replaceAll("[^a-zA-Zа-яА-Я]", "")
         );
         if (str.length() > 35)
             str = str.substring(0, 35);
 
-        if (!middleNameField.getText().equals(str)) {
-            middleNameField.setText(str);
-            middleNameField.positionCaret(str.length());
+        if (str.equals(middleNameField.getText())) {
+            birthdayField.setDisable(false);
+            icdComboBox.setDisable(false);
+            middleNameField.setStyle(null);
+            commentField.setDisable(false);
+            registerAndOpenButton.setDisable(false);
+        } else {
+            middleNameField.setStyle("-fx-background-color: red;");
+            birthdayField.setDisable(true);
+            icdComboBox.setDisable(true);
+            icdComboBox.getItems().clear();
+            commentField.setDisable(true);
+            registerAndOpenButton.setDisable(true);
         }
     }
 
@@ -203,7 +192,7 @@ public class PatientRecordAddController extends AbstractWindow {
     }
 
     public void birthdayTextFieldChange() {
-        String str = birthdayField.getEditor().getText().trim()
+        String str = birthdayField.getEditor().getText()
                 .replaceAll("[^0-9.\\-:_]", "")
                 .replaceAll("[-:_]+", ".");
 
@@ -252,13 +241,13 @@ public class PatientRecordAddController extends AbstractWindow {
     public void onAddButtonPush() {
         try {
             PatientRecord patientRecord = patientRecordService.create(
-                Integer.parseInt(externalIDField.getText()),
-                secondNameField.getText(),
-                firstNameField.getText(),
-                middleNameField.getText(),
-                birthdayField.getValue(),
-                icdComboBox.getValue(),
-                commentField.getText()
+                    Integer.parseInt(externalIDField.getText().trim()),
+                    secondNameField.getText().trim(),
+                    firstNameField.getText().trim(),
+                    middleNameField.getText().trim(),
+                    birthdayField.getValue(),
+                    icdComboBox.getValue(),
+                    commentField.getText().trim()
             );
             patientRecordService.save(patientRecord);
         } catch (Exception e) {

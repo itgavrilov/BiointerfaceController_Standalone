@@ -69,14 +69,14 @@ public class Examination implements Serializable, Comparable<Examination> {
         return startTime;
     }
 
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
     public LocalDateTime getStartTimeInLocalDateTime() {
         return startTime.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
     }
 
     public PatientRecord getPatientRecord() {
@@ -164,11 +164,11 @@ public class Examination implements Serializable, Comparable<Examination> {
 
     @Override
     public int compareTo(Examination o) {
-        int result =  0;
+        int result = 0;
 
-        if(id > o.id) {
+        if (id > o.id) {
             result = 1;
-        } else if(id < o.id){
+        } else if (id < o.id) {
             result = -1;
         }
 

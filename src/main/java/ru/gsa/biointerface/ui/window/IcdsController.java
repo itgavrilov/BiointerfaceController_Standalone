@@ -9,7 +9,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.IcdService;
 
 import java.util.Objects;
@@ -31,7 +30,7 @@ public class IcdsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    public IcdsController() throws NoConnectionException {
+    public IcdsController() throws Exception {
         icdService = IcdService.getInstance();
     }
 

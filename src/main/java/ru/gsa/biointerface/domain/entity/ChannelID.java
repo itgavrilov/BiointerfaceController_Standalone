@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ChannelID implements Serializable, Comparable<ChannelID> {
-    private int number;
+    private int id;
     private Examination examination;
 
     public ChannelID() {
     }
 
-    public ChannelID(int number, Examination examination) {
-        this.number = number;
+    public ChannelID(int id, Examination examination) {
+        this.id = id;
         this.examination = examination;
     }
 
@@ -20,12 +20,12 @@ public class ChannelID implements Serializable, Comparable<ChannelID> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChannelID that = (ChannelID) o;
-        return number == that.number && Objects.equals(examination, that.examination);
+        return id == that.id && Objects.equals(examination, that.examination);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, examination);
+        return Objects.hash(id, examination);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ChannelID implements Serializable, Comparable<ChannelID> {
         int result = examination.compareTo(o.examination);
 
         if (result == 0)
-            result = number - o.number;
+            result = id - o.id;
 
         return result;
     }
@@ -41,7 +41,7 @@ public class ChannelID implements Serializable, Comparable<ChannelID> {
     @Override
     public String toString() {
         return "ChannelID{" +
-                "number=" + number +
+                "number=" + id +
                 ", examination=" + examination +
                 '}';
     }

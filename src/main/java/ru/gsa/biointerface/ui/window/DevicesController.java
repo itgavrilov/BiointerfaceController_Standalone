@@ -9,7 +9,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.DeviceService;
 
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class DevicesController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    public DevicesController() throws NoConnectionException {
+    public DevicesController() throws Exception {
         deviceService = DeviceService.getInstance();
     }
 

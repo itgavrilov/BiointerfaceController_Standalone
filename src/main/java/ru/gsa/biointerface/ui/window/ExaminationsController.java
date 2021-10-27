@@ -8,9 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ExaminationService;
 
 import java.time.LocalDateTime;
@@ -22,8 +22,8 @@ import java.util.Objects;
  */
 public class ExaminationsController extends AbstractWindow {
     private final ExaminationService examinationService;
-    private Examination examination;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private Examination examination;
     @FXML
     private TableView<Examination> tableView;
     @FXML
@@ -38,7 +38,7 @@ public class ExaminationsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    public ExaminationsController() throws NoConnectionException {
+    public ExaminationsController() throws Exception {
         examinationService = ExaminationService.getInstance();
     }
 
@@ -77,12 +77,22 @@ public class ExaminationsController extends AbstractWindow {
         transitionGUI.show();
     }
 
-    public void onMouseClickedTableView() {
+    public void onMouseClickedTableView(MouseEvent mouseEvent) {
         if (examination != tableView.getFocusModel().getFocusedItem()) {
             examination = tableView.getFocusModel().getFocusedItem();
             commentField.setText(examination.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
+        }
+        if (mouseEvent.getClickCount() == 2) {
+            try {
+                //noinspection unchecked
+                ((WindowWithProperty<Examination>) generateNewWindow("fxml/Examination.fxml"))
+                        .setProperty(examination)
+                        .showWindow();
+            } catch (Exception e) {
+                new AlertError("Error load examination: " + e.getMessage());
+            }
         }
     }
 

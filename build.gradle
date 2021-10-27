@@ -93,8 +93,7 @@ dependencies {
 
     //tests
     testImplementation("org.hibernate:hibernate-core:${hibernateVersion}")
-    testImplementation("com.github.gwenn:sqlite-dialect:0.1.2")
-    testImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

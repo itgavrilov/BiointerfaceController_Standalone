@@ -39,10 +39,10 @@ FOREIGN KEY (device_id) REFERENCES device(id) ON DELETE CASCADE
 );
 
 CREATE TABLE channel (
-number INTEGER NOT NULL,
+id INTEGER NOT NULL,
 examination_id INTEGER NOT NULL,
 channelName_id INTEGER,
-PRIMARY KEY (number, examination_id),
+PRIMARY KEY (id, examination_id),
 FOREIGN KEY (examination_id) REFERENCES examination(id) ON DELETE CASCADE,
 FOREIGN KEY (channelName_id) REFERENCES channelName(id)
 );

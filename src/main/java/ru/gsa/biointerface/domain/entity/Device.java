@@ -26,10 +26,11 @@ public class Device implements Serializable, Comparable<Device> {
     public Device() {
     }
 
-    public Device(int id, int amountChannels, String comment) {
+    public Device(long id, int amountChannels, String comment, List<Examination> examinations) {
         this.id = id;
         this.amountChannels = amountChannels;
         this.comment = comment;
+        this.examinations = examinations;
     }
 
     public long getId() {
@@ -79,11 +80,11 @@ public class Device implements Serializable, Comparable<Device> {
 
     @Override
     public int compareTo(Device o) {
-        int result =  0;
+        int result = 0;
 
-        if(id > o.id) {
+        if (id > o.id) {
             result = 1;
-        } else if(id < o.id){
+        } else if (id < o.id) {
             result = -1;
         }
 

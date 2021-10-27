@@ -45,7 +45,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     public PatientRecord() {
     }
 
-    public PatientRecord(long id, String secondName, String firstName, String middleName, Calendar birthday, Icd icd, String comment) {
+    public PatientRecord(long id, String secondName, String firstName, String middleName, Calendar birthday, Icd icd, String comment, List<Examination> examinations) {
         this.id = id;
         this.secondName = secondName;
         this.firstName = firstName;
@@ -53,13 +53,14 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.birthday = birthday;
         this.icd = icd;
         this.comment = comment;
+        this.examinations = examinations;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -92,16 +93,16 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         return birthday;
     }
 
+    public void setBirthday(Calendar birthday) {
+        this.birthday = birthday;
+    }
+
     public LocalDate getBirthdayInLocalDate() {
         return LocalDateTime.ofInstant(
                         birthday.toInstant(),
                         ZoneId.systemDefault()
                 )
                 .toLocalDate();
-    }
-
-    public void setBirthday(Calendar birthday) {
-        this.birthday = birthday;
     }
 
     public Icd getIcd() {
@@ -143,11 +144,11 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
 
     @Override
     public int compareTo(PatientRecord o) {
-        int result =  0;
+        int result = 0;
 
-        if(id > o.id) {
+        if (id > o.id) {
             result = 1;
-        } else if(id < o.id){
+        } else if (id < o.id) {
             result = -1;
         }
 
@@ -161,7 +162,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
                 DateTimeFormatter.ofPattern("dd.MM.yyyy")
         );
 
-        if(icd != null)
+        if (icd != null)
             icd_id = String.valueOf(icd.getId());
 
         return "PatientRecord{" +

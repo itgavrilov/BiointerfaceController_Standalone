@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ChannelCheckBox extends CheckBox implements Comparable<ChannelCheckBox> {
     private final char index;
 
-    public ChannelCheckBox(int index) {
+    public ChannelCheckBox(long index) {
         this.index = (char) index;
 
         this.setSelected(true);

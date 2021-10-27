@@ -31,9 +31,14 @@ public class SampleID implements Serializable, Comparable<SampleID> {
 
     @Override
     public String toString() {
+        String channelId = "-";
+
+        if (channel != null)
+            channelId = String.valueOf(channel.getId());
+
         return "SampleID{" +
                 "id=" + id +
-                ", channel=" + channel +
+                ", channel=" + channelId +
                 '}';
     }
 
@@ -42,9 +47,9 @@ public class SampleID implements Serializable, Comparable<SampleID> {
         int result = channel.compareTo(o.channel);
 
         if (result == 0) {
-            if(id > o.id) {
+            if (id > o.id) {
                 result = 1;
-            } else if(id < o.id){
+            } else if (id < o.id) {
                 result = -1;
             }
         }

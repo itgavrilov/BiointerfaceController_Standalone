@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.IcdService;
 
 /**
@@ -22,7 +21,7 @@ public class IcdAddController extends AbstractWindow {
     @FXML
     private Button addButton;
 
-    public IcdAddController() throws NoConnectionException {
+    public IcdAddController() throws Exception {
         icdService = IcdService.getInstance();
     }
 
@@ -46,15 +45,13 @@ public class IcdAddController extends AbstractWindow {
 
     }
 
-    public void icdChange() {
-        String str = nameField.getText().trim().replaceAll("\s.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:]", "");
-        if (str.length() > 16)
-            str = str.substring(0, 16);
+    public void nameChange() {
+        String str = nameField.getText().replaceAll(" {2}.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
 
-        nameField.setText(str);
-        nameField.positionCaret(str.length());
+        if (str.length() > 35)
+            str = str.substring(0, 35);
 
-        if (str.length() > 0) {
+        if (str.equals(nameField.getText())) {
             nameField.setStyle(null);
             versionField.setDisable(false);
         } else {
@@ -66,13 +63,12 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void versionChange() {
-        String str = versionField.getText().trim().replaceAll("\s.*", "").replaceAll("[^0-9]", "");
+        String str = versionField.getText().replaceAll("\s.*", "").replaceAll("[^0-9]", "");
+
         if (str.length() > 2)
             str = str.substring(0, 2);
 
-        versionField.setText(str);
-        versionField.positionCaret(str.length());
-        if (str.length() > 0) {
+        if (str.equals(versionField.getText())) {
             versionField.setStyle(null);
             commentField.setDisable(false);
             addButton.setDisable(false);
@@ -92,9 +88,9 @@ public class IcdAddController extends AbstractWindow {
     public void onAddButtonPush() {
         try {
             Icd icd = icdService.create(
-                    nameField.getText(),
-                    Integer.parseInt(versionField.getText()),
-                    commentField.getText()
+                    nameField.getText().trim(),
+                    Integer.parseInt(versionField.getText().trim()),
+                    commentField.getText().trim()
             );
             icdService.save(icd);
         } catch (Exception e) {

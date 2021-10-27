@@ -7,17 +7,18 @@ import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.host.exception.HostException;
-import ru.gsa.biointerface.host.exception.HostNotRunningException;
-import ru.gsa.biointerface.host.exception.HostNotTransmissionException;
-import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.cash.Cash;
 import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.host.cash.SampleCash;
+import ru.gsa.biointerface.host.exception.HostException;
+import ru.gsa.biointerface.host.exception.HostNotRunningException;
+import ru.gsa.biointerface.host.exception.HostNotTransmissionException;
 import ru.gsa.biointerface.host.serialport.ControlMessages;
 import ru.gsa.biointerface.host.serialport.DataCollector;
+import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.serialport.SerialPortHost;
-import ru.gsa.biointerface.services.*;
+import ru.gsa.biointerface.services.DeviceService;
+import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.ui.window.metering.Connection;
 
 import java.util.ArrayList;
@@ -79,12 +80,12 @@ public class ConnectionHandler implements DataCollector, Connection {
 
     @Override
     public void setDevice(int serialNumber, int amountChannels) {
-        if(serialNumber <= 0)
+        if (serialNumber <= 0)
             throw new IllegalArgumentException("SerialNumber <= 0");
-        if(amountChannels <= 0 || amountChannels > 8)
+        if (amountChannels <= 0 || amountChannels > 8)
             throw new IllegalArgumentException("amountChannels <= 0 or > 8");
 
-        if(device == null || device.getId() != serialNumber) {
+        if (device == null || device.getId() != serialNumber) {
             device = deviceService.create(serialNumber, amountChannels);
             examination = null;
             patientRecord = null;
@@ -142,7 +143,7 @@ public class ConnectionHandler implements DataCollector, Connection {
             examination.setNameInChannel(number, channelName);
         }
 
-        if(channelName != null) {
+        if (channelName != null) {
             LOGGER.info("ChannelName(id={}) is set in channel(number={})", channelName.getId(), number);
         } else {
             LOGGER.info("ChannelName is reset in channel(number={})", number);
@@ -264,7 +265,7 @@ public class ConnectionHandler implements DataCollector, Connection {
             } catch (Exception e) {
                 examination = null;
                 LOGGER.error("Error recording started", e);
-                throw new HostException("Error recording started",e);
+                throw new HostException("Error recording started", e);
             }
         } else {
             LOGGER.warn("Recording is already in progress");
@@ -320,7 +321,7 @@ public class ConnectionHandler implements DataCollector, Connection {
     @Override
     public String toString() {
         return "ConnectionHandler{" +
-                "serialPortHost=" + serialPortHost.toString()+
+                "serialPortHost=" + serialPortHost.toString() +
                 '}';
     }
 }

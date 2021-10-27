@@ -19,7 +19,7 @@ public abstract class AbstractWindow implements Window {
     @FXML
     protected AnchorPane anchorPaneRoot;
 
-    public Window generateNewWindow(String resource){
+    public Window generateNewWindow(String resource) {
         FXMLLoader loader = new FXMLLoader(resourceSource.getResource(resource));
 
         return transitionGUI.transition(loader)

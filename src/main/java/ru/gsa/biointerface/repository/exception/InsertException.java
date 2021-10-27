@@ -8,4 +8,8 @@ public class InsertException extends RepositoryException {
     public InsertException(Throwable cause) {
         super("Insert error: ", cause);
     }
+
+    public InsertException(String message) {
+        super(message);
+    }
 }

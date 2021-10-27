@@ -200,9 +200,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
 
         allSliderZoom.valueProperty().addListener((ov, old_val, new_val) ->
-                        channelGUIs.forEach(o ->
-                                o.getController().setCapacity(new_val.intValue())
-                        )
+                channelGUIs.forEach(o ->
+                        o.getController().setCapacity(new_val.intValue())
+                )
         );
         drawChannelsGUI();
     }

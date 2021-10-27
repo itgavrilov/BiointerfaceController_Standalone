@@ -1,6 +1,6 @@
 package ru.gsa.biointerface;
 
-public class BiointerfaceExeption extends Exception{
+public class BiointerfaceExeption extends Exception {
     public BiointerfaceExeption(String message, Throwable cause) {
         super(message, cause);
     }

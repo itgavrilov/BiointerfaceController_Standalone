@@ -5,11 +5,7 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.host.serialport.packets.ChannelPacket;
-import ru.gsa.biointerface.host.serialport.packets.ConfigPacket;
-import ru.gsa.biointerface.host.serialport.packets.ControlPacket;
-import ru.gsa.biointerface.host.serialport.packets.Packet;
-import ru.gsa.biointerface.host.serialport.packets.PacketType;
+import ru.gsa.biointerface.host.serialport.packets.*;
 import ru.gsa.biointerface.host.serialport.serverByPuchkov.AbstractServer;
 
 import java.util.Arrays;

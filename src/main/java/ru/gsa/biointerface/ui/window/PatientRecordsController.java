@@ -4,7 +4,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -14,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
-import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.services.IcdService;
 import ru.gsa.biointerface.services.PatientRecordService;
 
@@ -66,7 +67,7 @@ public class PatientRecordsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    public PatientRecordsController() throws NoConnectionException {
+    public PatientRecordsController() throws Exception {
         patientRecordService = PatientRecordService.getInstance();
         icdService = IcdService.getInstance();
     }
@@ -127,7 +128,7 @@ public class PatientRecordsController extends AbstractWindow {
                 try {
                     patientRecord.setIcd(newIcd);
                     patientRecordService.update(patientRecord);
-                } catch (Exception e){
+                } catch (Exception e) {
                     patientRecord.setIcd(icd);
                     LOGGER.error("Error set new icd in patientRecord(number={})", patientRecord.getId());
                     new AlertError("Error set new icd: " + e.getMessage());
@@ -142,7 +143,8 @@ public class PatientRecordsController extends AbstractWindow {
     }
 
     @Override
-    public void resizeWindow(double height, double width) {}
+    public void resizeWindow(double height, double width) {
+    }
 
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
         if (patientRecord != tableView.getFocusModel().getFocusedItem()) {
@@ -179,7 +181,7 @@ public class PatientRecordsController extends AbstractWindow {
             try {
                 patientRecordService.update(patientRecord);
                 LOGGER.info("New comment is set in patientRecord(number={})", patientRecord.getId());
-            } catch (Exception e){
+            } catch (Exception e) {
                 commentField.setText(patientRecord.getComment());
                 LOGGER.error("Error update patientRecord(number={})", patientRecord.getId(), e);
                 new AlertError("Error update patient record: " + e.getMessage());

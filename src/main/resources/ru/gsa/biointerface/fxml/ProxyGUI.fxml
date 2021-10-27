@@ -2,15 +2,18 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane fx:id="anchorPaneRoot" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.gsa.biointerface.ui.ProxyGUI">
-    <MenuBar fx:id="toolbar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" xmlns="http://javafx.com/javafx/11.0.2"
+            fx:controller="ru.gsa.biointerface.ui.ProxyGUI">
+    <MenuBar fx:id="toolbar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+             prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="Edit">
-            <MenuItem mnemonicParsing="false" onAction="#onICDs" text="ICDs" />
-            <MenuItem mnemonicParsing="false" onAction="#onChannels" text="channel names" />
-            <MenuItem mnemonicParsing="false" onAction="#onDevices" text="devices" />
-            <MenuItem mnemonicParsing="false" onAction="#onExaminations" text="examinations" />
+            <MenuItem mnemonicParsing="false" onAction="#onICDs" text="ICDs"/>
+            <MenuItem mnemonicParsing="false" onAction="#onChannels" text="channel names"/>
+            <MenuItem mnemonicParsing="false" onAction="#onDevices" text="devices"/>
+            <MenuItem mnemonicParsing="false" onAction="#onExaminations" text="examinations"/>
         </Menu>
     </MenuBar>
-    <AnchorPane fx:id="fieldForWindow" layoutX="14.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+    <AnchorPane fx:id="fieldForWindow" layoutX="14.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0"/>
 </AnchorPane>

@@ -9,10 +9,11 @@
             xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.IcdsController">
     <TableView fx:id="tableView" layoutX="22.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity"
                minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClickedTableView" prefWidth="202.0"
-               AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="99.0" AnchorPane.topAnchor="5.0">
+               AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+               AnchorPane.topAnchor="5.0">
         <columns>
-            <TableColumn fx:id="icdCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false"
-                         text="ICD"/>
+            <TableColumn fx:id="icdCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="338.0"
+                         resizable="false" text="ICD"/>
             <TableColumn fx:id="versionCol" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false"
                          text="version"/>
         </columns>

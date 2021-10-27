@@ -6,7 +6,10 @@ import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.ui.window.metering.Connection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -41,8 +44,8 @@ public class ConnectionFactory {
     }
 
     public void scanningSerialPort() {
-        if (connection != null ) {
-            if(connection.isConnected()) {
+        if (connection != null) {
+            if (connection.isConnected()) {
                 try {
                     connection.disconnect();
                 } catch (Exception e) {
@@ -54,7 +57,7 @@ public class ConnectionFactory {
 
         connections.clear();
         List<SerialPort> serialPorts = getSerialPortsWithDevises();
-        for(SerialPort serialPort: serialPorts) {
+        for (SerialPort serialPort : serialPorts) {
             try {
                 ConnectionHandler connection = new ConnectionHandler(serialPort);
                 connections.add(connection);

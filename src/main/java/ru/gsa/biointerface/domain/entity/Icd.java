@@ -35,11 +35,12 @@ public class Icd implements Serializable, Comparable<Icd> {
     public Icd() {
     }
 
-    public Icd(long id, String name, int version, String comment) {
+    public Icd(long id, String name, int version, String comment, List<PatientRecord> patientRecords) {
         this.id = id;
         this.name = name;
         this.version = version;
         this.comment = comment;
+        this.patientRecords = patientRecords;
     }
 
     public long getId() {
@@ -99,9 +100,9 @@ public class Icd implements Serializable, Comparable<Icd> {
     public int compareTo(Icd o) {
         int result = 0;
 
-        if(id > o.id) {
+        if (id > o.id) {
             result = 1;
-        } else if(id < o.id){
+        } else if (id < o.id) {
             result = -1;
         }
 

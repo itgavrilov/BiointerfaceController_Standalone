@@ -9,17 +9,15 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.Sample;
-import ru.gsa.biointerface.repository.SampleRepository;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
-import ru.gsa.biointerface.repository.exception.ReadException;
-import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.channel.ContentForWindow;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -67,19 +65,12 @@ public final class ChannelController implements ContentForWindow {
             ChannelName channelName = channel.getChannelName();
             nameText.setText(channelName.getName());
         } else {
-            nameText.setText("Channel " + (channel.getNumber() + 1));
+            nameText.setText("Channel " + (channel.getId() + 1));
         }
 
-        try {
-            List<Sample> sampleEntities = SampleRepository.getInstance().getAllByGraph(channel);
-
-            for (Sample sample : sampleEntities) {
-                samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
-            }
-        } catch (ReadException | NoConnectionException e) {
-            new AlertError("Error load samples for channels: " + e.getMessage());
+        for (Sample sample : channel.getSamples()) {
+            samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
         }
-
         Platform.runLater(() -> {
             dataLineGraphic.clear();
             dataLineGraphic.addAll(samples);

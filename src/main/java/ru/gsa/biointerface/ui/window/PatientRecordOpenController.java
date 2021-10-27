@@ -11,14 +11,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.services.PatientRecordService;
-import ru.gsa.biointerface.ui.window.metering.MeteringController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +25,6 @@ import java.util.Objects;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordOpenController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordOpenController.class);
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private PatientRecord patientRecord;

@@ -13,15 +13,15 @@ import java.util.Objects;
 @IdClass(ChannelID.class)
 public class Channel implements Serializable, Comparable<Channel> {
     @Id
-    int number;
+    int id;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "examination_id", referencedColumnName = "id")
     private Examination examination;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "channelName_id", referencedColumnName = "id")
     private ChannelName channelName;
 
@@ -32,19 +32,19 @@ public class Channel implements Serializable, Comparable<Channel> {
 
     }
 
-    public Channel(int number, Examination examination, ChannelName channelName, List<Sample> samples) {
-        this.number = number;
+    public Channel(int id, Examination examination, ChannelName channelName, List<Sample> samples) {
+        this.id = id;
         this.examination = examination;
         this.channelName = channelName;
         this.samples = samples;
     }
 
-    public int getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Examination getExamination() {
@@ -76,12 +76,12 @@ public class Channel implements Serializable, Comparable<Channel> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Channel that = (Channel) o;
-        return number == that.number && Objects.equals(examination, that.examination);
+        return id == that.id && Objects.equals(examination, that.examination);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, examination);
+        return Objects.hash(id, examination);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Channel implements Serializable, Comparable<Channel> {
         int result = examination.compareTo(o.examination);
 
         if (result == 0)
-            result = number - o.number;
+            result = id - o.id;
 
         return result;
     }
@@ -106,7 +106,7 @@ public class Channel implements Serializable, Comparable<Channel> {
             examinationId = String.valueOf(examination.getId());
 
         return "Channel{" +
-                "number=" + number +
+                "number=" + id +
                 ", examinationEntity_id=" + examinationId +
                 ", channelName_id=" + channelId +
                 '}';

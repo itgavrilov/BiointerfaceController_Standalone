@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.repository.exception.NoConnectionException;
 import ru.gsa.biointerface.services.ChannelNameService;
 
 /**
@@ -14,18 +13,18 @@ import ru.gsa.biointerface.services.ChannelNameService;
 public class ChannelNameAddController extends AbstractWindow {
     private final ChannelNameService channelNameService;
     @FXML
-    private TextField channelField;
+    private TextField nameField;
     @FXML
     private TextArea commentField;
     @FXML
     private Button addButton;
 
-    public ChannelNameAddController() throws NoConnectionException {
+    public ChannelNameAddController() throws Exception {
         channelNameService = ChannelNameService.getInstance();
     }
 
     @Override
-    public void showWindow(){
+    public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
@@ -42,20 +41,17 @@ public class ChannelNameAddController extends AbstractWindow {
 
     }
 
-    public void icdChange() {
-        String str = channelField.getText().trim().replaceAll("\s.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:]", "");
-        if (str.length() > 16)
-            str = str.substring(0, 16);
+    public void nameChange() {
+        String str = nameField.getText().replaceAll(" {2}.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
+        if (str.length() > 35)
+            str = str.substring(0, 35);
 
-        channelField.setText(str);
-        channelField.positionCaret(str.length());
-
-        if (str.length() > 0) {
-            channelField.setStyle(null);
+        if (str.equals(nameField.getText())) {
+            nameField.setStyle(null);
             commentField.setDisable(false);
             addButton.setDisable(false);
         } else {
-            channelField.setStyle("-fx-background-color: red;");
+            nameField.setStyle("-fx-background-color: red;");
             commentField.setDisable(true);
             addButton.setDisable(true);
         }
@@ -63,15 +59,15 @@ public class ChannelNameAddController extends AbstractWindow {
 
     public void commentChange() {
         String str = commentField.getText().replaceAll("\"'", "");
-        commentField.setText(str);
-        commentField.positionCaret(str.length());
+        //commentField.setText(str);
+        //commentField.positionCaret(str.length());
     }
 
     public void onAddButtonPush() {
         try {
             ChannelName channelName = channelNameService.create(
-                    channelField.getText(),
-                    commentField.getText()
+                    nameField.getText().trim(),
+                    commentField.getText().trim()
             );
             channelNameService.save(channelName);
         } catch (Exception e) {
