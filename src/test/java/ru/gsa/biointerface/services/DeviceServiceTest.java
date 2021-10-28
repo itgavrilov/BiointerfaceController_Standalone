@@ -54,7 +54,7 @@ class DeviceServiceTest {
 
     @Test
     void getAll() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         List<Device> channelNames = service.getAll();
         Assertions.assertTrue(channelNames.contains(entity));
@@ -63,7 +63,7 @@ class DeviceServiceTest {
 
     @Test
     void getById() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -79,7 +79,7 @@ class DeviceServiceTest {
 
     @Test
     void save() throws Exception {
-        Device entity = new Device(-1, amountChannels, comment, examinations);
+        Device entity = new Device(-1, amountChannels, comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -124,7 +124,7 @@ class DeviceServiceTest {
 
     @Test
     void delete() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
 
         Assertions.assertThrows(
@@ -157,7 +157,7 @@ class DeviceServiceTest {
 
     @Test
     void update() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         int amountChannelsTest = amountChannels + 1;
         String commentTest = comment + "Update";

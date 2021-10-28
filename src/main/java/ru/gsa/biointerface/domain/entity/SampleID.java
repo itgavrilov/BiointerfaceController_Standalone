@@ -1,11 +1,17 @@
 package ru.gsa.biointerface.domain.entity;
 
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class SampleID implements Serializable, Comparable<SampleID> {
+    @NotNull
+    @Min(0)
     private long id;
+
+    @NotNull
     private Channel channel;
 
     public SampleID() {
@@ -14,6 +20,10 @@ public class SampleID implements Serializable, Comparable<SampleID> {
     public SampleID(long id, Channel channel) {
         this.id = id;
         this.channel = channel;
+    }
+
+    public SampleID getPK(){
+        return new SampleID(id, channel);
     }
 
     @Override

@@ -6,6 +6,7 @@ import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.repository.IcdRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,7 +31,17 @@ public class IcdService {
         return instance;
     }
 
-    public Icd create(String name, int version, String comment) throws Exception {
+    public Icd create(
+            @NotNull(message = "Name can't be null")
+            @NotBlank(message = "Name can't be blank")
+            @Size(min = 3, max = 35, message = "Name should be have chars between 3-35")
+                    String name,
+            @NotNull(message = "Version can't be null")
+            @Min(value = 10, message = "Version can't be lass then 10")
+            @Max(value = 99, message = "Version can't be more than 99")
+                    int version,
+            @Size(max = 400, message = "Comment can't be more than 400 chars")
+                    String comment) throws Exception {
         if (name == null)
             throw new NullPointerException("name is null");
         if ("".equals(name))
@@ -38,7 +49,7 @@ public class IcdService {
         if (version <= 0)
             throw new IllegalArgumentException("version <= 0");
 
-        Icd entity = new Icd(-1, name, version, comment, new ArrayList<>());
+        Icd entity = new Icd(name, version, comment);
         LOGGER.info("New icd created");
 
         return entity;

@@ -79,8 +79,7 @@ public class PatientRecordService {
                 middleName,
                 localDateToDate(birthday),
                 icd,
-                comment,
-                new ArrayList<>());
+                comment);
         LOGGER.info("New patient record created");
 
         return entity;

@@ -31,11 +31,9 @@ class PatientRecordServiceTest {
             LocalDateTime.ofInstant(birthday.toInstant(), ZoneId.systemDefault())
                     .toLocalDate();
     private static final Icd icd = new Icd(
-            -1,
             "testName",
             10,
-            "testComment",
-            new ArrayList<>());
+            "testComment");
     private static final String comment = "testComment";
     private static final List<Examination> examinations = new ArrayList<>();
     private static PatientRecordService service;
@@ -186,8 +184,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
         List<PatientRecord> entities = service.getAll();
         Assertions.assertTrue(entities.contains(entity));
@@ -203,8 +200,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -230,8 +226,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -307,8 +302,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
 
         Assertions.assertThrows(
@@ -348,8 +342,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
 
         String secondNameTest = secondName + "Update";

@@ -56,7 +56,7 @@ class ChannelNameServiceTest {
 
     @Test
     void getAll() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         List<ChannelName> entities = service.getAll();
         Assertions.assertTrue(entities.contains(entity));
@@ -65,7 +65,7 @@ class ChannelNameServiceTest {
 
     @Test
     void getById() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -84,7 +84,7 @@ class ChannelNameServiceTest {
 
     @Test
     void save() throws Exception {
-        ChannelName entity = new ChannelName(-1, null, comment, channels);
+        ChannelName entity = new ChannelName(null, comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -114,7 +114,7 @@ class ChannelNameServiceTest {
         Assertions.assertThrows(
                 InsertException.class,
                 () -> {
-                    ChannelName entityTest = new ChannelName(-1, name, comment, channels);
+                    ChannelName entityTest = new ChannelName(name, comment);
                     service.save(entityTest);
                 });
         ChannelName entityTest = repository.read(entity.getId());
@@ -124,7 +124,7 @@ class ChannelNameServiceTest {
 
     @Test
     void delete() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         long idTest = entity.getId();
 
@@ -158,7 +158,7 @@ class ChannelNameServiceTest {
 
     @Test
     void update() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         long idTest = entity.getId();
         String nameTest = name + "Update";

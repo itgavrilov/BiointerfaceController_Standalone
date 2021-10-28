@@ -1,11 +1,13 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -16,18 +18,31 @@ import java.util.Objects;
 @Entity(name = "patientRecord")
 @Table(name = "patientRecord")
 public class PatientRecord implements Serializable, Comparable<PatientRecord> {
+    @NotNull(message = "Id can't be null")
+    @Min(value = 1, message = "Id can't be lass then 1")
     @Id
     private long id;
 
-    @Column(nullable = false, length = 35)
+    @NotNull(message = "Second name can't be null")
+    @NotBlank(message = "Second name can't be blank")
+    @Size(min = 3, max = 20, message = "Second name should be have chars between 3-20")
+    @Column(nullable = false, length = 20)
     private String secondName;
 
-    @Column(nullable = false, length = 35)
+    @NotNull(message = "First name can't be null")
+    @NotBlank(message = "First name can't be blank")
+    @Size(min = 3, max = 20, message = "First name should be have chars between 3-20")
+    @Column(nullable = false, length = 20)
     private String firstName;
 
-    @Column(nullable = false, length = 35)
+    @NotNull(message = "Middle name can't be null")
+    @NotBlank(message = "Middle name can't be blank")
+    @Size(min = 3, max = 20, message = "Middle name should be have chars between 3-20")
+    @Column(nullable = false, length = 20)
     private String middleName;
 
+    @NotNull(message = "Birthday can't be null")
+    @Past(message = "Birthday should be in past")
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Calendar birthday;
@@ -36,9 +51,11 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @JoinColumn(name = "icd_id", referencedColumnName = "id")
     private Icd icd;
 
+    @Size(max = 400, message = "Comment can't be more than 400 chars")
     @Column(length = 400)
     private String comment;
 
+    @NotNull(message = "Examinations can't be null")
     @OneToMany(mappedBy = "patientRecord", fetch = FetchType.LAZY)
     private List<Examination> examinations;
 
@@ -54,6 +71,17 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.icd = icd;
         this.comment = comment;
         this.examinations = examinations;
+    }
+
+    public PatientRecord(long id, String secondName, String firstName, String middleName, Calendar birthday, Icd icd, String comment) {
+        this.id = id;
+        this.secondName = secondName;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.birthday = birthday;
+        this.icd = icd;
+        this.comment = comment;
+        this.examinations = new ArrayList<>();
     }
 
     public long getId() {

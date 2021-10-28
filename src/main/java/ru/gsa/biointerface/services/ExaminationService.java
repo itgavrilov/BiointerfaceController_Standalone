@@ -54,16 +54,13 @@ public class ExaminationService {
             throw new IllegalArgumentException("Amount channelNames differs from amount in device");
 
         Examination entity = new Examination(
-                -1,
                 Timestamp.valueOf(LocalDateTime.now()),
                 patientRecord,
                 device,
-                comment,
-                new ArrayList<>()
-        );
+                comment);
 
         for (int i = 0; i < device.getAmountChannels(); i++) {
-            entity.getChannels().add(new Channel(i, entity, channelNames.get(i), new LinkedList<>()));
+            entity.getChannels().add(new Channel(i, entity, channelNames.get(i)));
         }
         LOGGER.info("New examination created");
 

@@ -36,7 +36,7 @@ public class ChannelNameService {
         if ("".equals(name))
             throw new IllegalArgumentException("Name is empty");
 
-        ChannelName entity = new ChannelName(-1, name, comment, new ArrayList<>());
+        ChannelName entity = new ChannelName(name, comment);
         LOGGER.info("New channelName created");
 
         return entity;

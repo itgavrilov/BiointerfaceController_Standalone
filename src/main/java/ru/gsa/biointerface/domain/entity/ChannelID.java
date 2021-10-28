@@ -1,10 +1,14 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class ChannelID implements Serializable, Comparable<ChannelID> {
+    @NotNull
     private int id;
+
+    @NotNull
     private Examination examination;
 
     public ChannelID() {

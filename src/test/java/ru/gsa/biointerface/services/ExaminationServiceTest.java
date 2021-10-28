@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 class ExaminationServiceTest {
+    private static final String comment = "testComment";
     private static final Date startTime = Timestamp.valueOf(LocalDateTime.now());
     private static final PatientRecord patientRecord = new PatientRecord(
             1,
@@ -25,12 +26,10 @@ class ExaminationServiceTest {
             "middleNameTest",
             new GregorianCalendar(2021, Calendar.NOVEMBER, 27),
             null,
-            null,
-            new ArrayList<>());
-    private static final Device device = new Device(1, 1, null, new ArrayList<>());
+            comment);
+    private static final Device device = new Device(1, 1, comment);
     private static final List<ChannelName> channelNames = new ArrayList<>();
     private static final List<Channel> channels = new ArrayList<>();
-    private static final String comment = "testComment";
     private static ExaminationService service;
     private static ExaminationRepository repository;
 
@@ -107,7 +106,7 @@ class ExaminationServiceTest {
     @Test
     void getById() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -130,7 +129,7 @@ class ExaminationServiceTest {
     @Test
     void recordingStart() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -190,7 +189,7 @@ class ExaminationServiceTest {
     @Test
     void recordingStop() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -214,7 +213,7 @@ class ExaminationServiceTest {
     @Test
     void delete() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -256,7 +255,7 @@ class ExaminationServiceTest {
     @Test
     void update() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -321,7 +320,7 @@ class ExaminationServiceTest {
     @Test
     void loadWithGraphsById() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(startTime, patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);

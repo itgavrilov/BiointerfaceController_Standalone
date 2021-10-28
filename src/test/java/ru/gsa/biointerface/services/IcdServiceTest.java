@@ -86,53 +86,39 @@ class IcdServiceTest {
 
     @Test
     void save() throws Exception {
+        Icd entity = new Icd(null, version, comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> {
-                    Icd entity = new Icd(-1, null, version, comment, patientRecords);
-                    service.save(entity);
-                });
+                () -> service.save(entity));
+        entity.setName("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    Icd entity = new Icd(-1, "", version, comment, patientRecords);
-                    service.save(entity);
-                });
+                () -> service.save(entity));
+        entity.setName(name);
+        entity.setVersion(-1);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    Icd entity = new Icd(-1, name, -1, comment, patientRecords);
-                    service.save(entity);
-                });
+                () -> service.save(entity));
+        entity.setVersion(0);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    Icd entity = new Icd(-1, name, 0, comment, patientRecords);
-                    service.save(entity);
-                });
+                () -> service.save(entity));
+        entity.setVersion(version);
+        entity.setPatientRecords(null);
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> {
-                    Icd entity = new Icd(-1, name, version, comment, null);
-                    service.save(entity);
-                });
+                () -> service.save(entity));
+        entity.setPatientRecords(patientRecords);
+        entity.setComment(null);
         Assertions.assertDoesNotThrow(
-                () -> {
-                    Icd entity = new Icd(-1, name, version, null, patientRecords);
-                    service.save(entity);
-                    repository.delete(entity);
-                });
+                () -> service.save(entity));
+        repository.delete(entity);
+        entity.setComment("");
         Assertions.assertDoesNotThrow(
-                () -> {
-                    Icd entity = new Icd(-1, name, version, "", patientRecords);
-                    service.save(entity);
-                    repository.delete(entity);
-                });
-        Icd entity = new Icd(-1, name, version, comment, patientRecords);
-        repository.insert(entity);
+                () -> service.save(entity));
         Icd entityTest = repository.read(entity.getId());
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);
@@ -140,7 +126,7 @@ class IcdServiceTest {
 
     @Test
     void delete() throws Exception {
-        Icd entity = new Icd(-1, name, version, comment, patientRecords);
+        Icd entity = new Icd(name, version, comment);
         repository.insert(entity);
         long id = entity.getId();
 
@@ -174,7 +160,7 @@ class IcdServiceTest {
 
     @Test
     void update() throws Exception {
-        Icd entity = new Icd(-1, name, version, comment, patientRecords);
+        Icd entity = new Icd(name, version, comment);
         repository.insert(entity);
         long idTest = entity.getId();
         String nameTest = name + "Update";
@@ -188,68 +174,48 @@ class IcdServiceTest {
                 NullPointerException.class,
                 () -> service.update(null)
         );
+        entity.setId(-1);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    entity.setId(-1);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setId(0);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    entity.setId(0);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setId(idTest + 1);
         Assertions.assertThrows(
                 EntityNotFoundException.class,
-                () -> {
-                    entity.setId(idTest + 1);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setId(idTest);
+        entity.setName(null);
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> {
-                    entity.setId(idTest);
-                    entity.setName(null);
-                    service.update(entity);
-                });
+                () ->  service.update(entity));
+        entity.setName("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    entity.setName("");
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setName(nameTest);
+        entity.setVersion(-1);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    entity.setName(nameTest);
-                    entity.setVersion(-1);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setVersion(0);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> {
-                    entity.setVersion(0);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setVersion(versionTest);
+        entity.setPatientRecords(null);
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> {
-                    entity.setVersion(versionTest);
-                    entity.setPatientRecords(null);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setPatientRecords(patientRecords);
+        entity.setComment(null);
         Assertions.assertDoesNotThrow(
-                () -> {
-                    entity.setPatientRecords(patientRecords);
-                    entity.setComment(null);
-                    service.update(entity);
-                });
+                () -> service.update(entity));
+        entity.setComment("");
         Assertions.assertDoesNotThrow(
-                () -> {
-                    entity.setComment("");
-                    service.update(entity);
-                });
+                () -> service.update(entity));
         repository.delete(entity);
     }
 }

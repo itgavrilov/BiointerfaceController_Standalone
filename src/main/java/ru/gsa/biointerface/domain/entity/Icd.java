@@ -1,7 +1,9 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,15 +22,23 @@ public class Icd implements Serializable, Comparable<Icd> {
 //            initialValue = 1, allocationSize = 1)
     private long id;
 
+    @NotNull(message = "Name can't be null")
+    @NotBlank(message = "Name can't be blank")
+    @Size(min = 3, max = 35, message = "Name should be have chars between 3-35")
     @Column(nullable = false, length = 35)
     private String name;
 
+    @NotNull(message = "Version can't be null")
+    @Min(value = 10, message = "Version can't be lass then 10")
+    @Max(value = 99, message = "Version can't be more than 99")
     @Column(nullable = false)
     private int version;
 
+    @Size(max = 400, message = "Comment can't be more than 400 chars")
     @Column(length = 400)
     private String comment;
 
+    @NotNull(message = "Patient records can't be null")
     @OneToMany(mappedBy = "icd", fetch = FetchType.LAZY)
     private List<PatientRecord> patientRecords;
 
@@ -41,6 +51,14 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.version = version;
         this.comment = comment;
         this.patientRecords = patientRecords;
+    }
+
+    public Icd(String name, int version, String comment) {
+        this.id = -1;
+        this.name = name;
+        this.version = version;
+        this.comment = comment;
+        this.patientRecords = new ArrayList<>();
     }
 
     public long getId() {

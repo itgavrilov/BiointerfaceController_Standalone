@@ -35,7 +35,7 @@ public class DeviceService {
         if (amountChannels <= 0)
             throw new IllegalArgumentException("Amount channels <= 0");
 
-        Device entity = new Device(id, amountChannels, "", new ArrayList<>());
+        Device entity = new Device(id, amountChannels, null);
         LOGGER.info("New device created");
 
         return entity;

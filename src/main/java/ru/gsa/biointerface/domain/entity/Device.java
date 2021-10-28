@@ -1,7 +1,12 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,15 +16,22 @@ import java.util.Objects;
 @Entity(name = "device")
 @Table(name = "device")
 public class Device implements Serializable, Comparable<Device> {
+    @NotNull(message = "Id can't be null")
+    @Min(value = 1, message = "Id can't be lass then 1")
     @Id
     private long id;
 
+    @NotNull(message = "Amount channels can't be null")
+    @Min(value = 1, message = "Amount channels can't be lass then 1")
+    @Max(value = 8, message = "Amount channels can't be more than 8")
     @Column(nullable = false)
     private int amountChannels;
 
+    @Size(max = 400, message = "Comment can't be more than 400 chars")
     @Column(length = 400)
     private String comment;
 
+    @NotNull(message = "Examinations can't be null")
     @OneToMany(mappedBy = "device", fetch = FetchType.LAZY)
     private List<Examination> examinations;
 
@@ -31,6 +43,13 @@ public class Device implements Serializable, Comparable<Device> {
         this.amountChannels = amountChannels;
         this.comment = comment;
         this.examinations = examinations;
+    }
+
+    public Device(long id, int amountChannels, String comment) {
+        this.id = id;
+        this.amountChannels = amountChannels;
+        this.comment = comment;
+        this.examinations = new ArrayList<>();
     }
 
     public long getId() {
