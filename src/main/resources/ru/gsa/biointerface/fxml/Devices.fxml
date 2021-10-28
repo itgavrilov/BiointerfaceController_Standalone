@@ -12,9 +12,9 @@
                AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="5.0">
         <columns>
             <TableColumn fx:id="idCol" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                         resizable="false" text="Serial number"/>
+                         resizable="false" text="serial number"/>
             <TableColumn fx:id="amountChannelsCol" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0"
-                         resizable="false" text="amount&#10;channels"/>
+                         resizable="false" text="amount&#10;channelNames"/>
         </columns>
     </TableView>
     <Text layoutX="3.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment:"

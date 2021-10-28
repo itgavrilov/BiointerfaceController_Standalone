@@ -13,10 +13,10 @@
                AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="3.0"
                AnchorPane.topAnchor="5.0">
         <columns>
-            <TableColumn fx:id="dateTimeCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false"
-                         text="Date&amp;Time"/>
+            <TableColumn fx:id="startTimeCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false"
+                         text="date &amp; time"/>
             <TableColumn fx:id="patientCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false"
-                         text="Patient"/>
+                         text="patient"/>
             <TableColumn fx:id="deviceIdCol" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false"
                          text="device id"/>
         </columns>

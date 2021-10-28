@@ -4,30 +4,41 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.domain.PatientRecord;
-import ru.gsa.biointerface.ui.UIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.services.IcdService;
+import ru.gsa.biointerface.services.PatientRecordService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientRecordsController extends AbstractWindow {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordsController.class);
+    private final PatientRecordService patientRecordService;
+    private final IcdService icdService;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
             String str = "";
             if (icd != null)
-                str = icd.getICD() + " (ICD-" + icd.getVersion() + ")";
+                str = icd.getName() + " (ICD-" + icd.getVersion() + ")";
             return str;
         }
 
@@ -36,7 +47,7 @@ public class PatientRecordsController extends AbstractWindow {
             return null;
         }
     };
-    private PatientRecord patientRecordSelected;
+    private PatientRecord patientRecord;
     @FXML
     private TableView<PatientRecord> tableView;
     @FXML
@@ -56,18 +67,24 @@ public class PatientRecordsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
-    @Override
-    public void showWindow() throws UIException {
-        if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+    public PatientRecordsController() throws Exception {
+        patientRecordService = PatientRecordService.getInstance();
+        icdService = IcdService.getInstance();
+    }
 
-        tableView.getItems().clear();
+    @Override
+    public void showWindow() throws Exception {
+        if (resourceSource == null || transitionGUI == null)
+            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+
+        ObservableList<PatientRecord> patientRecords = FXCollections.observableArrayList();
+        patientRecords.addAll(patientRecordService.getAll());
+        tableView.setItems(patientRecords);
         tableView.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 onMouseClickedTableView(mouseEvent);
             }
         });
-
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         idCol.setStyle("-fx-alignment: center-right;");
         secondNameCol.setCellValueFactory(new PropertyValueFactory<>("secondName"));
@@ -75,57 +92,49 @@ public class PatientRecordsController extends AbstractWindow {
         middleNameCol.setCellValueFactory(new PropertyValueFactory<>("middleName"));
         birthdayCol.setCellValueFactory(param -> {
             PatientRecord patientRecord = param.getValue();
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate birthday = patientRecord.getBirthday();
+            LocalDate birthday = patientRecord.getBirthdayInLocalDate();
             return new SimpleObjectProperty<>(birthday.format(dateFormatter));
         });
         birthdayCol.setStyle("-fx-alignment: center;");
+        setIcdComboBox();
+        transitionGUI.show();
+    }
 
+    private void setIcdComboBox() {
+        ObservableList<Icd> icds = FXCollections.observableArrayList();
+        try {
+            List<Icd> icdList = icdService.getAll();
+            icds.add(null);
+            icds.addAll(icdList);
+        } catch (Exception e) {
+            new AlertError("Error load icds: " + e.getMessage());
+        }
+        icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, icds));
         icdCol.setCellValueFactory(param -> {
             PatientRecord patientRecord = param.getValue();
             Icd icd = patientRecord.getIcd();
             return new SimpleObjectProperty<>(icd);
         });
-
-
-        ObservableList<Icd> listIcd = FXCollections.observableArrayList();
-        listIcd.add(null);
-        try {
-            listIcd.addAll(Icd.getAll());
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-
-        icdCol.setCellFactory(ComboBoxTableCell.forTableColumn(converter, listIcd));
-
         icdCol.setOnEditCommit((TableColumn.CellEditEvent<PatientRecord, Icd> event) -> {
-            TablePosition<PatientRecord, Icd> pos = event.getTablePosition();
-
+            PatientRecord patientRecord = event
+                    .getTableView()
+                    .getSelectionModel()
+                    .getSelectedItem();
+            Icd icd = patientRecord.getIcd();
             Icd newIcd = event.getNewValue();
 
-            int row = pos.getRow();
-            PatientRecord patientRecord = event.getTableView().getItems().get(row);
-
-            if (newIcd != null && (!newIcd.equals(patientRecord.getIcd()))
-                    || patientRecord.getIcd() != null && (!patientRecord.getIcd().equals(newIcd))) {
-                patientRecord.setIcd(newIcd);
+            if (!Objects.equals(newIcd, icd)) {
+                LOGGER.info("Set new icd in patientRecord(number={})", patientRecord.getId());
                 try {
-                    patientRecord.update();
-                } catch (DomainException e) {
-                    e.printStackTrace();
+                    patientRecord.setIcd(newIcd);
+                    patientRecordService.update(patientRecord);
+                } catch (Exception e) {
+                    patientRecord.setIcd(icd);
+                    LOGGER.error("Error set new icd in patientRecord(number={})", patientRecord.getId());
+                    new AlertError("Error set new icd: " + e.getMessage());
                 }
             }
         });
-
-        ObservableList<PatientRecord> listPatientRecord = FXCollections.observableArrayList();
-        try {
-            listPatientRecord.addAll(PatientRecord.getSetAll());
-        } catch (DomainException e) {
-            e.printStackTrace();
-        }
-        tableView.setItems(listPatientRecord);
-
-        transitionGUI.show();
     }
 
     @Override
@@ -135,24 +144,24 @@ public class PatientRecordsController extends AbstractWindow {
 
     @Override
     public void resizeWindow(double height, double width) {
-
     }
 
     public void onMouseClickedTableView(MouseEvent mouseEvent) {
-        if (patientRecordSelected != tableView.getFocusModel().getFocusedItem()) {
-            patientRecordSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(patientRecordSelected.getComment());
+        if (patientRecord != tableView.getFocusModel().getFocusedItem()) {
+            patientRecord = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(patientRecord.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
 
         if (mouseEvent.getClickCount() == 2) {
             try {
+                //noinspection unchecked
                 ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
-                        .setProperty(patientRecordSelected)
+                        .setProperty(patientRecord)
                         .showWindow();
-            } catch (UIException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                new AlertError("Error load patient record: " + e.getMessage());
             }
         }
     }
@@ -160,27 +169,35 @@ public class PatientRecordsController extends AbstractWindow {
     public void createNewPatientRecord() {
         try {
             generateNewWindow("fxml/PatientRecordAdd.fxml").showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load form for add patient record: " + e.getMessage());
         }
     }
 
     public void commentFieldChange() {
-        patientRecordSelected.setComment(commentField.getText());
-        try {
-            patientRecordSelected.update();
-        } catch (DomainException e) {
-            e.printStackTrace();
+        LOGGER.info("Change commentField for Examination");
+        if (Objects.equals(patientRecord.getComment(), commentField.getText())) {
+            patientRecord.setComment(commentField.getText());
+            try {
+                patientRecordService.update(patientRecord);
+                LOGGER.info("New comment is set in patientRecord(number={})", patientRecord.getId());
+            } catch (Exception e) {
+                commentField.setText(patientRecord.getComment());
+                LOGGER.error("Error update patientRecord(number={})", patientRecord.getId(), e);
+                new AlertError("Error update patient record: " + e.getMessage());
+            }
         }
     }
 
     public void onDeleteButtonPush() {
+        LOGGER.info("Delete button push");
         try {
-            patientRecordSelected.delete();
-            tableView.getItems().remove(patientRecordSelected);
+            patientRecordService.delete(patientRecord);
+            tableView.getItems().remove(patientRecord);
             commentField.setText("");
-        } catch (DomainException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error("Error delete patientRecord(number={})", patientRecord.getId(), e);
+            new AlertError("Error delete patient record: " + e.getMessage());
         }
     }
 }

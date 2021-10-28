@@ -57,8 +57,8 @@
                     AnchorPane.topAnchor="47.0"/>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Serial number" textAlignment="CENTER"
                   AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0"/>
-            <ComboBox fx:id="availableDevicesComboBox" disable="true" maxHeight="25.0" minHeight="25.0"
-                      onAction="#availableDevicesComboBoxSelect" onShowing="#availableDevicesComboBoxShowing"
+            <ComboBox fx:id="deviceComboBox" disable="true" maxHeight="25.0" minHeight="25.0"
+                      onAction="#devicesComboBoxSelect" onShowing="#devicesComboBoxShowing"
                       prefHeight="25.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
                       AnchorPane.topAnchor="15.0"/>
             <AnchorPane maxHeight="160.0" maxWidth="-Infinity" minHeight="160.0" minWidth="-Infinity" prefHeight="160.0"

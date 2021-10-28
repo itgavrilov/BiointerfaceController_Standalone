@@ -4,16 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.services.IcdService;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdAddController extends AbstractWindow {
+    private final IcdService icdService;
     @FXML
-    private TextField icdField;
+    private TextField nameField;
     @FXML
     private TextField versionField;
     @FXML
@@ -21,10 +21,16 @@ public class IcdAddController extends AbstractWindow {
     @FXML
     private Button addButton;
 
+    public IcdAddController() throws Exception {
+        icdService = IcdService.getInstance();
+    }
+
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException(
+                    "resourceSource or transitionGUI is null. First call setResourceAndTransition()"
+            );
 
         transitionGUI.show();
     }
@@ -39,19 +45,17 @@ public class IcdAddController extends AbstractWindow {
 
     }
 
-    public void icdChange() {
-        String str = icdField.getText().trim().replaceAll("\s.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:]", "");
-        if (str.length() > 16)
-            str = str.substring(0, 16);
+    public void nameChange() {
+        String str = nameField.getText().replaceAll(" {2}.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
 
-        icdField.setText(str);
-        icdField.positionCaret(str.length());
+        if (str.length() > 35)
+            str = str.substring(0, 35);
 
-        if (str.length() > 0) {
-            icdField.setStyle(null);
+        if (str.equals(nameField.getText())) {
+            nameField.setStyle(null);
             versionField.setDisable(false);
         } else {
-            icdField.setStyle("-fx-background-color: red;");
+            nameField.setStyle("-fx-background-color: red;");
             versionField.setDisable(true);
             commentField.setDisable(true);
             addButton.setDisable(true);
@@ -59,13 +63,12 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void versionChange() {
-        String str = versionField.getText().trim().replaceAll("\s.*", "").replaceAll("[^0-9]", "");
+        String str = versionField.getText().replaceAll("\s.*", "").replaceAll("[^0-9]", "");
+
         if (str.length() > 2)
             str = str.substring(0, 2);
 
-        versionField.setText(str);
-        versionField.positionCaret(str.length());
-        if (str.length() > 0) {
+        if (str.equals(versionField.getText())) {
             versionField.setStyle(null);
             commentField.setDisable(false);
             addButton.setDisable(false);
@@ -83,16 +86,15 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void onAddButtonPush() {
-        Icd icd = new Icd(-1,
-                icdField.getText(),
-                Integer.parseInt(versionField.getText()),
-                commentField.getText()
-        );
-
         try {
-            icd.insert();
-        } catch (DomainException e) {
-            e.printStackTrace();
+            Icd icd = icdService.create(
+                    nameField.getText().trim(),
+                    Integer.parseInt(versionField.getText().trim()),
+                    commentField.getText().trim()
+            );
+            icdService.save(icd);
+        } catch (Exception e) {
+            new AlertError("Error create new ICD: " + e.getMessage());
         }
 
         onBackButtonPush();
@@ -101,8 +103,8 @@ public class IcdAddController extends AbstractWindow {
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/Icds.fxml").showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load ICDs: " + e.getMessage());
         }
     }
 }

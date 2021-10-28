@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import ru.gsa.biointerface.ResourceSource;
 import ru.gsa.biointerface.ui.TransitionGUI;
-import ru.gsa.biointerface.ui.UIException;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +19,7 @@ public abstract class AbstractWindow implements Window {
     @FXML
     protected AnchorPane anchorPaneRoot;
 
-    public Window generateNewWindow(String resource) throws UIException {
+    public Window generateNewWindow(String resource) {
         FXMLLoader loader = new FXMLLoader(resourceSource.getResource(resource));
 
         return transitionGUI.transition(loader)

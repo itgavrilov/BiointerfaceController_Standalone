@@ -6,7 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.ResourceSource;
+import ru.gsa.biointerface.services.PatientRecordService;
+import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.Window;
 
 import java.io.IOException;
@@ -19,6 +23,7 @@ import static javafx.scene.layout.AnchorPane.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ProxyGUI implements TransitionGUI {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordService.class);
     private Stage stage;
     private ResourceSource resourceSource;
     private Window controller;
@@ -36,19 +41,19 @@ public class ProxyGUI implements TransitionGUI {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load ICDs: " + e.getMessage());
         }
     }
 
     public void onChannels() {
-        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/Channels.fxml"));
+        FXMLLoader loader = new FXMLLoader(resourceSource.getResource("fxml/ChannelNames.fxml"));
         try {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load channel names: " + e.getMessage());
         }
     }
 
@@ -58,8 +63,8 @@ public class ProxyGUI implements TransitionGUI {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load devices: " + e.getMessage());
         }
     }
 
@@ -69,8 +74,8 @@ public class ProxyGUI implements TransitionGUI {
             transition(loader)
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load examinations: " + e.getMessage());
         }
     }
 
@@ -102,8 +107,8 @@ public class ProxyGUI implements TransitionGUI {
             transition(new FXMLLoader(resourceSource.getResource("fxml/PatientRecords.fxml")))
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
@@ -113,39 +118,37 @@ public class ProxyGUI implements TransitionGUI {
     }
 
     @Override
-    public Window transition(FXMLLoader loader) throws UIException {
+    public Window transition(FXMLLoader loader) {
         if (loader == null)
             throw new NullPointerException("Content is null");
         if (stage == null)
-            throw new UIException("Stage is null");
-
-        stage.close();
-        fieldForWindow.getChildren().clear();
+            throw new NullPointerException("Stage is null");
 
         try {
             AnchorPane node = loader.load();
             controller = loader.getController();
 
+            stage.close();
+            fieldForWindow.getChildren().clear();
             fieldForWindow.getChildren().add(node);
             setTopAnchor(node, 0.0);
             setBottomAnchor(node, 0.0);
             setLeftAnchor(node, 0.0);
             setRightAnchor(node, 0.0);
-
             stage.setTitle("BiointerfaceController(standalone)".concat(controller.getTitleWindow()));
             stage.setMinHeight(node.getMinHeight() + toolbar.getPrefHeight() + 36);
             stage.setHeight(node.getPrefHeight() + toolbar.getPrefHeight() + 36);
             stage.setMaxHeight(node.getMaxHeight() + toolbar.getPrefHeight() + 36);
-
             stage.setMinWidth(node.getMinWidth() + 14);
             stage.setWidth(node.getPrefWidth() + 14);
             stage.setMaxWidth(node.getMaxWidth() + 14);
 
             resizeWindow(node.getPrefHeight() + toolbar.getHeight(), node.getPrefWidth());
-            return controller;
         } catch (IOException e) {
-            throw new UIException("Node is null", e);
+            LOGGER.error("Error load node", e);
         }
+
+        return controller;
     }
 
     @Override

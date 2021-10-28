@@ -8,7 +8,7 @@ import ru.gsa.biointerface.ui.window.Window;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface TransitionGUI extends Initializable {
-    Window transition(FXMLLoader loader) throws UIException;
+    Window transition(FXMLLoader loader);
 
     void show();
 }

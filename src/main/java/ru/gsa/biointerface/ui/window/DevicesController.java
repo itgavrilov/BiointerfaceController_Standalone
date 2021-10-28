@@ -8,20 +8,22 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.Device;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.domain.entity.Device;
+import ru.gsa.biointerface.services.DeviceService;
+
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class DevicesController extends AbstractWindow {
-    private Device deviceSelected;
+    private final DeviceService deviceService;
+    private Device device;
 
     @FXML
     private TableView<Device> tableView;
     @FXML
-    private TableColumn<Device, Integer> idCol;
+    private TableColumn<Device, Long> idCol;
     @FXML
     private TableColumn<Device, Integer> amountChannelsCol;
     @FXML
@@ -29,6 +31,9 @@ public class DevicesController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
+    public DevicesController() throws Exception {
+        deviceService = DeviceService.getInstance();
+    }
 
     @Override
     public String getTitleWindow() {
@@ -41,59 +46,59 @@ public class DevicesController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException(
+                    "resourceSource or transitionGUI is null. First call setResourceAndTransition()"
+            );
 
-        tableView.getItems().clear();
+        ObservableList<Device> devices = FXCollections.observableArrayList();
+        devices.addAll(deviceService.getAll());
+        tableView.setItems(devices);
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
         amountChannelsCol.setStyle("-fx-alignment: center;");
-
-        ObservableList<Device> list = FXCollections.observableArrayList();
-        try {
-            list.addAll(Device.getAll());
-        } catch (DomainException e) {
-            throw new UIException("Error getting a list of devices");
-        }
-        tableView.setItems(list);
-
         transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (deviceSelected != tableView.getFocusModel().getFocusedItem()) {
-            deviceSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(deviceSelected.getComment());
+        if (device != tableView.getFocusModel().getFocusedItem()) {
+            device = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(device.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        deviceSelected.setComment(commentField.getText());
-        try {
-            deviceSelected.update();
-        } catch (DomainException e) {
-            e.printStackTrace();
+        if (Objects.equals(device.getComment(), commentField.getText())) {
+            String comment = device.getComment();
+            device.setComment(commentField.getText());
+            try {
+                deviceService.update(device);
+            } catch (Exception e) {
+                device.setComment(comment);
+                commentField.setText(comment);
+                new AlertError("Error change comment for device: " + e.getMessage());
+            }
         }
     }
 
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
     public void onDeleteButtonPush() {
         try {
-            deviceSelected.delete();
-            tableView.getItems().remove(deviceSelected);
+            deviceService.delete(device);
+            tableView.getItems().remove(device);
             commentField.setText("");
-        } catch (DomainException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error delete device: " + e.getMessage());
         }
     }
 }

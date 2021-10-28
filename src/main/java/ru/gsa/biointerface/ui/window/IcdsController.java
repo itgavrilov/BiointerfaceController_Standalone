@@ -8,15 +8,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ru.gsa.biointerface.domain.DomainException;
-import ru.gsa.biointerface.domain.Icd;
-import ru.gsa.biointerface.ui.UIException;
+import ru.gsa.biointerface.domain.entity.Icd;
+import ru.gsa.biointerface.services.IcdService;
+
+import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class IcdsController extends AbstractWindow {
-    private Icd icdSelected;
+    private final IcdService icdService;
+    private Icd icd;
     @FXML
     private TableView<Icd> tableView;
     @FXML
@@ -28,6 +30,9 @@ public class IcdsController extends AbstractWindow {
     @FXML
     private Button deleteButton;
 
+    public IcdsController() throws Exception {
+        icdService = IcdService.getInstance();
+    }
 
     @Override
     public String getTitleWindow() {
@@ -40,66 +45,65 @@ public class IcdsController extends AbstractWindow {
     }
 
     @Override
-    public void showWindow() throws UIException {
+    public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
-            throw new UIException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
-        tableView.getItems().clear();
-        icdCol.setCellValueFactory(new PropertyValueFactory<>("ICD"));
+        ObservableList<Icd> icds = FXCollections.observableArrayList();
+        icds.addAll(icdService.getAll());
+        tableView.setItems(icds);
+        icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
         versionCol.setStyle("-fx-alignment: center;");
-
-        ObservableList<Icd> list = FXCollections.observableArrayList();
-        try {
-            list.addAll(Icd.getAll());
-        } catch (DomainException e) {
-            throw new UIException("Error getting a list of ICDs");
-        }
-        tableView.setItems(list);
         transitionGUI.show();
     }
 
     public void onMouseClickedTableView() {
-        if (icdSelected != tableView.getFocusModel().getFocusedItem()) {
-            icdSelected = tableView.getFocusModel().getFocusedItem();
-            commentField.setText(icdSelected.getComment());
+        if (icd != tableView.getFocusModel().getFocusedItem()) {
+            icd = tableView.getFocusModel().getFocusedItem();
+            commentField.setText(icd.getComment());
             deleteButton.setDisable(false);
             commentField.setDisable(false);
         }
     }
 
     public void commentFieldChange() {
-        icdSelected.setComment(commentField.getText());
-        try {
-            icdSelected.update();
-        } catch (DomainException e) {
-            e.printStackTrace();
+        if (Objects.equals(icd.getComment(), commentField.getText())) {
+            String comment = icd.getComment();
+            icd.setComment(commentField.getText());
+            try {
+                icdService.update(icd);
+            } catch (Exception e) {
+                commentField.setText(comment);
+                icd.setComment(comment);
+                new AlertError("Error change comment for ICD: " + e.getMessage());
+            }
         }
     }
 
     public void onBackButtonPush() {
         try {
             generateNewWindow("fxml/PatientRecords.fxml").showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load patient records: " + e.getMessage());
         }
     }
 
     public void onAddButtonPush() {
         try {
             generateNewWindow("fxml/IcdAdd.fxml").showWindow();
-        } catch (UIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error load form for add ICD: " + e.getMessage());
         }
     }
 
     public void onDeleteButtonPush() {
         try {
-            icdSelected.delete();
-            tableView.getItems().remove(icdSelected);
+            icdService.delete(icd);
+            tableView.getItems().remove(icd);
             commentField.setText("");
-        } catch (DomainException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            new AlertError("Error delete ICD: " + e.getMessage());
         }
     }
 }

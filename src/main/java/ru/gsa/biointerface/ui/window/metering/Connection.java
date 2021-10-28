@@ -1,36 +1,40 @@
 package ru.gsa.biointerface.ui.window.metering;
 
-import ru.gsa.biointerface.domain.*;
+import ru.gsa.biointerface.domain.entity.ChannelName;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.cash.DataListener;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface Connection {
-    void setPatientRecord(PatientRecord patientRecord) throws DomainException;
+    void setPatientRecord(PatientRecord patientRecord);
 
-    Device getDevice();
+    int getAmountChannels();
 
-    void setChannelInGraph(int numberOfChannel, Channel channel) throws DomainException;
+    void setNameInChannel(int numberOfChannel, ChannelName channelName);
 
-    void addListenerInCash(int numberOfChannel, DataListener listener) throws DomainException;
+    void setListenerInChannel(int numberOfChannel, DataListener listener);
+
+    void connect() throws Exception;
+
+    void disconnect() throws Exception;
 
     boolean isConnected();
 
-    void disconnect() throws DomainException;
+    void transmissionStart() throws Exception;
 
-    void transmissionStart() throws DomainException;
-
-    void transmissionStop() throws DomainException;
+    void transmissionStop() throws Exception;
 
     boolean isTransmission();
 
-    void controllerReboot() throws DomainException;
+    void controllerReboot() throws Exception;
 
-    void recordingStart() throws DomainException;
+    void recordingStart() throws Exception;
 
-    void recordingStop() throws DomainException;
+    void recordingStop() throws Exception;
 
     boolean isRecording();
 
-    void setCommentForExamination(String comment) throws DomainException;
+    void setCommentForExamination(String comment) throws Exception;
 }
