@@ -16,6 +16,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class ExaminationServiceTest {
     private static final String comment = "testComment";
     private static final Date startTime = Timestamp.valueOf(LocalDateTime.now());

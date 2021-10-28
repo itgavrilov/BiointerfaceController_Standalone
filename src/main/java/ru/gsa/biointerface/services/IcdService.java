@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-
 public class IcdService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IcdService.class);
     private static IcdService instance = null;

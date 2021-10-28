@@ -12,6 +12,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class DeviceServiceTest {
     private static final long id = 1;
     private static final int amountChannels = 1;

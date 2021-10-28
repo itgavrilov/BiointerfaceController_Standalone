@@ -20,7 +20,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class PatientRecordServiceTest {
     private static final long id = 1;
     private static final String secondName = "testSecondName";

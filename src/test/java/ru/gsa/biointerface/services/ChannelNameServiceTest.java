@@ -13,6 +13,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class ChannelNameServiceTest {
     private static final String name = "testName";
     private static final String comment = "testComment";
