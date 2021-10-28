@@ -10,8 +10,6 @@ import ru.gsa.biointerface.repository.SampleRepository;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -66,7 +64,7 @@ public class ExaminationService {
             Channel channel = new Channel(i, entity, channelName);
             entity.getChannels().add(channel);
 
-            if(channelName != null) {
+            if (channelName != null) {
                 channelName.getChannels().add(channel);
             }
         }

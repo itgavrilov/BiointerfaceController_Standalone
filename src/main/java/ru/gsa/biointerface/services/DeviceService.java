@@ -6,7 +6,6 @@ import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.repository.DeviceRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

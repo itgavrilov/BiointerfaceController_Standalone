@@ -24,7 +24,7 @@ public class SampleID implements Serializable, Comparable<SampleID> {
         this.channel = channel;
     }
 
-    public SampleID getPK(){
+    public SampleID getPK() {
         return new SampleID(id, channel);
     }
 

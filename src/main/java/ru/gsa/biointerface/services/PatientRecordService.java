@@ -8,7 +8,6 @@ import ru.gsa.biointerface.repository.PatientRecordRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -81,7 +80,7 @@ public class PatientRecordService {
                 icd,
                 comment);
 
-        if(icd != null) {
+        if (icd != null) {
             icd.getPatientRecords().add(entity);
         }
 

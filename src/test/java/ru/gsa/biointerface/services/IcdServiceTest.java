@@ -193,7 +193,7 @@ class IcdServiceTest {
         entity.setName(null);
         Assertions.assertThrows(
                 NullPointerException.class,
-                () ->  service.update(entity));
+                () -> service.update(entity));
         entity.setName("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,

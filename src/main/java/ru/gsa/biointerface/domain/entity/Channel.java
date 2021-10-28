@@ -50,7 +50,7 @@ public class Channel implements Serializable, Comparable<Channel> {
         this.samples = new ArrayList<>();
     }
 
-    public ChannelID getPK(){
+    public ChannelID getPK() {
         return new ChannelID(id, examination);
     }
 
