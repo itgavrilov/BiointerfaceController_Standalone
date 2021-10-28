@@ -30,11 +30,11 @@ class PatientRecordServiceTest {
     private static final LocalDate birthdayInLocalDate =
             LocalDateTime.ofInstant(birthday.toInstant(), ZoneId.systemDefault())
                     .toLocalDate();
+    private static final String comment = "testComment";
     private static final Icd icd = new Icd(
             "testName",
             10,
-            "testComment");
-    private static final String comment = "testComment";
+            comment);
     private static final List<Examination> examinations = new ArrayList<>();
     private static PatientRecordService service;
     private static PatientRecordRepository repository;
@@ -67,7 +67,6 @@ class PatientRecordServiceTest {
                         birthdayInLocalDate,
                         icd,
                         comment);
-
         Assertions.assertEquals(id, entity.getId());
         Assertions.assertEquals(secondName, entity.getSecondName());
         Assertions.assertEquals(firstName, entity.getFirstName());
@@ -75,6 +74,7 @@ class PatientRecordServiceTest {
         Assertions.assertEquals(birthday, entity.getBirthday());
         Assertions.assertEquals(birthdayInLocalDate, entity.getBirthdayInLocalDate());
         Assertions.assertEquals(icd, entity.getIcd());
+        Assertions.assertEquals(icd.getPatientRecords().get(0), entity);
         Assertions.assertEquals(comment, entity.getComment());
         Assertions.assertThrows(
                 IllegalArgumentException.class,

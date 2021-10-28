@@ -58,10 +58,19 @@ public class ExaminationService {
                 patientRecord,
                 device,
                 comment);
+        patientRecord.getExaminations().add(entity);
+        device.getExaminations().add(entity);
 
         for (int i = 0; i < device.getAmountChannels(); i++) {
-            entity.getChannels().add(new Channel(i, entity, channelNames.get(i)));
+            ChannelName channelName = channelNames.get(i);
+            Channel channel = new Channel(i, entity, channelName);
+            entity.getChannels().add(channel);
+
+            if(channelName != null) {
+                channelName.getChannels().add(channel);
+            }
         }
+
         LOGGER.info("New examination created");
 
         return entity;
@@ -96,7 +105,7 @@ public class ExaminationService {
 
     public Examination getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Examination entity = dao.read(id);
 
@@ -154,7 +163,7 @@ public class ExaminationService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Examination readEntity = dao.read(entity.getId());
 

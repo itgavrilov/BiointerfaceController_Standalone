@@ -59,16 +59,16 @@ public class PatientRecordService {
             throw new IllegalArgumentException("Id <= 0");
         if (secondName == null)
             throw new NullPointerException("SecondName is null");
-        if ("".equals(secondName))
-            throw new IllegalArgumentException("SecondName is empty");
+        if (secondName.isBlank())
+            throw new IllegalArgumentException("SecondName is blank");
         if (firstName == null)
             throw new NullPointerException("FirstName is null");
-        if ("".equals(firstName))
-            throw new IllegalArgumentException("FirstName is empty");
+        if (firstName.isBlank())
+            throw new IllegalArgumentException("FirstName is blank");
         if (middleName == null)
             throw new NullPointerException("MiddleName is null");
-        if ("".equals(middleName))
-            throw new IllegalArgumentException("MiddleName is empty");
+        if (middleName.isBlank())
+            throw new IllegalArgumentException("MiddleName is blank");
         if (birthday == null)
             throw new NullPointerException("Birthday is null");
 
@@ -80,6 +80,11 @@ public class PatientRecordService {
                 localDateToDate(birthday),
                 icd,
                 comment);
+
+        if(icd != null) {
+            icd.getPatientRecords().add(entity);
+        }
+
         LOGGER.info("New patient record created");
 
         return entity;
@@ -99,7 +104,7 @@ public class PatientRecordService {
 
     public PatientRecord getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         PatientRecord entity = dao.read(id);
 
@@ -122,16 +127,16 @@ public class PatientRecordService {
             throw new IllegalArgumentException("Id <= 0");
         if (entity.getSecondName() == null)
             throw new NullPointerException("SecondName is null");
-        if ("".equals(entity.getSecondName()))
-            throw new IllegalArgumentException("SecondName is empty");
+        if (entity.getSecondName().isBlank())
+            throw new IllegalArgumentException("SecondName is blank");
         if (entity.getFirstName() == null)
             throw new NullPointerException("FirstName is null");
-        if ("".equals(entity.getFirstName()))
-            throw new IllegalArgumentException("FirstName is empty");
+        if (entity.getFirstName().isBlank())
+            throw new IllegalArgumentException("FirstName is blank");
         if (entity.getMiddleName() == null)
             throw new NullPointerException("MiddleName is null");
-        if ("".equals(entity.getMiddleName()))
-            throw new IllegalArgumentException("MiddleName is empty");
+        if (entity.getMiddleName().isBlank())
+            throw new IllegalArgumentException("MiddleName is blank");
         if (entity.getBirthday() == null)
             throw new NullPointerException("Birthday is null");
         if (entity.getExaminations() == null)
@@ -154,7 +159,7 @@ public class PatientRecordService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         PatientRecord readEntity = dao.read(entity.getId());
 
@@ -176,16 +181,16 @@ public class PatientRecordService {
             throw new IllegalArgumentException("Id <= 0");
         if (entity.getSecondName() == null)
             throw new NullPointerException("SecondName is null");
-        if ("".equals(entity.getSecondName()))
-            throw new IllegalArgumentException("SecondName is empty");
+        if (entity.getSecondName().isBlank())
+            throw new IllegalArgumentException("SecondName is blank");
         if (entity.getFirstName() == null)
             throw new NullPointerException("FirstName is null");
-        if ("".equals(entity.getFirstName()))
-            throw new IllegalArgumentException("FirstName is empty");
+        if (entity.getFirstName().isBlank())
+            throw new IllegalArgumentException("FirstName is blank");
         if (entity.getMiddleName() == null)
             throw new NullPointerException("MiddleName is null");
-        if ("".equals(entity.getMiddleName()))
-            throw new IllegalArgumentException("MiddleName is empty");
+        if (entity.getMiddleName().isBlank())
+            throw new IllegalArgumentException("MiddleName is blank");
         if (entity.getBirthday() == null)
             throw new NullPointerException("Birthday is null");
         if (entity.getExaminations() == null)

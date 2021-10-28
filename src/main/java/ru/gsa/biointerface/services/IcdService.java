@@ -6,14 +6,13 @@ import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.repository.IcdRepository;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.constraints.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
+
 public class IcdService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IcdService.class);
     private static IcdService instance = null;
@@ -31,23 +30,13 @@ public class IcdService {
         return instance;
     }
 
-    public Icd create(
-            @NotNull(message = "Name can't be null")
-            @NotBlank(message = "Name can't be blank")
-            @Size(min = 3, max = 35, message = "Name should be have chars between 3-35")
-                    String name,
-            @NotNull(message = "Version can't be null")
-            @Min(value = 10, message = "Version can't be lass then 10")
-            @Max(value = 99, message = "Version can't be more than 99")
-                    int version,
-            @Size(max = 400, message = "Comment can't be more than 400 chars")
-                    String comment) throws Exception {
+    public Icd create(String name, int version, String comment) throws Exception {
         if (name == null)
-            throw new NullPointerException("name is null");
-        if ("".equals(name))
-            throw new IllegalArgumentException("name is empty");
+            throw new NullPointerException("Name is null");
+        if (name.isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (version <= 0)
-            throw new IllegalArgumentException("version <= 0");
+            throw new IllegalArgumentException("Version <= 0");
 
         Icd entity = new Icd(name, version, comment);
         LOGGER.info("New icd created");
@@ -69,7 +58,7 @@ public class IcdService {
 
     public Icd getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Icd entity = dao.read(id);
 
@@ -87,11 +76,11 @@ public class IcdService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getName() == null)
-            throw new NullPointerException("name is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("name is empty");
+            throw new NullPointerException("Name is null");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getVersion() <= 0)
-            throw new IllegalArgumentException("version <= 0");
+            throw new IllegalArgumentException("Version <= 0");
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 
@@ -127,13 +116,13 @@ public class IcdService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
         if (entity.getName() == null)
             throw new NullPointerException("Name is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("Name is empty");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getVersion() <= 0)
-            throw new IllegalArgumentException("version <= 0");
+            throw new IllegalArgumentException("Version <= 0");
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 
