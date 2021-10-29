@@ -29,18 +29,6 @@ public class ChannelNameService {
         return instance;
     }
 
-    public ChannelName create(String name, String comment) throws Exception {
-        if (name == null)
-            throw new NullPointerException("Name is null");
-        if (name.isBlank())
-            throw new IllegalArgumentException("Name is blank");
-
-        ChannelName entity = new ChannelName(name, comment);
-        LOGGER.info("New channelName created");
-
-        return entity;
-    }
-
     public List<ChannelName> getAll() throws Exception {
         List<ChannelName> entities = dao.getAll();
 

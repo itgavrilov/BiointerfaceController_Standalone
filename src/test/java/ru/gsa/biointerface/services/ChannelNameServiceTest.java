@@ -36,28 +36,6 @@ class ChannelNameServiceTest {
     }
 
     @Test
-    void create() throws Exception {
-        ChannelName entity =
-                service.create(name, comment);
-        Assertions.assertEquals(name, entity.getName());
-        Assertions.assertEquals(comment, entity.getComment());
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(null, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create("", comment));
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, null);
-                });
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, "");
-                });
-    }
-
-    @Test
     void getAll() throws Exception {
         ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);

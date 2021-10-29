@@ -28,18 +28,6 @@ public class DeviceService {
         return instance;
     }
 
-    public Device create(long id, int amountChannels) {
-        if (id <= 0)
-            throw new IllegalArgumentException("Serial number <= 0");
-        if (amountChannels <= 0)
-            throw new IllegalArgumentException("Amount channels <= 0");
-
-        Device entity = new Device(id, amountChannels, null);
-        LOGGER.info("New device created");
-
-        return entity;
-    }
-
     public List<Device> getAll() throws Exception {
         List<Device> entities = dao.getAll();
 

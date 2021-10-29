@@ -4,7 +4,6 @@ import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.ui.window.metering.Connection;
 
 import java.util.ArrayList;
 import java.util.Arrays;

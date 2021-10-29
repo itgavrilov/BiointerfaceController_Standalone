@@ -87,7 +87,7 @@ public class IcdAddController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            Icd icd = icdService.create(
+            Icd icd = new Icd(
                     nameField.getText().trim(),
                     Integer.parseInt(versionField.getText().trim()),
                     commentField.getText().trim()

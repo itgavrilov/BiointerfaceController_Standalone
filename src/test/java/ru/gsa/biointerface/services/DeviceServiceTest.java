@@ -36,26 +36,6 @@ class DeviceServiceTest {
     }
 
     @Test
-    void create() {
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(-1, 1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(0, 1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(1, -1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(1, 0));
-        Device entity =
-                service.create(id, amountChannels);
-        Assertions.assertEquals(id, entity.getId());
-        Assertions.assertEquals(amountChannels, entity.getAmountChannels());
-    }
-
-    @Test
     void getAll() throws Exception {
         Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);

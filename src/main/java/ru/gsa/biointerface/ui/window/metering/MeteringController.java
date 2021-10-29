@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.Connection;
 import ru.gsa.biointerface.host.ConnectionFactory;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.AlertError;

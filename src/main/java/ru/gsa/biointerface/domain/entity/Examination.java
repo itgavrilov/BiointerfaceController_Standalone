@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -70,22 +71,13 @@ public class Examination implements Serializable, Comparable<Examination> {
         this.channels = channels;
     }
 
-    public Examination(Date startTime, PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
+    public Examination(PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
         this.id = -1;
-        this.startTime = startTime;
+        this.startTime = Timestamp.valueOf(LocalDateTime.now());
         this.patientRecord = patientRecord;
         this.device = device;
         this.comment = comment;
         this.channels = channels;
-    }
-
-    public Examination(Date startTime, PatientRecord patientRecord, Device device, String comment) {
-        this.id = -1;
-        this.startTime = startTime;
-        this.patientRecord = patientRecord;
-        this.device = device;
-        this.comment = comment;
-        this.channels = new ArrayList<>();
     }
 
     public long getId() {

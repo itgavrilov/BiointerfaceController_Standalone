@@ -36,35 +36,8 @@ class IcdServiceTest {
     }
 
     @Test
-    void create() throws Exception {
-        Icd entity = service.create(name, version, comment);
-        Assertions.assertEquals(name, entity.getName());
-        Assertions.assertEquals(comment, entity.getComment());
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(null, version, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create("", version, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(name, -1, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(name, 0, comment));
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, version, null);
-                });
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, version, "");
-                });
-    }
-
-    @Test
     void getAll() throws Exception {
-        Icd entity = service.create(name, version, comment);
+        Icd entity = new Icd(name, version, comment);
         repository.insert(entity);
         List<Icd> entities = service.getAll();
         Assertions.assertTrue(entities.contains(entity));
@@ -73,7 +46,7 @@ class IcdServiceTest {
 
     @Test
     void getById() throws Exception {
-        Icd entity = service.create(name, version, comment);
+        Icd entity = new Icd(name, version, comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,

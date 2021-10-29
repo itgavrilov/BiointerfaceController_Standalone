@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.ChannelName;
+import ru.gsa.biointerface.host.Connection;
 import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.ui.window.AlertError;

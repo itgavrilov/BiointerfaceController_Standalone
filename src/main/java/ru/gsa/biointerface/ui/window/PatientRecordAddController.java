@@ -12,6 +12,7 @@ import ru.gsa.biointerface.services.PatientRecordService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -240,12 +241,12 @@ public class PatientRecordAddController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            PatientRecord patientRecord = patientRecordService.create(
+            PatientRecord patientRecord = new PatientRecord(
                     Integer.parseInt(externalIDField.getText().trim()),
                     secondNameField.getText().trim(),
                     firstNameField.getText().trim(),
                     middleNameField.getText().trim(),
-                    birthdayField.getValue(),
+                    localDateToDate(birthdayField.getValue()),
                     icdComboBox.getValue(),
                     commentField.getText().trim()
             );
@@ -254,6 +255,19 @@ public class PatientRecordAddController extends AbstractWindow {
             new AlertError("Error create new patient record: " + e.getMessage());
         }
         onBackButtonPush();
+    }
+
+    private static Calendar localDateToDate(LocalDate localDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        //noinspection MagicConstant
+        calendar.set(
+                localDate.getYear(),
+                localDate.getMonthValue() - 1,
+                localDate.getDayOfMonth()
+        );
+
+        return calendar;
     }
 
     public void onBackButtonPush() {

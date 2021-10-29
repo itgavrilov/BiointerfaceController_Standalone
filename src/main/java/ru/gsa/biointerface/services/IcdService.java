@@ -29,20 +29,6 @@ public class IcdService {
         return instance;
     }
 
-    public Icd create(String name, int version, String comment) throws Exception {
-        if (name == null)
-            throw new NullPointerException("Name is null");
-        if (name.isBlank())
-            throw new IllegalArgumentException("Name is blank");
-        if (version <= 0)
-            throw new IllegalArgumentException("Version <= 0");
-
-        Icd entity = new Icd(name, version, comment);
-        LOGGER.info("New icd created");
-
-        return entity;
-    }
-
     public List<Icd> getAll() throws Exception {
         List<Icd> entities = dao.getAll();
 
