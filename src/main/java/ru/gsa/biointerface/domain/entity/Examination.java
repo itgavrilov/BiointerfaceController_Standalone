@@ -55,7 +55,6 @@ public class Examination implements Serializable, Comparable<Examination> {
     @OneToMany(mappedBy = "examination", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Channel> channels;
 
-    @AssertTrue
     @Transient
     private boolean recording = false;
 
