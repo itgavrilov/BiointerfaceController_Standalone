@@ -42,7 +42,7 @@ public class PatientRecordAddController extends AbstractWindow {
     @FXML
     private TextField firstNameField;
     @FXML
-    private TextField middleNameField;
+    private TextField patronymicField;
     @FXML
     private DatePicker birthdayField;
     @FXML
@@ -90,7 +90,7 @@ public class PatientRecordAddController extends AbstractWindow {
             externalIDField.setStyle("-fx-background-color: red;");
             secondNameField.setDisable(true);
             firstNameField.setDisable(true);
-            middleNameField.setDisable(true);
+            patronymicField.setDisable(true);
             birthdayField.setDisable(true);
             icdComboBox.setDisable(true);
             icdComboBox.getItems().clear();
@@ -115,7 +115,7 @@ public class PatientRecordAddController extends AbstractWindow {
         } else {
             secondNameField.setStyle("-fx-background-color: red;");
             firstNameField.setDisable(true);
-            middleNameField.setDisable(true);
+            patronymicField.setDisable(true);
             birthdayField.setDisable(true);
             icdComboBox.setDisable(true);
             icdComboBox.getItems().clear();
@@ -134,12 +134,12 @@ public class PatientRecordAddController extends AbstractWindow {
             str = str.substring(0, 35);
 
         if (str.equals(firstNameField.getText())) {
-            middleNameField.setDisable(false);
+            patronymicField.setDisable(false);
             birthdayField.setDisable(false);
             firstNameField.setStyle(null);
         } else {
             firstNameField.setStyle("-fx-background-color: red;");
-            middleNameField.setDisable(true);
+            patronymicField.setDisable(true);
             birthdayField.setDisable(true);
             icdComboBox.setDisable(true);
             icdComboBox.getItems().clear();
@@ -150,21 +150,21 @@ public class PatientRecordAddController extends AbstractWindow {
 
     public void middleNameFieldChange() {
         String str = firstUpperCase(
-                middleNameField.getText()
+                patronymicField.getText()
                         .replaceAll("\s.*", "")
                         .replaceAll("[^a-zA-Zа-яА-Я]", "")
         );
         if (str.length() > 35)
             str = str.substring(0, 35);
 
-        if (str.equals(middleNameField.getText())) {
+        if (str.equals(patronymicField.getText())) {
             birthdayField.setDisable(false);
             icdComboBox.setDisable(false);
-            middleNameField.setStyle(null);
+            patronymicField.setStyle(null);
             commentField.setDisable(false);
             registerAndOpenButton.setDisable(false);
         } else {
-            middleNameField.setStyle("-fx-background-color: red;");
+            patronymicField.setStyle("-fx-background-color: red;");
             birthdayField.setDisable(true);
             icdComboBox.setDisable(true);
             icdComboBox.getItems().clear();
@@ -245,7 +245,7 @@ public class PatientRecordAddController extends AbstractWindow {
                     Integer.parseInt(externalIDField.getText().trim()),
                     secondNameField.getText().trim(),
                     firstNameField.getText().trim(),
-                    middleNameField.getText().trim(),
+                    patronymicField.getText().trim(),
                     localDateToDate(birthdayField.getValue()),
                     icdComboBox.getValue(),
                     commentField.getText().trim()

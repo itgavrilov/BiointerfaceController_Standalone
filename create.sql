@@ -25,7 +25,7 @@ CREATE TABLE patientRecord
     id         INTEGER PRIMARY KEY NOT NULL,
     secondName VARCHAR(35)         NOT NULL,
     firstName  VARCHAR(35)         NOT NULL,
-    middleName VARCHAR(35),
+    patronymic VARCHAR(35),
     birthday   DATE                NOT NULL,
     icd_id     INTEGER,
     comment    TEXT,

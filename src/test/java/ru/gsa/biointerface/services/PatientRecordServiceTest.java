@@ -140,15 +140,15 @@ class PatientRecordServiceTest {
                 IllegalArgumentException.class,
                 () -> service.save(entity));
         entity.setFirstName(firstName);
-        entity.setMiddleName(null);
+        entity.setPatronymic(null);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(entity));
-        entity.setMiddleName("");
+        entity.setPatronymic("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.save(entity));
-        entity.setMiddleName(middleName);
+        entity.setPatronymic(middleName);
         entity.setBirthday(null);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -236,7 +236,7 @@ class PatientRecordServiceTest {
         String commentTest = comment + "Update";
         entity.setSecondName(secondNameTest);
         entity.setFirstName(firstNameTest);
-        entity.setMiddleName(middleNameTest);
+        entity.setPatronymic(middleNameTest);
         entity.setBirthday(birthdayTest);
         entity.setComment(commentTest);
 
@@ -270,15 +270,15 @@ class PatientRecordServiceTest {
                 IllegalArgumentException.class,
                 () -> service.update(entity));
         entity.setFirstName(firstNameTest);
-        entity.setMiddleName(null);
+        entity.setPatronymic(null);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.update(entity));
-        entity.setMiddleName("");
+        entity.setPatronymic("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.update(entity));
-        entity.setMiddleName(middleNameTest);
+        entity.setPatronymic(middleNameTest);
         entity.setBirthday(null);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -303,7 +303,7 @@ class PatientRecordServiceTest {
 
         Assertions.assertEquals(secondNameTest, entityTest.getSecondName());
         Assertions.assertEquals(firstNameTest, entityTest.getFirstName());
-        Assertions.assertEquals(middleNameTest, entityTest.getMiddleName());
+        Assertions.assertEquals(middleNameTest, entityTest.getPatronymic());
         Assertions.assertEquals(birthdayTest, entityTest.getBirthday());
         Assertions.assertEquals(icd, entityTest.getIcd());
         Assertions.assertEquals(commentTest, entityTest.getComment());

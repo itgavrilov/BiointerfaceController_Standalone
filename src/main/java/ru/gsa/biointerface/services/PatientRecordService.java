@@ -72,9 +72,9 @@ public class PatientRecordService {
             throw new NullPointerException("FirstName is null");
         if (entity.getFirstName().isBlank())
             throw new IllegalArgumentException("FirstName is blank");
-        if (entity.getMiddleName() == null)
+        if (entity.getPatronymic() == null)
             throw new NullPointerException("MiddleName is null");
-        if (entity.getMiddleName().isBlank())
+        if (entity.getPatronymic().isBlank())
             throw new IllegalArgumentException("MiddleName is blank");
         if (entity.getBirthday() == null)
             throw new NullPointerException("Birthday is null");
@@ -126,9 +126,9 @@ public class PatientRecordService {
             throw new NullPointerException("FirstName is null");
         if (entity.getFirstName().isBlank())
             throw new IllegalArgumentException("FirstName is blank");
-        if (entity.getMiddleName() == null)
+        if (entity.getPatronymic() == null)
             throw new NullPointerException("MiddleName is null");
-        if (entity.getMiddleName().isBlank())
+        if (entity.getPatronymic().isBlank())
             throw new IllegalArgumentException("MiddleName is blank");
         if (entity.getBirthday() == null)
             throw new NullPointerException("Birthday is null");

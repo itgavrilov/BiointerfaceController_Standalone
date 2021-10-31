@@ -48,7 +48,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     @FXML
     private Text firstNameText;
     @FXML
-    private Text middleNameText;
+    private Text patronymicText;
     @FXML
     private Text birthdayText;
     @FXML
@@ -95,7 +95,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
         patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
         secondNameText.setText(patientRecord.getSecondName());
         firstNameText.setText(patientRecord.getFirstName());
-        middleNameText.setText(patientRecord.getMiddleName());
+        patronymicText.setText(patientRecord.getPatronymic());
         birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
 
         if (patientRecord.getIcd() != null) {

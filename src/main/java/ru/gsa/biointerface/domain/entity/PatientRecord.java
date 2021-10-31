@@ -35,11 +35,11 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @Column(nullable = false, length = 20)
     private String firstName;
 
-    @NotNull(message = "Middle name can't be null")
-    @NotBlank(message = "Middle name can't be blank")
-    @Size(min = 3, max = 20, message = "Middle name should be have chars between 3-20")
+    @NotNull(message = "Patronymic can't be null")
+    @NotBlank(message = "Patronymic can't be blank")
+    @Size(min = 3, max = 20, message = "Patronymic should be have chars between 3-20")
     @Column(nullable = false, length = 20)
-    private String middleName;
+    private String patronymic;
 
     @NotNull(message = "Birthday can't be null")
     @Past(message = "Birthday should be in past")
@@ -62,22 +62,22 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     public PatientRecord() {
     }
 
-    public PatientRecord(long id, String secondName, String firstName, String middleName, Calendar birthday, Icd icd, String comment, List<Examination> examinations) {
+    public PatientRecord(long id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment, List<Examination> examinations) {
         this.id = id;
         this.secondName = secondName;
         this.firstName = firstName;
-        this.middleName = middleName;
+        this.patronymic = patronymic;
         this.birthday = birthday;
         this.icd = icd;
         this.comment = comment;
         this.examinations = examinations;
     }
 
-    public PatientRecord(long id, String secondName, String firstName, String middleName, Calendar birthday, Icd icd, String comment) {
+    public PatientRecord(long id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment) {
         this.id = id;
         this.secondName = secondName;
         this.firstName = firstName;
-        this.middleName = middleName;
+        this.patronymic = patronymic;
         this.birthday = birthday;
         this.icd = icd;
         this.comment = comment;
@@ -109,12 +109,12 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.firstName = firstName;
     }
 
-    public String getMiddleName() {
-        return middleName;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+    public void setPatronymic(String middleName) {
+        this.patronymic = middleName;
     }
 
     public Calendar getBirthday() {
@@ -197,7 +197,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
                 "id=" + id +
                 ", secondName='" + secondName + '\'' +
                 ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
+                ", middleName='" + patronymic + '\'' +
                 ", birthday=" + birthday +
                 ", icd_id=" + icd_id +
                 '}';
