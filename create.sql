@@ -23,9 +23,9 @@ CREATE TABLE channelName
 CREATE TABLE patientRecord
 (
     id         INTEGER PRIMARY KEY NOT NULL,
-    secondName VARCHAR(35)         NOT NULL,
-    firstName  VARCHAR(35)         NOT NULL,
-    patronymic VARCHAR(35),
+    secondName VARCHAR(20)         NOT NULL,
+    firstName  VARCHAR(20)         NOT NULL,
+    patronymic VARCHAR(20)         NOT NULL,
     birthday   DATE                NOT NULL,
     icd_id     INTEGER,
     comment    TEXT,

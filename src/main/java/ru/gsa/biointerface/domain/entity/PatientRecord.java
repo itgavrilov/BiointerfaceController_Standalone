@@ -197,7 +197,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
                 "id=" + id +
                 ", secondName='" + secondName + '\'' +
                 ", firstName='" + firstName + '\'' +
-                ", middleName='" + patronymic + '\'' +
+                ", patronymic='" + patronymic + '\'' +
                 ", birthday=" + birthday +
                 ", icd_id=" + icd_id +
                 '}';
