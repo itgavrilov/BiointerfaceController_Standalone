@@ -23,12 +23,7 @@ import java.util.Objects;
 public class Examination implements Serializable, Comparable<Examination> {
     @NotNull(message = "Id can't be null")
     @Id
-    @GeneratedValue()
-//    @GeneratedValue(generator = "sqlite_examination")
-//    @TableGenerator(name = "sqlite_examination", table = "sqlite_sequence",
-//            pkColumnName = "name", valueColumnName = "seq",
-//            pkColumnValue = "examination",
-//            initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull(message = "Start time can't be null")

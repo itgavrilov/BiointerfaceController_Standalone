@@ -14,12 +14,7 @@ import java.util.Objects;
 @Table(name = "icd")
 public class Icd implements Serializable, Comparable<Icd> {
     @Id
-    @GeneratedValue()
-//    @GeneratedValue(generator = "sqlite_icd")
-//    @TableGenerator(name = "sqlite_icd", table = "sqlite_sequence",
-//            pkColumnName = "name", valueColumnName = "seq",
-//            pkColumnValue = "icd",
-//            initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull(message = "Name can't be null")

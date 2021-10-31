@@ -17,12 +17,7 @@ import java.util.Objects;
 public class ChannelName implements Serializable, Comparable<ChannelName> {
     @NotNull(message = "Id can't be null")
     @Id
-    @GeneratedValue()
-//    @GeneratedValue(generator = "sqlite_channel")
-//    @TableGenerator(name = "sqlite_channel", table = "sqlite_sequence",
-//            pkColumnName = "name", valueColumnName = "seq",
-//            pkColumnValue = "channelName",
-//            initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull(message = "Name can't be null")
