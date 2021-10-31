@@ -17,8 +17,8 @@ module ru.gsa.biointerface {
     requires org.hibernate.orm.core;
     requires org.hibernate.commons.annotations;
 
-//    requires org.hibernate.validator;
-//    requires javax.el;
+    requires org.hibernate.validator;
+    requires java.validation;
 
     requires org.slf4j;
     requires org.apache.logging.log4j;

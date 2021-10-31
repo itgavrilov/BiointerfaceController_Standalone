@@ -1,10 +1,16 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +21,7 @@ import java.util.Objects;
 @Entity(name = "examination")
 @Table(name = "examination")
 public class Examination implements Serializable, Comparable<Examination> {
+    @NotNull(message = "Id can't be null")
     @Id
     @GeneratedValue()
 //    @GeneratedValue(generator = "sqlite_examination")
@@ -24,21 +31,27 @@ public class Examination implements Serializable, Comparable<Examination> {
 //            initialValue = 1, allocationSize = 1)
     private long id;
 
+    @NotNull(message = "Start time can't be null")
+    @Past(message = "Start time should be in past")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date startTime;
 
+    @NotNull(message = "Patient record can't be null")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "patientRecord_id", referencedColumnName = "id")
+    @JoinColumn(name = "patientRecord_id", referencedColumnName = "id", nullable = false)
     private PatientRecord patientRecord;
 
+    @NotNull(message = "Device can't be null")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "device_id", referencedColumnName = "id")
+    @JoinColumn(name = "device_id", referencedColumnName = "id", nullable = false)
     private Device device;
 
+    @Size(max = 400, message = "Comment can't be more than 400 chars")
     @Column(length = 400)
     private String comment;
 
+    @NotNull(message = "Channels can't be null")
     @OneToMany(mappedBy = "examination", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Channel> channels;
 
@@ -51,6 +64,15 @@ public class Examination implements Serializable, Comparable<Examination> {
     public Examination(long id, Date startTime, PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
         this.id = id;
         this.startTime = startTime;
+        this.patientRecord = patientRecord;
+        this.device = device;
+        this.comment = comment;
+        this.channels = channels;
+    }
+
+    public Examination(PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
+        this.id = -1;
+        this.startTime = Timestamp.valueOf(LocalDateTime.now());
         this.patientRecord = patientRecord;
         this.device = device;
         this.comment = comment;

@@ -72,30 +72,34 @@ tasks.getByName('jar') {
 }
 
 dependencies {
-    //annotationProcessor("javax.xml.bind:jaxb-api")
-    //annotationProcessor("org.hibernate:hibernate-jpamodelgen:${hibernateVersion}")
+//-----------SerialPort----------------------
+    implementation("com.fazecast:jSerialComm:2.7.0")
 
+//-----------Logging------------
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-slf4j18-impl:${log4jVersion}")
 
+//-----------Database----------------------
     implementation("org.hibernate:hibernate-core:${hibernateVersion}")
     implementation("com.github.gwenn:sqlite-dialect:0.1.2")
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 
-//    implementation("org.hibernate:hibernate-validator:7.0.1.Final")
-//    implementation("javax.el:javax.el-api:3.0.0")
-//    implementation("org.glassfish:javax.el:3.0.0")
+// Annotation processor for metamodel for criteria api
+    //annotationProcessor("javax.xml.bind:jaxb-api")
+    //annotationProcessor("org.hibernate:hibernate-jpamodelgen:${hibernateVersion}")
+//-----------Validator----------------------
+    implementation('org.hibernate:hibernate-validator:7.0.1.Final')
+    implementation("javax.validation:validation-api:2.0.1.Final")
 
-    implementation("com.fazecast:jSerialComm:2.7.0")
-
+//-----------Validator for javafx------------
     //implementation 'org.openjfx:javafx:16' // https://mvnrepository.com/artifact/org.openjfx/javafx
     compileClasspath('net.synedra:validatorfx:0.1.13') {
         exclude(group: 'org.openjfx')
     }
 
-    //tests
+//-----------Tests----------------------
     testImplementation("org.hibernate:hibernate-core:${hibernateVersion}")
     testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

@@ -7,7 +7,6 @@ import ru.gsa.biointerface.repository.ChannelNameRepository;
 import ru.gsa.biointerface.repository.exception.InsertException;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,18 +29,6 @@ public class ChannelNameService {
         return instance;
     }
 
-    public ChannelName create(String name, String comment) throws Exception {
-        if (name == null)
-            throw new NullPointerException("Name is null");
-        if ("".equals(name))
-            throw new IllegalArgumentException("Name is empty");
-
-        ChannelName entity = new ChannelName(-1, name, comment, new ArrayList<>());
-        LOGGER.info("New channelName created");
-
-        return entity;
-    }
-
     public List<ChannelName> getAll() throws Exception {
         List<ChannelName> entities = dao.getAll();
 
@@ -56,7 +43,7 @@ public class ChannelNameService {
 
     public ChannelName getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         ChannelName entity = dao.read(id);
 
@@ -72,13 +59,13 @@ public class ChannelNameService {
 
     public void save(ChannelName entity) throws Exception {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
         if (entity.getName() == null)
             throw new NullPointerException("Name is null");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getChannels() == null)
             throw new NullPointerException("Channels is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("Name is empty");
 
         ChannelName readEntity = dao.read(entity.getId());
 
@@ -93,9 +80,9 @@ public class ChannelNameService {
 
     public void delete(ChannelName entity) throws Exception {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         ChannelName readEntity = dao.read(entity.getId());
 
@@ -110,15 +97,15 @@ public class ChannelNameService {
 
     public void update(ChannelName entity) throws Exception {
         if (entity == null)
-            throw new NullPointerException("entity is null");
+            throw new NullPointerException("Entity is null");
+        if (entity.getId() <= 0)
+            throw new IllegalArgumentException("Id <= 0");
         if (entity.getName() == null)
             throw new NullPointerException("Name is null");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getChannels() == null)
             throw new NullPointerException("Channels is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("Name is empty");
-        if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
 
         ChannelName readEntity = dao.read(entity.getId());
 

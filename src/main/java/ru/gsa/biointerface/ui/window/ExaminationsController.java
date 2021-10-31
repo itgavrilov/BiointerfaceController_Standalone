@@ -68,8 +68,8 @@ public class ExaminationsController extends AbstractWindow {
             PatientRecord patientRecord = param.getValue().getPatientRecord();
             String initials = patientRecord.getSecondName() + " " +
                     patientRecord.getFirstName().charAt(0) + ".";
-            if (!"".equals(patientRecord.getMiddleName()))
-                initials += patientRecord.getMiddleName().charAt(0) + ".";
+            if (!"".equals(patientRecord.getPatronymic()))
+                initials += patientRecord.getPatronymic().charAt(0) + ".";
 
             return new SimpleObjectProperty<>(initials);
         });

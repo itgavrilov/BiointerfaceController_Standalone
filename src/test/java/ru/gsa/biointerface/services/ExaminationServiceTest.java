@@ -16,7 +16,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class ExaminationServiceTest {
+    private static final String comment = "testComment";
     private static final Date startTime = Timestamp.valueOf(LocalDateTime.now());
     private static final PatientRecord patientRecord = new PatientRecord(
             1,
@@ -25,12 +29,10 @@ class ExaminationServiceTest {
             "middleNameTest",
             new GregorianCalendar(2021, Calendar.NOVEMBER, 27),
             null,
-            null,
-            new ArrayList<>());
-    private static final Device device = new Device(1, 1, null, new ArrayList<>());
+            comment);
+    private static final Device device = new Device(1, 1, comment);
     private static final List<ChannelName> channelNames = new ArrayList<>();
     private static final List<Channel> channels = new ArrayList<>();
-    private static final String comment = "testComment";
     private static ExaminationService service;
     private static ExaminationRepository repository;
 
@@ -57,35 +59,9 @@ class ExaminationServiceTest {
     }
 
     @Test
-    void create() throws Exception {
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(null, device, channelNames, comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(patientRecord, null, channelNames, comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(patientRecord, device, null, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(patientRecord, device, new ArrayList<>(), comment));
-        Assertions.assertDoesNotThrow(
-                () -> service.create(patientRecord, device, channelNames, null));
-        Assertions.assertDoesNotThrow(
-                () -> service.create(patientRecord, device, channelNames, ""));
-        Examination entity =
-                service.create(patientRecord, device, channelNames, comment);
-        channels.get(0).setExamination(entity);
-        Assertions.assertEquals(patientRecord, entity.getPatientRecord());
-        Assertions.assertEquals(device, entity.getDevice());
-        Assertions.assertEquals(channels.get(0), entity.getChannels().get(0));
-    }
-
-    @Test
     void getAll() throws Exception {
         Examination entity =
-                service.create(patientRecord, device, channelNames, comment);
+                new Examination(patientRecord, device, comment, channels);
         channels.get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
@@ -97,9 +73,9 @@ class ExaminationServiceTest {
     }
 
     @Test
-    void getByPatientRecord() throws Exception {
+    void getByPatientRecord() {
         Examination entity =
-                service.create(patientRecord, device, channelNames, comment);
+                new Examination(patientRecord, device, comment, channels);
         PatientRecord patientRecordTest = entity.getPatientRecord();
         Assertions.assertEquals(patientRecord, patientRecordTest);
     }
@@ -107,7 +83,7 @@ class ExaminationServiceTest {
     @Test
     void getById() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -130,7 +106,7 @@ class ExaminationServiceTest {
     @Test
     void recordingStart() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -190,7 +166,7 @@ class ExaminationServiceTest {
     @Test
     void recordingStop() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -214,7 +190,7 @@ class ExaminationServiceTest {
     @Test
     void delete() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -256,7 +232,7 @@ class ExaminationServiceTest {
     @Test
     void update() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);
@@ -321,7 +297,7 @@ class ExaminationServiceTest {
     @Test
     void loadWithGraphsById() throws Exception {
         Examination entity =
-                new Examination(-1, startTime, patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment, channels);
         patientRecord.getExaminations().add(entity);
         device.getExaminations().add(entity);
         channels.get(0).setExamination(entity);

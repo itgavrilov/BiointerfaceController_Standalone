@@ -1,15 +1,9 @@
 package ru.gsa.biointerface.domain.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,19 +14,21 @@ import java.util.Objects;
 @Table(name = "channel")
 @IdClass(ChannelID.class)
 public class Channel implements Serializable, Comparable<Channel> {
+    @NotNull(message = "Id can't be null")
     @Id
     int id;
 
+    @NotNull(message = "Examination can't be null")
     @Id
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "examination_id", referencedColumnName = "id")
+    @JoinColumn(name = "examination_id", referencedColumnName = "id", nullable = false)
     private Examination examination;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "channelName_id", referencedColumnName = "id")
     private ChannelName channelName;
 
+    @NotNull(message = "Samples can't be null")
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Sample> samples;
 
@@ -45,6 +41,17 @@ public class Channel implements Serializable, Comparable<Channel> {
         this.examination = examination;
         this.channelName = channelName;
         this.samples = samples;
+    }
+
+    public Channel(int id, Examination examination, ChannelName channelName) {
+        this.id = id;
+        this.examination = examination;
+        this.channelName = channelName;
+        this.samples = new ArrayList<>();
+    }
+
+    public ChannelID getPK() {
+        return new ChannelID(id, examination);
     }
 
     public int getId() {

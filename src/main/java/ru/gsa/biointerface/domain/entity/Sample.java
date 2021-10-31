@@ -1,6 +1,8 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,17 +13,22 @@ import java.util.Objects;
 @Table(name = "sample")
 @IdClass(SampleID.class)
 public class Sample implements Serializable, Comparable<Sample> {
+    @NotNull(message = "Id can't be null")
+    @Min(value = 0, message = "Id can't be lass then 0")
     @Id
     private long id;
 
+    @NotNull(message = "Channel can't be null")
     @Id
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
-            @JoinColumn(name = "examination_id", referencedColumnName = "examination_id"),
-            @JoinColumn(name = "channel_id", referencedColumnName = "id")
+            @JoinColumn(name = "examination_id", referencedColumnName = "examination_id", nullable = false),
+            @JoinColumn(name = "channel_id", referencedColumnName = "id", nullable = false)
     })
     private Channel channel;
 
+    @NotNull(message = "Value can't be null")
+    @Column(nullable = false)
     private int value;
 
     public Sample() {

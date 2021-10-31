@@ -3,10 +3,7 @@ package ru.gsa.biointerface.host;
 import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.*;
 import ru.gsa.biointerface.host.cash.Cash;
 import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.host.cash.SampleCash;
@@ -19,7 +16,6 @@ import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.serialport.SerialPortHost;
 import ru.gsa.biointerface.services.DeviceService;
 import ru.gsa.biointerface.services.ExaminationService;
-import ru.gsa.biointerface.ui.window.metering.Connection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,14 +75,14 @@ public class ConnectionHandler implements DataCollector, Connection {
     }
 
     @Override
-    public void setDevice(int serialNumber, int amountChannels) {
-        if (serialNumber <= 0)
+    public void setDevice(int id, int amountChannels) {
+        if (id <= 0)
             throw new IllegalArgumentException("SerialNumber <= 0");
         if (amountChannels <= 0 || amountChannels > 8)
             throw new IllegalArgumentException("amountChannels <= 0 or > 8");
 
-        if (device == null || device.getId() != serialNumber) {
-            device = deviceService.create(serialNumber, amountChannels);
+        if (device == null || device.getId() != id) {
+            device = new Device(id, amountChannels, null);
             examination = null;
             patientRecord = null;
 
@@ -257,7 +253,25 @@ public class ConnectionHandler implements DataCollector, Connection {
             throw new HostNotTransmissionException();
 
         if (!isRecording()) {
-            examination = examinationService.create(patientRecord, device, channelNames, comment);
+            examination = new Examination(
+                patientRecord,
+                device,
+                comment,
+                new ArrayList<>());
+
+            patientRecord.getExaminations().add(examination);
+            device.getExaminations().add(examination);
+
+            for (int i = 0; i < device.getAmountChannels(); i++) {
+                ChannelName channelName = channelNames.get(i);
+                Channel channel = new Channel(i, examination, channelName);
+                examination.getChannels().add(channel);
+
+                if (channelName != null) {
+                    channelName.getChannels().add(channel);
+                }
+            }
+
             try {
                 deviceService.save(device);
                 examinationService.recordingStart(examination);

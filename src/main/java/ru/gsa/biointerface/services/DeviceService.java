@@ -6,7 +6,6 @@ import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.repository.DeviceRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,18 +28,6 @@ public class DeviceService {
         return instance;
     }
 
-    public Device create(long id, int amountChannels) {
-        if (id <= 0)
-            throw new IllegalArgumentException("Serial number <= 0");
-        if (amountChannels <= 0)
-            throw new IllegalArgumentException("Amount channels <= 0");
-
-        Device entity = new Device(id, amountChannels, "", new ArrayList<>());
-        LOGGER.info("New device created");
-
-        return entity;
-    }
-
     public List<Device> getAll() throws Exception {
         List<Device> entities = dao.getAll();
 
@@ -55,7 +42,7 @@ public class DeviceService {
 
     public Device getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Device entity = dao.read(id);
 
@@ -73,7 +60,7 @@ public class DeviceService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
         if (entity.getAmountChannels() <= 0)
             throw new IllegalArgumentException("Amount channels <= 0");
         if (entity.getExaminations() == null)
@@ -97,7 +84,7 @@ public class DeviceService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Device readEntity = dao.read(entity.getId());
 

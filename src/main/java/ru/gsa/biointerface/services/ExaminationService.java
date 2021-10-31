@@ -8,10 +8,7 @@ import ru.gsa.biointerface.repository.ExaminationRepository;
 import ru.gsa.biointerface.repository.SampleRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,37 +35,45 @@ public class ExaminationService {
         return instance;
     }
 
-    public Examination create(
-            PatientRecord patientRecord,
-            Device device,
-            List<ChannelName> channelNames,
-            String comment
-    ) throws Exception {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
-        if (device == null)
-            throw new NullPointerException("Device is null");
-        if (channelNames == null)
-            throw new NullPointerException("ChannelNames is null");
-        if (channelNames.size() != device.getAmountChannels())
-            throw new IllegalArgumentException("Amount channelNames differs from amount in device");
-
-        Examination entity = new Examination(
-                -1,
-                Timestamp.valueOf(LocalDateTime.now()),
-                patientRecord,
-                device,
-                comment,
-                new ArrayList<>()
-        );
-
-        for (int i = 0; i < device.getAmountChannels(); i++) {
-            entity.getChannels().add(new Channel(i, entity, channelNames.get(i), new LinkedList<>()));
-        }
-        LOGGER.info("New examination created");
-
-        return entity;
-    }
+//    public Examination create(
+//            PatientRecord patientRecord,
+//            Device device,
+//            List<ChannelName> channelNames,
+//            String comment
+//    ) throws Exception {
+//        if (patientRecord == null)
+//            throw new NullPointerException("PatientRecord is null");
+//        if (device == null)
+//            throw new NullPointerException("Device is null");
+//        if (channelNames == null)
+//            throw new NullPointerException("ChannelNames is null");
+//        if (channelNames.size() != device.getAmountChannels())
+//            throw new IllegalArgumentException("Amount channelNames differs from amount in device");
+//
+//        List<Channel> channels = new ArrayList<>();
+//
+//        Examination entity = new Examination(
+//                patientRecord,
+//                device,
+//                comment,
+//                new ArrayList<>());
+//        patientRecord.getExaminations().add(entity);
+//        device.getExaminations().add(entity);
+//
+//        for (int i = 0; i < device.getAmountChannels(); i++) {
+//            ChannelName channelName = channelNames.get(i);
+//            Channel channel = new Channel(i, entity, channelName);
+//            entity.getChannels().add(channel);
+//
+//            if (channelName != null) {
+//                channelName.getChannels().add(channel);
+//            }
+//        }
+//
+//        LOGGER.info("New examination created");
+//
+//        return entity;
+//    }
 
     public List<Examination> getAll() throws Exception {
         List<Examination> entities = dao.getAll();
@@ -99,7 +104,7 @@ public class ExaminationService {
 
     public Examination getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Examination entity = dao.read(id);
 
@@ -157,7 +162,7 @@ public class ExaminationService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Examination readEntity = dao.read(entity.getId());
 

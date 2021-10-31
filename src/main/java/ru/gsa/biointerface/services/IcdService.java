@@ -6,7 +6,6 @@ import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.repository.IcdRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,20 +29,6 @@ public class IcdService {
         return instance;
     }
 
-    public Icd create(String name, int version, String comment) throws Exception {
-        if (name == null)
-            throw new NullPointerException("name is null");
-        if ("".equals(name))
-            throw new IllegalArgumentException("name is empty");
-        if (version <= 0)
-            throw new IllegalArgumentException("version <= 0");
-
-        Icd entity = new Icd(-1, name, version, comment, new ArrayList<>());
-        LOGGER.info("New icd created");
-
-        return entity;
-    }
-
     public List<Icd> getAll() throws Exception {
         List<Icd> entities = dao.getAll();
 
@@ -58,7 +43,7 @@ public class IcdService {
 
     public Icd getById(long id) throws Exception {
         if (id <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
 
         Icd entity = dao.read(id);
 
@@ -76,11 +61,11 @@ public class IcdService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getName() == null)
-            throw new NullPointerException("name is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("name is empty");
+            throw new NullPointerException("Name is null");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getVersion() <= 0)
-            throw new IllegalArgumentException("version <= 0");
+            throw new IllegalArgumentException("Version <= 0");
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 
@@ -116,13 +101,13 @@ public class IcdService {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
-            throw new IllegalArgumentException("id <= 0");
+            throw new IllegalArgumentException("Id <= 0");
         if (entity.getName() == null)
             throw new NullPointerException("Name is null");
-        if ("".equals(entity.getName()))
-            throw new IllegalArgumentException("Name is empty");
+        if (entity.getName().isBlank())
+            throw new IllegalArgumentException("Name is blank");
         if (entity.getVersion() <= 0)
-            throw new IllegalArgumentException("version <= 0");
+            throw new IllegalArgumentException("Version <= 0");
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 

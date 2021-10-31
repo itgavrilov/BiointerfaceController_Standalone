@@ -7,6 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 public abstract class AbstractRepository<Entity, Key> extends AbstractDAO<Entity, Key> {
     protected AbstractRepository() throws Exception {
         super();

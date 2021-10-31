@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.ui.window.metering;
+package ru.gsa.biointerface.host;
 
 import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.PatientRecord;

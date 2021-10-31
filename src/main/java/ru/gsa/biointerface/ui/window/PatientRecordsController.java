@@ -89,7 +89,7 @@ public class PatientRecordsController extends AbstractWindow {
         idCol.setStyle("-fx-alignment: center-right;");
         secondNameCol.setCellValueFactory(new PropertyValueFactory<>("secondName"));
         firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        middleNameCol.setCellValueFactory(new PropertyValueFactory<>("middleName"));
+        middleNameCol.setCellValueFactory(new PropertyValueFactory<>("patronymic"));
         birthdayCol.setCellValueFactory(param -> {
             PatientRecord patientRecord = param.getValue();
             LocalDate birthday = patientRecord.getBirthdayInLocalDate();

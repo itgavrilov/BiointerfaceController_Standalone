@@ -3,56 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308"
-            maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="400.0" prefHeight="400.0"
-            prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.2"
-            fx:controller="ru.gsa.biointerface.ui.window.PatientRecordAddController">
-    <AnchorPane centerShape="false" maxHeight="175.0" maxWidth="205.0" minHeight="175.0" minWidth="205.0"
-                prefHeight="175.0" prefWidth="205.0" scaleShape="false" AnchorPane.leftAnchor="97.5"
-                AnchorPane.topAnchor="5.0">
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" textAlignment="RIGHT" wrappingWidth="75.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0"/>
-        <TextField fx:id="externalIDField" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0"
-                   onKeyReleased="#idFieldChange" prefHeight="25.0" prefWidth="125.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="second name:" textAlignment="RIGHT"
-              wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="33.0"/>
-        <TextField fx:id="secondNameField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0"
-                   minWidth="125.0" onKeyReleased="#secondNameFieldChange" prefHeight="25.0" prefWidth="125.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0"/>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="first name:" textAlignment="RIGHT"
-              wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="63.0"/>
-        <TextField fx:id="firstNameField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0"
-                   minWidth="125.0" onKeyReleased="#firstNameFieldChange" prefHeight="25.0" prefWidth="125.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0"/>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="middle name:" textAlignment="RIGHT"
-              wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="93.0"/>
-        <TextField fx:id="middleNameField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0"
-                   minWidth="125.0" onKeyReleased="#middleNameFieldChange" prefHeight="25.0" prefWidth="125.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0"/>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="birthday:" textAlignment="RIGHT" wrappingWidth="75.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="123.0"/>
-        <DatePicker fx:id="birthdayField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0"
-                    minWidth="125.0" onHidden="#birthdayFieldChange" onKeyReleased="#birthdayTextFieldChange"
-                    prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="120.0"/>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ICD:" textAlignment="RIGHT" wrappingWidth="75.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="153.0"/>
-        <ComboBox fx:id="icdComboBox" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0"
-                  minWidth="125.0" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0"
-                  AnchorPane.topAnchor="150.0"/>
+
+<AnchorPane fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.gsa.biointerface.ui.window.PatientRecordAddController">
+    <AnchorPane centerShape="false" maxHeight="175.0" maxWidth="205.0" minHeight="175.0" minWidth="205.0" prefHeight="175.0" prefWidth="205.0" scaleShape="false" AnchorPane.leftAnchor="97.5" AnchorPane.topAnchor="5.0">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0" />
+        <TextField fx:id="externalIDField" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" onKeyReleased="#idFieldChange" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="second name:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="33.0" />
+        <TextField fx:id="secondNameField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" onKeyReleased="#secondNameFieldChange" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="first name:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="63.0" />
+        <TextField fx:id="firstNameField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" onKeyReleased="#firstNameFieldChange" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="patronymic:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="93.0" />
+        <TextField fx:id="patronymicField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" onKeyReleased="#middleNameFieldChange" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="birthday:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="123.0" />
+        <DatePicker fx:id="birthdayField" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" onHidden="#birthdayFieldChange" onKeyReleased="#birthdayTextFieldChange" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ICD:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="153.0" />
+        <ComboBox fx:id="icdComboBox" disable="true" maxHeight="25.0" maxWidth="125.0" minHeight="25.0" minWidth="125.0" prefHeight="25.0" prefWidth="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0" />
     </AnchorPane>
-    <Text layoutX="87.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to patient record:"
-          textAlignment="RIGHT" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="192.0"/>
-    <TextArea fx:id="commentField" disable="true" layoutX="115.0" layoutY="195.0"
-              onKeyReleased="#commentFieldChange" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0"
-              AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="210.0"/>
-    <Button layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back"
-            textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-    <Button fx:id="registerAndOpenButton" disable="true" layoutX="338.0" layoutY="365.0" maxHeight="-Infinity"
-            maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-            onAction="#onAddButtonPush" prefHeight="25.0" prefWidth="120.0" text="register and open"
-            textAlignment="CENTER"
-            AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
+    <Text layoutX="87.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to patient record:" textAlignment="RIGHT" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="192.0" />
+    <TextArea fx:id="commentField" disable="true" layoutX="115.0" layoutY="195.0" onKeyReleased="#commentFieldChange" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="210.0" />
+    <Button layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+    <Button fx:id="registerAndOpenButton" disable="true" layoutX="338.0" layoutY="365.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddButtonPush" prefHeight="25.0" prefWidth="120.0" text="register and open" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
 </AnchorPane>

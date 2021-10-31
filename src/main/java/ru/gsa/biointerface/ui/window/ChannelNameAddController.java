@@ -65,7 +65,7 @@ public class ChannelNameAddController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            ChannelName channelName = channelNameService.create(
+            ChannelName channelName = new ChannelName(
                     nameField.getText().trim(),
                     commentField.getText().trim()
             );

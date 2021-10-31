@@ -13,6 +13,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class ChannelNameServiceTest {
     private static final String name = "testName";
     private static final String comment = "testComment";
@@ -33,30 +36,8 @@ class ChannelNameServiceTest {
     }
 
     @Test
-    void create() throws Exception {
-        ChannelName entity =
-                service.create(name, comment);
-        Assertions.assertEquals(name, entity.getName());
-        Assertions.assertEquals(comment, entity.getComment());
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(null, comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create("", comment));
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, null);
-                });
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    service.create(name, "");
-                });
-    }
-
-    @Test
     void getAll() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         List<ChannelName> entities = service.getAll();
         Assertions.assertTrue(entities.contains(entity));
@@ -65,7 +46,7 @@ class ChannelNameServiceTest {
 
     @Test
     void getById() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -84,7 +65,7 @@ class ChannelNameServiceTest {
 
     @Test
     void save() throws Exception {
-        ChannelName entity = new ChannelName(-1, null, comment, channels);
+        ChannelName entity = new ChannelName(null, comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -114,7 +95,7 @@ class ChannelNameServiceTest {
         Assertions.assertThrows(
                 InsertException.class,
                 () -> {
-                    ChannelName entityTest = new ChannelName(-1, name, comment, channels);
+                    ChannelName entityTest = new ChannelName(name, comment);
                     service.save(entityTest);
                 });
         ChannelName entityTest = repository.read(entity.getId());
@@ -124,7 +105,7 @@ class ChannelNameServiceTest {
 
     @Test
     void delete() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         long idTest = entity.getId();
 
@@ -158,7 +139,7 @@ class ChannelNameServiceTest {
 
     @Test
     void update() throws Exception {
-        ChannelName entity = new ChannelName(-1, name, comment, channels);
+        ChannelName entity = new ChannelName(name, comment);
         repository.insert(entity);
         long idTest = entity.getId();
         String nameTest = name + "Update";

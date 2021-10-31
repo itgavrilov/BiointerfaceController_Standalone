@@ -20,7 +20,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class PatientRecordServiceTest {
     private static final long id = 1;
     private static final String secondName = "testSecondName";
@@ -30,13 +32,11 @@ class PatientRecordServiceTest {
     private static final LocalDate birthdayInLocalDate =
             LocalDateTime.ofInstant(birthday.toInstant(), ZoneId.systemDefault())
                     .toLocalDate();
+    private static final String comment = "testComment";
     private static final Icd icd = new Icd(
-            -1,
             "testName",
             10,
-            "testComment",
-            new ArrayList<>());
-    private static final String comment = "testComment";
+            comment);
     private static final List<Examination> examinations = new ArrayList<>();
     private static PatientRecordService service;
     private static PatientRecordRepository repository;
@@ -60,124 +60,6 @@ class PatientRecordServiceTest {
     }
 
     @Test
-    void create() throws Exception {
-        PatientRecord entity =
-                service.create(id,
-                        secondName,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment);
-
-        Assertions.assertEquals(id, entity.getId());
-        Assertions.assertEquals(secondName, entity.getSecondName());
-        Assertions.assertEquals(firstName, entity.getFirstName());
-        Assertions.assertEquals(middleName, entity.getMiddleName());
-        Assertions.assertEquals(birthday, entity.getBirthday());
-        Assertions.assertEquals(birthdayInLocalDate, entity.getBirthdayInLocalDate());
-        Assertions.assertEquals(icd, entity.getIcd());
-        Assertions.assertEquals(comment, entity.getComment());
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(-1,
-                        secondName,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(0,
-                        secondName,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(id,
-                        null,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(id,
-                        "",
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(id,
-                        secondName,
-                        null,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(id,
-                        secondName,
-                        "",
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(id,
-                        secondName,
-                        firstName,
-                        null,
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(id,
-                        secondName,
-                        firstName,
-                        "",
-                        birthdayInLocalDate,
-                        icd,
-                        comment));
-        Assertions.assertThrows(
-                NullPointerException.class,
-                () -> service.create(id,
-                        secondName,
-                        firstName,
-                        middleName,
-                        null,
-                        icd,
-                        comment));
-        Assertions.assertDoesNotThrow(
-                () -> service.create(id,
-                        secondName,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        null,
-                        comment));
-        Assertions.assertDoesNotThrow(
-                () -> service.create(id,
-                        secondName,
-                        firstName,
-                        middleName,
-                        birthdayInLocalDate,
-                        icd,
-                        null));
-    }
-
-    @Test
     void getAll() throws Exception {
         PatientRecord entity = new PatientRecord(
                 id,
@@ -186,8 +68,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
         List<PatientRecord> entities = service.getAll();
         Assertions.assertTrue(entities.contains(entity));
@@ -203,8 +84,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -230,8 +110,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -261,15 +140,15 @@ class PatientRecordServiceTest {
                 IllegalArgumentException.class,
                 () -> service.save(entity));
         entity.setFirstName(firstName);
-        entity.setMiddleName(null);
+        entity.setPatronymic(null);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(entity));
-        entity.setMiddleName("");
+        entity.setPatronymic("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.save(entity));
-        entity.setMiddleName(middleName);
+        entity.setPatronymic(middleName);
         entity.setBirthday(null);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -307,8 +186,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
 
         Assertions.assertThrows(
@@ -348,8 +226,7 @@ class PatientRecordServiceTest {
                 middleName,
                 birthday,
                 icd,
-                comment,
-                examinations);
+                comment);
         repository.insert(entity);
 
         String secondNameTest = secondName + "Update";
@@ -359,7 +236,7 @@ class PatientRecordServiceTest {
         String commentTest = comment + "Update";
         entity.setSecondName(secondNameTest);
         entity.setFirstName(firstNameTest);
-        entity.setMiddleName(middleNameTest);
+        entity.setPatronymic(middleNameTest);
         entity.setBirthday(birthdayTest);
         entity.setComment(commentTest);
 
@@ -393,15 +270,15 @@ class PatientRecordServiceTest {
                 IllegalArgumentException.class,
                 () -> service.update(entity));
         entity.setFirstName(firstNameTest);
-        entity.setMiddleName(null);
+        entity.setPatronymic(null);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.update(entity));
-        entity.setMiddleName("");
+        entity.setPatronymic("");
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.update(entity));
-        entity.setMiddleName(middleNameTest);
+        entity.setPatronymic(middleNameTest);
         entity.setBirthday(null);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -426,7 +303,7 @@ class PatientRecordServiceTest {
 
         Assertions.assertEquals(secondNameTest, entityTest.getSecondName());
         Assertions.assertEquals(firstNameTest, entityTest.getFirstName());
-        Assertions.assertEquals(middleNameTest, entityTest.getMiddleName());
+        Assertions.assertEquals(middleNameTest, entityTest.getPatronymic());
         Assertions.assertEquals(birthdayTest, entityTest.getBirthday());
         Assertions.assertEquals(icd, entityTest.getIcd());
         Assertions.assertEquals(commentTest, entityTest.getComment());

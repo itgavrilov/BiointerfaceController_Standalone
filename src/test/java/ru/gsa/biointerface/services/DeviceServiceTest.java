@@ -12,6 +12,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
+ */
 class DeviceServiceTest {
     private static final long id = 1;
     private static final int amountChannels = 1;
@@ -33,28 +36,8 @@ class DeviceServiceTest {
     }
 
     @Test
-    void create() {
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(-1, 1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(0, 1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(1, -1));
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.create(1, 0));
-        Device entity =
-                service.create(id, amountChannels);
-        Assertions.assertEquals(id, entity.getId());
-        Assertions.assertEquals(amountChannels, entity.getAmountChannels());
-    }
-
-    @Test
     void getAll() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         List<Device> channelNames = service.getAll();
         Assertions.assertTrue(channelNames.contains(entity));
@@ -63,7 +46,7 @@ class DeviceServiceTest {
 
     @Test
     void getById() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -79,7 +62,7 @@ class DeviceServiceTest {
 
     @Test
     void save() throws Exception {
-        Device entity = new Device(-1, amountChannels, comment, examinations);
+        Device entity = new Device(-1, amountChannels, comment);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.save(null));
@@ -124,7 +107,7 @@ class DeviceServiceTest {
 
     @Test
     void delete() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
 
         Assertions.assertThrows(
@@ -157,7 +140,7 @@ class DeviceServiceTest {
 
     @Test
     void update() throws Exception {
-        Device entity = new Device(id, amountChannels, comment, examinations);
+        Device entity = new Device(id, amountChannels, comment);
         repository.insert(entity);
         int amountChannelsTest = amountChannels + 1;
         String commentTest = comment + "Update";

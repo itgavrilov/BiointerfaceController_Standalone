@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.host.Connection;
 import ru.gsa.biointerface.host.ConnectionFactory;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.AlertError;
@@ -62,7 +63,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     @FXML
     private Text firstNameText;
     @FXML
-    private Text middleNameText;
+    private Text patronymicText;
     @FXML
     private Text birthdayText;
     @FXML
@@ -124,7 +125,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
         secondNameText.setText(patientRecord.getSecondName());
         firstNameText.setText(patientRecord.getFirstName());
-        middleNameText.setText(patientRecord.getMiddleName());
+        patronymicText.setText(patientRecord.getPatronymic());
         birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
         deviceComboBox.setConverter(converter);
 
