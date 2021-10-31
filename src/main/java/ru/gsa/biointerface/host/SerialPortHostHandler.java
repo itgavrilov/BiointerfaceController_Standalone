@@ -24,8 +24,8 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class ConnectionHandler implements DataCollector, Connection {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionHandler.class);
+public class SerialPortHostHandler implements DataCollector, HostHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerialPortHostHandler.class);
     private final SerialPortHost serialPortHost;
     private final ExaminationService examinationService;
     private final DeviceService deviceService;
@@ -38,7 +38,7 @@ public class ConnectionHandler implements DataCollector, Connection {
     private String comment;
     private boolean flagTransmission = false;
 
-    public ConnectionHandler(SerialPort serialPort) throws Exception {
+    public SerialPortHostHandler(SerialPort serialPort) throws Exception {
         if (serialPort == null)
             throw new NullPointerException("SerialPort is null");
 
@@ -186,6 +186,9 @@ public class ConnectionHandler implements DataCollector, Connection {
     public void disconnect() throws Exception {
         if (isConnected()) {
             if (isTransmission()) {
+                if (isRecording()) {
+                    recordingStop();
+                }
                 transmissionStop();
             }
             serialPortHost.stop();
@@ -228,6 +231,10 @@ public class ConnectionHandler implements DataCollector, Connection {
         if (!serialPortHost.isRunning())
             throw new HostNotRunningException();
 
+        if (isRecording()) {
+            recordingStop();
+        }
+
         serialPortHost.sendPackage(ControlMessages.STOP_TRANSMISSION);
         flagTransmission = false;
         LOGGER.info("Stop transmission");
@@ -254,22 +261,14 @@ public class ConnectionHandler implements DataCollector, Connection {
 
         if (!isRecording()) {
             examination = new Examination(
-                patientRecord,
-                device,
-                comment,
-                new ArrayList<>());
-
-            patientRecord.getExaminations().add(examination);
-            device.getExaminations().add(examination);
+                    patientRecord,
+                    device,
+                    comment);
 
             for (int i = 0; i < device.getAmountChannels(); i++) {
                 ChannelName channelName = channelNames.get(i);
                 Channel channel = new Channel(i, examination, channelName);
                 examination.getChannels().add(channel);
-
-                if (channelName != null) {
-                    channelName.getChannels().add(channel);
-                }
             }
 
             try {
@@ -323,7 +322,7 @@ public class ConnectionHandler implements DataCollector, Connection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ConnectionHandler that = (ConnectionHandler) o;
+        SerialPortHostHandler that = (SerialPortHostHandler) o;
         return Objects.equals(serialPortHost, that.serialPortHost);
     }
 

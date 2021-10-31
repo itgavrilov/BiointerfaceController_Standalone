@@ -7,7 +7,7 @@ import ru.gsa.biointerface.host.cash.DataListener;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public interface Connection {
+public interface HostHandler {
     void setPatientRecord(PatientRecord patientRecord);
 
     int getAmountChannels();

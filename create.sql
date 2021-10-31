@@ -1,8 +1,8 @@
 CREATE TABLE icd
 (
     id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    name    VARCHAR(35) NOT NULL,
-    version INTEGER     NOT NULL,
+    name    VARCHAR(35)                       NOT NULL,
+    version INTEGER                           NOT NULL,
     comment TEXT
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE device
 CREATE TABLE channelName
 (
     id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    name    VARCHAR(35) UNIQUE NOT NULL,
+    name    VARCHAR(35) UNIQUE                NOT NULL,
     comment TEXT
 );
 
@@ -35,10 +35,10 @@ CREATE TABLE patientRecord
 CREATE TABLE examination
 (
     id               INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    startTime        TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    patientRecord_id INTEGER                             NOT NULL,
-    device_id        INTEGER                             NOT NULL,
-    comment          TEXT NULL,
+    startTime        TIMESTAMP                         NOT NULL,
+    patientRecord_id INTEGER                           NOT NULL,
+    device_id        INTEGER                           NOT NULL,
+    comment          TEXT                              NULL,
     FOREIGN KEY (patientRecord_id) REFERENCES patientRecord (id) ON DELETE CASCADE,
     FOREIGN KEY (device_id) REFERENCES device (id) ON DELETE CASCADE
 );

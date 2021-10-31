@@ -3,33 +3,62 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
-<AnchorPane fx:id="anchorPaneRoot" maxHeight="400.0" maxWidth="500.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.gsa.biointerface.ui.window.PatientRecordOpenController">
-    <AnchorPane maxHeight="90.0" maxWidth="230.0" minHeight="90.0" minWidth="230.0" prefHeight="90.0" prefWidth="230.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-        <Text fx:id="icdText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="75.0" />
-        <Text fx:id="birthdayText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="60.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="birthday:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-        <Text fx:id="idText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="0.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="second name:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0" />
-        <Text fx:id="secondNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="15.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="first name:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0" />
-        <Text fx:id="firstNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="30.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="patronymic:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0" />
-        <Text fx:id="patronymicText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="45.0" />
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ICD:" textAlignment="RIGHT" wrappingWidth="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="75.0" />
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="400.0" maxWidth="500.0" minHeight="400.0"
+            minWidth="500.0" prefHeight="400.0" prefWidth="500.0"
+            xmlns="http://javafx.com/javafx/11.0.2"
+            fx:controller="ru.gsa.biointerface.ui.window.PatientRecordOpenController">
+    <AnchorPane maxHeight="90.0" maxWidth="230.0" minHeight="90.0" minWidth="230.0" prefHeight="90.0" prefWidth="230.0"
+                AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <Text fx:id="icdText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="75.0"/>
+        <Text fx:id="birthdayText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="60.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="birthday:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        <Text fx:id="idText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="0.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="second name:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0"/>
+        <Text fx:id="secondNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="15.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="first name:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="30.0"/>
+        <Text fx:id="firstNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="30.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="patronymic:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0"/>
+        <Text fx:id="patronymicText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"
+              AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="45.0"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ICD:" textAlignment="RIGHT" wrappingWidth="75.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="75.0"/>
     </AnchorPane>
-    <Text layoutX="87.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to examination:" textAlignment="RIGHT" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="95.0" />
-    <TextArea fx:id="commentField" disable="true" layoutX="115.0" layoutY="195.0" maxWidth="230.0" minWidth="230.0" onKeyReleased="#commentFieldChange" prefWidth="230.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="110.0" />
-    <TableView fx:id="tableView" layoutX="47.0" layoutY="31.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="245.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+    <Text layoutX="87.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to examination:"
+          textAlignment="RIGHT" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="95.0"/>
+    <TextArea fx:id="commentField" disable="true" layoutX="115.0" layoutY="195.0" maxWidth="230.0" minWidth="230.0"
+              onKeyReleased="#commentFieldChange" prefWidth="230.0" AnchorPane.bottomAnchor="45.0"
+              AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="110.0"/>
+    <TableView fx:id="tableView" layoutX="47.0" layoutY="31.0" AnchorPane.bottomAnchor="45.0"
+               AnchorPane.leftAnchor="245.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
         <columns>
-            <TableColumn fx:id="startTimeCol" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Date&amp;Time" />
-            <TableColumn fx:id="deviceIdCol" editable="false" maxWidth="94.0" minWidth="94.0" prefWidth="94.0" text="device id" />
+            <TableColumn fx:id="startTimeCol" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0"
+                         text="Date&amp;Time"/>
+            <TableColumn fx:id="deviceIdCol" editable="false" maxWidth="94.0" minWidth="94.0" prefWidth="94.0"
+                         text="device id"/>
         </columns>
     </TableView>
-    <Button layoutY="374.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
-    <Text layoutX="245.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Examinations:" AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="5.0" />
-    <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0" layoutY="364.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#onDeleteButtonPush" prefHeight="25.0" prefWidth="60.0" text="delete" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="100.0" />
+    <Button layoutY="374.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false"
+            onAction="#onBackButtonPush" prefHeight="25.0" prefWidth="60.0" text="&lt; back" textAlignment="CENTER"
+            AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
+    <Text layoutX="245.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Examinations:"
+          AnchorPane.leftAnchor="245.0" AnchorPane.topAnchor="5.0"/>
+    <Button fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="120.0"
+            layoutY="364.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false"
+            onAction="#onDeleteButtonPush" prefHeight="25.0" prefWidth="60.0" text="delete" textAlignment="CENTER"
+            AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="100.0"/>
 
-    <Button layoutX="364.0" layoutY="365.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#onAddButtonPush" prefHeight="25.0" prefWidth="60.0" text="add &gt;" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <Button layoutX="364.0" layoutY="365.0" maxHeight="25.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0"
+            mnemonicParsing="false" onAction="#onAddButtonPush" prefHeight="25.0" prefWidth="60.0" text="add &gt;"
+            AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
 </AnchorPane>

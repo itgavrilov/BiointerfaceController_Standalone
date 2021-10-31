@@ -51,6 +51,11 @@ public class IcdAddController extends AbstractWindow {
         if (str.length() > 35)
             str = str.substring(0, 35);
 
+        if (!nameField.getText().equals(str)) {
+            nameField.setText(str);
+            nameField.positionCaret(str.length());
+        }
+
         if (str.equals(nameField.getText())) {
             nameField.setStyle(null);
             versionField.setDisable(false);
@@ -67,6 +72,11 @@ public class IcdAddController extends AbstractWindow {
 
         if (str.length() > 2)
             str = str.substring(0, 2);
+
+        if (!versionField.getText().equals(str)) {
+            versionField.setText(str);
+            versionField.positionCaret(str.length());
+        }
 
         if (str.equals(versionField.getText())) {
             versionField.setStyle(null);

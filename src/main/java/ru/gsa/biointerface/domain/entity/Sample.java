@@ -20,7 +20,7 @@ public class Sample implements Serializable, Comparable<Sample> {
 
     @NotNull(message = "Channel can't be null")
     @Id
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumns({
             @JoinColumn(name = "examination_id", referencedColumnName = "examination_id", nullable = false),
             @JoinColumn(name = "channel_id", referencedColumnName = "id", nullable = false)

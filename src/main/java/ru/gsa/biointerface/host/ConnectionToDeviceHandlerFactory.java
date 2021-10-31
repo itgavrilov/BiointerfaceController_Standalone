@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class ConnectionFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionFactory.class);
-    private static ConnectionFactory instance;
-    private final List<ConnectionHandler> connections = new ArrayList<>();
-    private ConnectionHandler connection;
+public class ConnectionToDeviceHandlerFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionToDeviceHandlerFactory.class);
+    private static ConnectionToDeviceHandlerFactory instance;
+    private final List<SerialPortHostHandler> connections = new ArrayList<>();
+    private SerialPortHostHandler connection;
 
-    public static ConnectionFactory getInstance() {
+    public static ConnectionToDeviceHandlerFactory getInstance() {
         if (instance == null) {
-            instance = new ConnectionFactory();
+            instance = new ConnectionToDeviceHandlerFactory();
         }
 
         return instance;
@@ -30,9 +30,9 @@ public class ConnectionFactory {
 
     public static void disconnectScanningSerialPort() {
         if (getInstance().connections.size() > 0) {
-            for (Connection connection : getInstance().connections) {
+            for (HostHandler hostHandler : getInstance().connections) {
                 try {
-                    connection.disconnect();
+                    hostHandler.disconnect();
                 } catch (Exception e) {
                     LOGGER.error("Device disconnect error", e);
                 }
@@ -58,7 +58,7 @@ public class ConnectionFactory {
         List<SerialPort> serialPorts = getSerialPortsWithDevises();
         for (SerialPort serialPort : serialPorts) {
             try {
-                ConnectionHandler connection = new ConnectionHandler(serialPort);
+                SerialPortHostHandler connection = new SerialPortHostHandler(serialPort);
                 connections.add(connection);
             } catch (Exception e) {
                 LOGGER.error("Error connection to serialPort(SystemPortName={})", serialPort.getSystemPortName(), e);
@@ -84,13 +84,13 @@ public class ConnectionFactory {
                         }
                     }
                 })
-                .filter(ConnectionHandler::isAvailableDevice)
-                .map(ConnectionHandler::getDevice)
+                .filter(SerialPortHostHandler::isAvailableDevice)
+                .map(SerialPortHostHandler::getDevice)
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public Connection getConnection(Device device) {
+    public HostHandler getConnection(Device device) {
         connection = connections.stream()
                 .filter(o -> device.equals(o.getDevice()))
                 .findFirst()

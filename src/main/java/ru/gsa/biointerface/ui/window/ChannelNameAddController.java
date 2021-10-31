@@ -42,9 +42,17 @@ public class ChannelNameAddController extends AbstractWindow {
     }
 
     public void nameChange() {
-        String str = nameField.getText().replaceAll(" {2}.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
+        String str = nameField.getText()
+                .replaceAll(" {2}.*", "")
+                .replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
+
         if (str.length() > 35)
             str = str.substring(0, 35);
+
+        if (!nameField.getText().equals(str)) {
+            nameField.setText(str);
+            nameField.positionCaret(str.length());
+        }
 
         if (str.equals(nameField.getText())) {
             nameField.setStyle(null);

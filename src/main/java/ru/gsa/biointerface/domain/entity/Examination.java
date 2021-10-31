@@ -1,7 +1,6 @@
 package ru.gsa.biointerface.domain.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -33,12 +32,12 @@ public class Examination implements Serializable, Comparable<Examination> {
     private Date startTime;
 
     @NotNull(message = "Patient record can't be null")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "patientRecord_id", referencedColumnName = "id", nullable = false)
     private PatientRecord patientRecord;
 
     @NotNull(message = "Device can't be null")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "device_id", referencedColumnName = "id", nullable = false)
     private Device device;
 
@@ -65,13 +64,13 @@ public class Examination implements Serializable, Comparable<Examination> {
         this.channels = channels;
     }
 
-    public Examination(PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
+    public Examination(PatientRecord patientRecord, Device device, String comment) {
         this.id = -1;
         this.startTime = Timestamp.valueOf(LocalDateTime.now());
         this.patientRecord = patientRecord;
         this.device = device;
         this.comment = comment;
-        this.channels = channels;
+        this.channels = new ArrayList<>();
     }
 
     public long getId() {

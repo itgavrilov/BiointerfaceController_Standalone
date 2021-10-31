@@ -2,13 +2,14 @@ package ru.gsa.biointerface.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.*;
+import ru.gsa.biointerface.domain.entity.Channel;
+import ru.gsa.biointerface.domain.entity.Examination;
+import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.repository.ChannelRepository;
 import ru.gsa.biointerface.repository.ExaminationRepository;
 import ru.gsa.biointerface.repository.SampleRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

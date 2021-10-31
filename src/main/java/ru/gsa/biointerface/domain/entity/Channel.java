@@ -20,11 +20,11 @@ public class Channel implements Serializable, Comparable<Channel> {
 
     @NotNull(message = "Examination can't be null")
     @Id
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "examination_id", referencedColumnName = "id", nullable = false)
     private Examination examination;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "channelName_id", referencedColumnName = "id")
     private ChannelName channelName;
 

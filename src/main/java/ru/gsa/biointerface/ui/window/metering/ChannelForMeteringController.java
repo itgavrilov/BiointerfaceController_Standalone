@@ -11,7 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.host.Connection;
+import ru.gsa.biointerface.host.HostHandler;
 import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.services.ChannelNameService;
 import ru.gsa.biointerface.ui.window.AlertError;
@@ -29,7 +29,7 @@ public final class ChannelForMeteringController implements DataListener, Content
     private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private final List<Integer> samples = new ArrayList<>();
     private ChannelName channelName;
-    private Connection connection;
+    private HostHandler hostHandler;
     private ChannelCheckBox checkBox;
     private int numberOfChannel;
     private final StringConverter<ChannelName> converter = new StringConverter<>() {
@@ -87,11 +87,11 @@ public final class ChannelForMeteringController implements DataListener, Content
         this.numberOfChannel = numberOfChannel;
     }
 
-    public void setConnection(Connection connection) {
-        if (connection == null)
+    public void setConnection(HostHandler hostHandler) {
+        if (hostHandler == null)
             throw new NullPointerException("Connection is null");
 
-        this.connection = connection;
+        this.hostHandler = hostHandler;
     }
 
     public void onNameComboBoxShowing() {
@@ -107,7 +107,7 @@ public final class ChannelForMeteringController implements DataListener, Content
 
     public void nameComboBoxSelect() {
         channelName = nameComboBox.getValue();
-        connection.setNameInChannel(numberOfChannel, channelName);
+        hostHandler.setNameInChannel(numberOfChannel, channelName);
         checkBox.setText(getChannelName(numberOfChannel, channelName));
     }
 

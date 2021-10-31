@@ -56,6 +56,19 @@ public class PatientRecordAddController extends AbstractWindow {
         patientRecordService = PatientRecordService.getInstance();
     }
 
+    private static Calendar localDateToDate(LocalDate localDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        //noinspection MagicConstant
+        calendar.set(
+                localDate.getYear(),
+                localDate.getMonthValue() - 1,
+                localDate.getDayOfMonth()
+        );
+
+        return calendar;
+    }
+
     public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
@@ -83,6 +96,11 @@ public class PatientRecordAddController extends AbstractWindow {
         if (str.length() > 35)
             str = str.substring(0, 35);
 
+        if (!externalIDField.getText().equals(str)) {
+            externalIDField.setText(str);
+            externalIDField.positionCaret(str.length());
+        }
+
         if (str.equals(externalIDField.getText())) {
             secondNameField.setDisable(false);
             externalIDField.setStyle(null);
@@ -109,6 +127,11 @@ public class PatientRecordAddController extends AbstractWindow {
         if (str.length() > 35)
             str = str.substring(0, 35);
 
+        if (!secondNameField.getText().equals(str)) {
+            secondNameField.setText(str);
+            secondNameField.positionCaret(str.length());
+        }
+
         if (str.equals(secondNameField.getText())) {
             firstNameField.setDisable(false);
             secondNameField.setStyle(null);
@@ -133,6 +156,11 @@ public class PatientRecordAddController extends AbstractWindow {
         if (str.length() > 35)
             str = str.substring(0, 35);
 
+        if (!firstNameField.getText().equals(str)) {
+            firstNameField.setText(str);
+            firstNameField.positionCaret(str.length());
+        }
+
         if (str.equals(firstNameField.getText())) {
             patronymicField.setDisable(false);
             birthdayField.setDisable(false);
@@ -156,6 +184,11 @@ public class PatientRecordAddController extends AbstractWindow {
         );
         if (str.length() > 35)
             str = str.substring(0, 35);
+
+        if (!patronymicField.getText().equals(str)) {
+            patronymicField.setText(str);
+            patronymicField.positionCaret(str.length());
+        }
 
         if (str.equals(patronymicField.getText())) {
             birthdayField.setDisable(false);
@@ -195,7 +228,7 @@ public class PatientRecordAddController extends AbstractWindow {
     public void birthdayTextFieldChange() {
         String str = birthdayField.getEditor().getText()
                 .replaceAll("[^0-9.\\-:_]", "")
-                .replaceAll("[-:_]+", ".");
+                .replaceAll("[.{2}\\-:_]+", ".");
 
         if (str.length() == 2 || str.length() == 5)
             str = str + ".";
@@ -204,6 +237,7 @@ public class PatientRecordAddController extends AbstractWindow {
             birthdayField.getEditor().setText(str);
             birthdayField.getEditor().positionCaret(str.length());
         }
+
         try {
             birthdayField.setValue(LocalDate.parse(str, DateTimeFormatter.ofPattern("dd.MM.yyyy")));
             icdComboBox.setDisable(false);
@@ -255,19 +289,6 @@ public class PatientRecordAddController extends AbstractWindow {
             new AlertError("Error create new patient record: " + e.getMessage());
         }
         onBackButtonPush();
-    }
-
-    private static Calendar localDateToDate(LocalDate localDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        //noinspection MagicConstant
-        calendar.set(
-                localDate.getYear(),
-                localDate.getMonthValue() - 1,
-                localDate.getDayOfMonth()
-        );
-
-        return calendar;
     }
 
     public void onBackButtonPush() {

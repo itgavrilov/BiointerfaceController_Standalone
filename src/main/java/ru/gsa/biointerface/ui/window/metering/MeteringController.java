@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.host.Connection;
-import ru.gsa.biointerface.host.ConnectionFactory;
+import ru.gsa.biointerface.host.ConnectionToDeviceHandlerFactory;
+import ru.gsa.biointerface.host.HostHandler;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.WindowWithProperty;
@@ -35,7 +35,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     private static final Logger LOGGER = LoggerFactory.getLogger(MeteringController.class);
     private static MeteringController instants;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
+    private final ConnectionToDeviceHandlerFactory connectionToDeviceHandlerFactory = ConnectionToDeviceHandlerFactory.getInstance();
     private final List<CompositeNode<AnchorPane, ChannelForMeteringController>> channelGUIs = new LinkedList<>();
     private final List<ChannelCheckBox> checkBoxesOfChannel = new LinkedList<>();
     private final StringConverter<Device> converter = new StringConverter<>() {
@@ -52,7 +52,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             return null;
         }
     };
-    private Connection connection;
+    private HostHandler hostHandler;
     private PatientRecord patientRecord;
     @FXML
     private AnchorPane anchorPaneControl;
@@ -91,12 +91,12 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     static public void disconnect() {
-        if (instants != null && instants.connection != null) {
-            ConnectionFactory.disconnectScanningSerialPort();
+        if (instants != null && instants.hostHandler != null) {
+            ConnectionToDeviceHandlerFactory.disconnectScanningSerialPort();
             try {
-                instants.connection.disconnect();
-                if (instants.connection.isTransmission()) {
-                    instants.connection.transmissionStop();
+                instants.hostHandler.disconnect();
+                if (instants.hostHandler.isTransmission()) {
+                    instants.hostHandler.transmissionStop();
                 }
             } catch (Exception e) {
                 LOGGER.error("Error disconnect from host", e);
@@ -141,26 +141,26 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     public void buttonScanningSerialPortsPush() {
-        connection = null;
+        hostHandler = null;
         clearInterface();
         controlInterface(false);
-        connectionFactory.scanningSerialPort();
+        connectionToDeviceHandlerFactory.scanningSerialPort();
     }
 
     public void devicesComboBoxShowing() {
         controlInterface(true);
         deviceComboBox.getItems().clear();
-        deviceComboBox.getItems().addAll(connectionFactory.getDevices());
+        deviceComboBox.getItems().addAll(connectionToDeviceHandlerFactory.getDevices());
     }
 
     public void devicesComboBoxSelect() {
         if (deviceComboBox.getValue() != null) {
             try {
-                connection = connectionFactory.getConnection(deviceComboBox.getValue());
-                connection.connect();
-                connection.setPatientRecord(patientRecord);
+                hostHandler = connectionToDeviceHandlerFactory.getConnection(deviceComboBox.getValue());
+                hostHandler.connect();
+                hostHandler.setPatientRecord(patientRecord);
                 buildingChannelsGUIs();
-                if (connection.isConnected()) {
+                if (hostHandler.isConnected()) {
                     controlInterface(true);
                 }
             } catch (Exception e) {
@@ -174,7 +174,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         channelGUIs.clear();
         checkBoxesOfChannel.clear();
 
-        for (int i = 0; i < connection.getAmountChannels(); i++) {
+        for (int i = 0; i < hostHandler.getAmountChannels(); i++) {
             CompositeNode<AnchorPane, ChannelForMeteringController> node =
                     new CompositeNode<>(
                             new FXMLLoader(
@@ -185,9 +185,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             ChannelForMeteringController graphController = node.getController();
 
             graphController.setNumberOfChannel(i);
-            graphController.setConnection(connection);
+            graphController.setConnection(hostHandler);
             graphController.setCapacity(capacity);
-            connection.setListenerInChannel(i, graphController);
+            hostHandler.setListenerInChannel(i, graphController);
             channelGUIs.add(node);
 
             ChannelCheckBox checkBox = new ChannelCheckBox(i);
@@ -222,10 +222,10 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     public void onStartButtonPush() {
         LOGGER.info("Start button push");
 
-        if (connection.isConnected()) {
-            if (connection.isTransmission()) {
+        if (hostHandler.isConnected()) {
+            if (hostHandler.isTransmission()) {
                 try {
-                    connection.transmissionStop();
+                    hostHandler.transmissionStop();
                     controlInterface(true);
                 } catch (Exception e) {
                     LOGGER.error("Host is not running", e);
@@ -233,7 +233,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                 }
             } else {
                 try {
-                    connection.transmissionStart();
+                    hostHandler.transmissionStart();
                     controlInterface(false);
                 } catch (Exception e) {
                     LOGGER.error("Host is not running", e);
@@ -248,9 +248,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         clearInterface();
         controlInterface(true);
 
-        if (connection.isConnected()) {
+        if (hostHandler.isConnected()) {
             try {
-                connection.controllerReboot();
+                hostHandler.controllerReboot();
             } catch (Exception e) {
                 LOGGER.error("Host is not running", e);
                 new AlertError("Host is not running: " + e.getMessage());
@@ -261,16 +261,16 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     public void onRecordingButtonPush() {
         LOGGER.info("Recording button push");
 
-        if (connection.isRecording()) {
+        if (hostHandler.isRecording()) {
             try {
-                connection.recordingStop();
+                hostHandler.recordingStop();
             } catch (Exception e) {
                 LOGGER.error("Host is not running", e);
                 new AlertError("Host is not running: " + e.getMessage());
             }
         } else {
             try {
-                connection.recordingStart();
+                hostHandler.recordingStart();
             } catch (Exception e) {
                 LOGGER.error("Host is not transmission", e);
                 new AlertError("Host is not transmission: " + e.getMessage());
@@ -282,9 +282,9 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     public void onBackButtonPush() {
         LOGGER.info("Back button push");
-        if (connection != null && connection.isConnected()) {
+        if (hostHandler != null && hostHandler.isConnected()) {
             try {
-                connection.disconnect();
+                hostHandler.disconnect();
             } catch (Exception e) {
                 LOGGER.error("Error disconnected host", e);
                 new AlertError("Error disconnect wish device: " + e.getMessage());
@@ -303,7 +303,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     public void commentFieldChange() {
         LOGGER.info("Change commentField for Examination");
         try {
-            connection.setCommentForExamination(commentField.getText());
+            hostHandler.setCommentForExamination(commentField.getText());
         } catch (Exception e) {
             LOGGER.error("Error comment change", e);
             new AlertError("Error comment change: " + e.getMessage());
@@ -318,12 +318,12 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
 
     private void controlInterface(boolean enableButtonScanning) {
         scanningSerialPortsButton.setDisable(!enableButtonScanning);
-        deviceComboBox.setDisable(connection != null);
+        deviceComboBox.setDisable(hostHandler != null);
 
-        if (connection != null && connection.isConnected()) {
+        if (hostHandler != null && hostHandler.isConnected()) {
             startButton.setDisable(false);
             rebootButton.setDisable(false);
-            if (connection.isTransmission()) {
+            if (hostHandler.isTransmission()) {
                 startButton.setText("Stop");
             } else {
                 startButton.setText("Start");
@@ -334,13 +334,13 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             startButton.setText("Start");
         }
 
-        rebootButton.setDisable(connection == null || !connection.isConnected());
-        allSliderZoom.setDisable(connection == null || !connection.isConnected() || connection.isTransmission());
+        rebootButton.setDisable(hostHandler == null || !hostHandler.isConnected());
+        allSliderZoom.setDisable(hostHandler == null || !hostHandler.isConnected() || hostHandler.isTransmission());
         channelGUIs.forEach(o -> o.getController().setEnable(!allSliderZoom.isDisable()));
         checkBoxesOfChannel.forEach(o -> o.setDisable(allSliderZoom.isDisable()));
-        recordingButton.setDisable(connection == null || !connection.isTransmission());
+        recordingButton.setDisable(hostHandler == null || !hostHandler.isTransmission());
 
-        if (connection != null && connection.isRecording()) {
+        if (hostHandler != null && hostHandler.isRecording()) {
             recordingButton.setText("stop\nrecording");
         } else {
             recordingButton.setText("recording");

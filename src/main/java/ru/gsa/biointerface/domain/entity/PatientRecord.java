@@ -47,7 +47,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @Column(nullable = false)
     private Calendar birthday;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "icd_id", referencedColumnName = "id")
     private Icd icd;
 
