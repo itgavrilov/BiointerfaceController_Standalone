@@ -21,7 +21,6 @@ import java.util.*;
  */
 class ExaminationServiceTest {
     private static final String comment = "testComment";
-    private static final Date startTime = Timestamp.valueOf(LocalDateTime.now());
     private static final PatientRecord patientRecord = new PatientRecord(
             1,
             "secondNameTest",
@@ -61,7 +60,8 @@ class ExaminationServiceTest {
     @Test
     void getAll() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
@@ -75,7 +75,7 @@ class ExaminationServiceTest {
     @Test
     void getByPatientRecord() {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
+                new Examination(patientRecord, device, comment);
         PatientRecord patientRecordTest = entity.getPatientRecord();
         Assertions.assertEquals(patientRecord, patientRecordTest);
     }
@@ -83,9 +83,8 @@ class ExaminationServiceTest {
     @Test
     void getById() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
@@ -106,13 +105,9 @@ class ExaminationServiceTest {
     @Test
     void recordingStart() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
-        entity.getChannels().get(0).setExamination(entity);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.recordingStart(null));
@@ -166,13 +161,9 @@ class ExaminationServiceTest {
     @Test
     void recordingStop() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
-        entity.getChannels().get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
         entity.recordingStart();
@@ -190,13 +181,9 @@ class ExaminationServiceTest {
     @Test
     void delete() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
-        entity.getChannels().get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -232,9 +219,8 @@ class ExaminationServiceTest {
     @Test
     void update() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
         repository.transactionOpen();
         repository.insert(entity);
@@ -297,9 +283,8 @@ class ExaminationServiceTest {
     @Test
     void loadWithGraphsById() throws Exception {
         Examination entity =
-                new Examination(patientRecord, device, comment, channels);
-        patientRecord.getExaminations().add(entity);
-        device.getExaminations().add(entity);
+                new Examination(patientRecord, device, comment);
+        entity.setChannels(channels);
         channels.get(0).setExamination(entity);
         channels.get(0).getSamples().add(new Sample(0, channels.get(0), 10));
 
