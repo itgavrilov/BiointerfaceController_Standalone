@@ -44,7 +44,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @Column(nullable = false)
     private Calendar birthday;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "icd_id", referencedColumnName = "id")
     private Icd icd;
 
@@ -67,9 +67,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.birthday = birthday;
         this.comment = comment;
         this.examinations = new TreeSet<>();
-        if(icd != null) {
-            icd.addPatientRecord(this);
-        }
+        this.icd = icd;
     }
 
     public long getId() {
@@ -143,25 +141,6 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
 
     public void setExaminations(Set<Examination> examinations) {
         this.examinations = examinations;
-    }
-
-    public void addExamination(Examination examination) {
-        if (examination == null)
-            throw new NullPointerException("Examination is null");
-
-        examination.setPatientRecord(this);
-        examinations.add(examination);
-    }
-
-    public void deleteExamination(Examination examination) {
-        if (examination == null)
-            throw new NullPointerException("Examination is null");
-
-        examinations.remove(examination);
-
-        if (examination.getPatientRecord().equals(this)) {
-            examination.setPatientRecord(null);
-        }
     }
 
     @Override

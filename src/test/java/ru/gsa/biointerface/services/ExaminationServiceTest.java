@@ -57,7 +57,7 @@ class ExaminationServiceTest {
     void getAll() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -79,7 +79,7 @@ class ExaminationServiceTest {
     void getById() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -100,7 +100,7 @@ class ExaminationServiceTest {
     void recordingStart() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.recordingStart(null));
@@ -127,8 +127,8 @@ class ExaminationServiceTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.recordingStart(entity));
-        Channel channel = new Channel(0, null, null);
-        entity.addChannel(channel);
+        Channel channel = new Channel(0, entity, null);
+        entity.getChannels().add(channel);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -156,7 +156,7 @@ class ExaminationServiceTest {
     void recordingStop() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         repository.transactionOpen();
         repository.insert(entity);
         entity.recordingStart();
@@ -175,7 +175,7 @@ class ExaminationServiceTest {
     void delete() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -212,7 +212,7 @@ class ExaminationServiceTest {
     void update() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        new Channel(0, entity, null);
+        entity.getChannels().add(new Channel(0, entity, null));
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -260,8 +260,8 @@ class ExaminationServiceTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.update(entity));
-        Channel channel =  new Channel(0, null, null);
-        entity.addChannel(channel);
+        Channel channel =  new Channel(0, entity, null);
+        entity.getChannels().add(channel);
         entity.setComment(null);
         Assertions.assertDoesNotThrow(
                 () -> service.update(entity));
@@ -277,7 +277,7 @@ class ExaminationServiceTest {
         Examination entity =
                 new Examination(patientRecord, device, comment);
         Channel channel = new Channel(0, entity, null);
-
+        entity.getChannels().add(channel);
         channel.getSamples().add(new Sample(0, channel, 10));
 
         repository.transactionOpen();

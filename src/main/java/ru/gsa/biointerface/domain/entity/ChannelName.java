@@ -74,25 +74,6 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
         this.channels = channels;
     }
 
-    public void addChannel(Channel channel) {
-        if (channel == null)
-            throw new NullPointerException("Channel is null");
-
-        channel.setChannelName(this);
-        channels.add(channel);
-    }
-
-    public void deleteChannel(Channel channel) {
-        if (channel == null)
-            throw new NullPointerException("Channel is null");
-
-        channels.remove(channel);
-
-        if (channel.getChannelName().equals(this)) {
-            channel.setChannelName(null);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

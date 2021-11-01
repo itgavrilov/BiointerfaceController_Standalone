@@ -86,25 +86,6 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.patientRecords = patientRecords;
     }
 
-    public void addPatientRecord(PatientRecord patientRecord) {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
-
-        patientRecord.setIcd(this);
-        patientRecords.add(patientRecord);
-    }
-
-    public void deletePatientRecord(PatientRecord patientRecord) {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
-
-        patientRecords.remove(patientRecord);
-
-        if (patientRecord.getIcd().equals(this)) {
-            patientRecord.setIcd(null);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

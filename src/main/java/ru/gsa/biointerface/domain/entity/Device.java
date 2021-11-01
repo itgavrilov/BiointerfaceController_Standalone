@@ -75,25 +75,6 @@ public class Device implements Serializable, Comparable<Device> {
         this.examinations = examinations;
     }
 
-    public void addExamination(Examination examination) {
-        if (examination == null)
-            throw new NullPointerException("Examination is null");
-
-        examination.setDevice(this);
-        examinations.add(examination);
-    }
-
-    public void deleteExamination(Examination examination) {
-        if (examination == null)
-            throw new NullPointerException("Examination is null");
-
-        examinations.remove(examination);
-
-        if (examination.getDevice().equals(this)) {
-            examination.setDevice(null);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
