@@ -94,10 +94,7 @@ class ChannelNameServiceTest {
         repository.insert(entity);
         Assertions.assertThrows(
                 InsertException.class,
-                () -> {
-                    ChannelName entityTest = new ChannelName(name, comment);
-                    service.save(entityTest);
-                });
+                () -> service.save(new ChannelName(name, comment)));
         ChannelName entityTest = repository.read(entity.getId());
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);

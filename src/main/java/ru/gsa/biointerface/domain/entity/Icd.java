@@ -40,14 +40,6 @@ public class Icd implements Serializable, Comparable<Icd> {
     public Icd() {
     }
 
-    public Icd(long id, String name, int version, String comment, List<PatientRecord> patientRecords) {
-        this.id = id;
-        this.name = name;
-        this.version = version;
-        this.comment = comment;
-        this.patientRecords = patientRecords;
-    }
-
     public Icd(String name, int version, String comment) {
         this.id = -1;
         this.name = name;
@@ -94,6 +86,28 @@ public class Icd implements Serializable, Comparable<Icd> {
 
     public void setPatientRecords(List<PatientRecord> patientRecords) {
         this.patientRecords = patientRecords;
+    }
+
+    public void addPatientRecord(PatientRecord patientRecord) {
+        if (patientRecord == null)
+            throw new NullPointerException("PatientRecord is null");
+
+        patientRecord.setIcd(this);
+
+        if (!patientRecords.contains(patientRecord)) {
+            patientRecords.add(patientRecord);
+        }
+    }
+
+    public void deletePatientRecord(PatientRecord patientRecord) {
+        if (patientRecord == null)
+            throw new NullPointerException("PatientRecord is null");
+
+        patientRecords.remove(patientRecord);
+
+        if (patientRecord.getIcd().equals(this)) {
+            patientRecord.setIcd(null);
+        }
     }
 
     @Override

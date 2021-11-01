@@ -38,17 +38,10 @@ public class Device implements Serializable, Comparable<Device> {
     public Device() {
     }
 
-    public Device(long id, int amountChannels, String comment, List<Examination> examinations) {
+    public Device(long id, int amountChannels) {
         this.id = id;
         this.amountChannels = amountChannels;
-        this.comment = comment;
-        this.examinations = examinations;
-    }
-
-    public Device(long id, int amountChannels, String comment) {
-        this.id = id;
-        this.amountChannels = amountChannels;
-        this.comment = comment;
+        this.comment = null;
         this.examinations = new ArrayList<>();
     }
 
@@ -82,6 +75,27 @@ public class Device implements Serializable, Comparable<Device> {
 
     public void setExaminations(List<Examination> examinations) {
         this.examinations = examinations;
+    }
+
+    public void addExamination(Examination examination) {
+        if (examination == null)
+            throw new NullPointerException("Examination is null");
+
+        examination.setDevice(this);
+        if (!examinations.contains(examination)) {
+            examinations.add(examination);
+        }
+    }
+
+    public void deleteExamination(Examination examination) {
+        if (examination == null)
+            throw new NullPointerException("Examination is null");
+
+        examinations.remove(examination);
+
+        if (examination.getDevice().equals(this)) {
+            examination.setDevice(null);
+        }
     }
 
     @Override

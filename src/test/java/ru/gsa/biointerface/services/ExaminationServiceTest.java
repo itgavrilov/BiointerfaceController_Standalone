@@ -29,9 +29,7 @@ class ExaminationServiceTest {
             new GregorianCalendar(2021, Calendar.NOVEMBER, 27),
             null,
             comment);
-    private static final Device device = new Device(1, 1, comment);
-    private static final List<ChannelName> channelNames = new ArrayList<>();
-    private static final List<Channel> channels = new ArrayList<>();
+    private static final Device device = new Device(1, 1);
     private static ExaminationService service;
     private static ExaminationRepository repository;
 
@@ -42,8 +40,6 @@ class ExaminationServiceTest {
         repository = ExaminationRepository.getInstance();
         PatientRecordRepository.getInstance().insert(patientRecord);
         DeviceRepository.getInstance().insert(device);
-        channels.add(new Channel(0, null, null, new ArrayList<>()));
-        channelNames.add(null);
     }
 
     @AfterAll
@@ -61,8 +57,7 @@ class ExaminationServiceTest {
     void getAll() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -84,8 +79,7 @@ class ExaminationServiceTest {
     void getById() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -106,8 +100,7 @@ class ExaminationServiceTest {
     void recordingStart() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.recordingStart(null));
@@ -134,7 +127,8 @@ class ExaminationServiceTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.recordingStart(entity));
-        entity.setChannels(channels);
+        Channel channel = new Channel(0, null, null);
+        entity.addChannel(channel);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -149,11 +143,11 @@ class ExaminationServiceTest {
         entity.recordingStop();
         repository.transactionClose();
         Assertions.assertEquals(entity, repository.read(entity.getId()));
-        Channel channel = ChannelRepository.getInstance().read(new ChannelID(
+        Channel channelTest = ChannelRepository.getInstance().read(new ChannelID(
                 entity.getChannels().get(0).getId(),
                 entity
         ));
-        Assertions.assertEquals(channels.get(0), channel);
+        Assertions.assertEquals(channel, channelTest);
         repository.delete(entity);
         Assertions.assertNull(repository.read(entity.getId()));
     }
@@ -162,8 +156,7 @@ class ExaminationServiceTest {
     void recordingStop() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         repository.transactionOpen();
         repository.insert(entity);
         entity.recordingStart();
@@ -182,8 +175,7 @@ class ExaminationServiceTest {
     void delete() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -220,8 +212,7 @@ class ExaminationServiceTest {
     void update() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
+        new Channel(0, entity, null);
         repository.transactionOpen();
         repository.insert(entity);
         repository.transactionClose();
@@ -269,7 +260,8 @@ class ExaminationServiceTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.update(entity));
-        entity.setChannels(channels);
+        Channel channel =  new Channel(0, null, null);
+        entity.addChannel(channel);
         entity.setComment(null);
         Assertions.assertDoesNotThrow(
                 () -> service.update(entity));
@@ -284,9 +276,9 @@ class ExaminationServiceTest {
     void loadWithGraphsById() throws Exception {
         Examination entity =
                 new Examination(patientRecord, device, comment);
-        entity.setChannels(channels);
-        channels.get(0).setExamination(entity);
-        channels.get(0).getSamples().add(new Sample(0, channels.get(0), 10));
+        Channel channel = new Channel(0, entity, null);
+
+        channel.getSamples().add(new Sample(0, channel, 10));
 
         repository.transactionOpen();
         repository.insert(entity);
@@ -297,9 +289,9 @@ class ExaminationServiceTest {
         Assertions.assertEquals(device, entityTest.getDevice());
         Assertions.assertEquals(patientRecord, entityTest.getPatientRecord());
         Assertions.assertEquals(comment, entityTest.getComment());
-        Assertions.assertEquals(channels.get(0), entityTest.getChannels().get(0));
+        Assertions.assertEquals(channel, entityTest.getChannels().get(0));
         Assertions.assertEquals(
-                channels.get(0).getSamples().get(0),
+                channel.getSamples().get(0),
                 entityTest.getChannels().get(0).getSamples().get(0));
 
         repository.delete(entity);

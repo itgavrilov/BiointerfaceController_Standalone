@@ -37,13 +37,6 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
     public ChannelName() {
     }
 
-    public ChannelName(long id, String name, String comment, List<Channel> channels) {
-        this.id = id;
-        this.name = name;
-        this.comment = comment;
-        this.channels = channels;
-    }
-
     public ChannelName(String name, String comment) {
         this.id = -1;
         this.name = name;
@@ -81,6 +74,28 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
 
     public void setChannels(List<Channel> channels) {
         this.channels = channels;
+    }
+
+    public void addChannel(Channel channel) {
+        if (channel == null)
+            throw new NullPointerException("Channel is null");
+
+        channel.setChannelName(this);
+
+        if (!channels.contains(channel)) {
+            channels.add(channel);
+        }
+    }
+
+    public void deleteChannel(Channel channel) {
+        if (channel == null)
+            throw new NullPointerException("Channel is null");
+
+        channels.remove(channel);
+
+        if (channel.getChannelName().equals(this)) {
+            channel.setChannelName(null);
+        }
     }
 
     @Override

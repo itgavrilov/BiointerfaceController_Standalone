@@ -32,12 +32,12 @@ public class Examination implements Serializable, Comparable<Examination> {
     private Date startTime;
 
     @NotNull(message = "Patient record can't be null")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patientRecord_id", referencedColumnName = "id", nullable = false)
     private PatientRecord patientRecord;
 
     @NotNull(message = "Device can't be null")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id", referencedColumnName = "id", nullable = false)
     private Device device;
 
@@ -55,22 +55,13 @@ public class Examination implements Serializable, Comparable<Examination> {
     public Examination() {
     }
 
-    public Examination(long id, Date startTime, PatientRecord patientRecord, Device device, String comment, List<Channel> channels) {
-        this.id = id;
-        this.startTime = startTime;
-        this.patientRecord = patientRecord;
-        this.device = device;
-        this.comment = comment;
-        this.channels = channels;
-    }
-
     public Examination(PatientRecord patientRecord, Device device, String comment) {
         this.id = -1;
         this.startTime = Timestamp.valueOf(LocalDateTime.now());
-        this.patientRecord = patientRecord;
-        this.device = device;
         this.comment = comment;
         this.channels = new ArrayList<>();
+        patientRecord.addExamination(this);
+        device.addExamination(this);
     }
 
     public long getId() {
@@ -135,7 +126,13 @@ public class Examination implements Serializable, Comparable<Examination> {
         if (number >= channels.size())
             throw new IllegalArgumentException("I > amount channels");
 
-        channels.get(number).setChannelName(channelName);
+        if(channels.get(number).getChannelName() != null){
+            channels.get(number).getChannelName().deleteChannel(channels.get(number));
+        }
+
+        if(channelName != null) {
+            channelName.addChannel(channels.get(number));
+        }
     }
 
     public void setSampleInChannel(int numberOfChannel, int value) {
@@ -163,6 +160,29 @@ public class Examination implements Serializable, Comparable<Examination> {
 
     public void recordingStop() {
         this.recording = false;
+    }
+
+
+    public void addChannel(Channel channel) {
+        if (channel == null)
+            throw new NullPointerException("Channel is null");
+
+        channel.setExamination(this);
+
+        if (!channels.contains(channel)) {
+            channels.add(channel);
+        }
+    }
+
+    public void deleteChannel(Channel channel) {
+        if (channel == null)
+            throw new NullPointerException("Channel is null");
+
+        channels.remove(channel);
+
+        if (channel.getExamination().equals(this)) {
+            channel.setExamination(null);
+        }
     }
 
     @Override

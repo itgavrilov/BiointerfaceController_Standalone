@@ -47,7 +47,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @Column(nullable = false)
     private Calendar birthday;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "icd_id", referencedColumnName = "id")
     private Icd icd;
 
@@ -62,26 +62,17 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     public PatientRecord() {
     }
 
-    public PatientRecord(long id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment, List<Examination> examinations) {
-        this.id = id;
-        this.secondName = secondName;
-        this.firstName = firstName;
-        this.patronymic = patronymic;
-        this.birthday = birthday;
-        this.icd = icd;
-        this.comment = comment;
-        this.examinations = examinations;
-    }
-
     public PatientRecord(long id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment) {
         this.id = id;
         this.secondName = secondName;
         this.firstName = firstName;
         this.patronymic = patronymic;
         this.birthday = birthday;
-        this.icd = icd;
         this.comment = comment;
         this.examinations = new ArrayList<>();
+        if(icd != null) {
+            icd.addPatientRecord(this);
+        }
     }
 
     public long getId() {
@@ -157,6 +148,28 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.examinations = examinations;
     }
 
+    public void addExamination(Examination examination) {
+        if (examination == null)
+            throw new NullPointerException("Examination is null");
+
+        examination.setPatientRecord(this);
+
+        if (!examinations.contains(examination)) {
+            examinations.add(examination);
+        }
+    }
+
+    public void deleteExamination(Examination examination) {
+        if (examination == null)
+            throw new NullPointerException("Examination is null");
+
+        examinations.remove(examination);
+
+        if (examination.getPatientRecord().equals(this)) {
+            examination.setPatientRecord(null);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -186,6 +199,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @Override
     public String toString() {
         String icd_id = "-";
+
         String birthday = this.getBirthdayInLocalDate().format(
                 DateTimeFormatter.ofPattern("dd.MM.yyyy")
         );

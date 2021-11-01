@@ -82,7 +82,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
             throw new IllegalArgumentException("amountChannels <= 0 or > 8");
 
         if (device == null || device.getId() != id) {
-            device = new Device(id, amountChannels, null);
+            device = new Device(id, amountChannels);
             examination = null;
             patientRecord = null;
 
