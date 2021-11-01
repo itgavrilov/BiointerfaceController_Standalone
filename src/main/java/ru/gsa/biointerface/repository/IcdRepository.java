@@ -1,23 +1,20 @@
 package ru.gsa.biointerface.repository;
 
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.repository.database.AbstractRepository;
+
+import java.util.List;
 
 /**
- * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 01/11/2021
  */
-public class IcdRepository extends AbstractRepository<Icd, Long> {
-    private static IcdRepository dao;
+public interface IcdRepository {
+    void insert(Icd icd) throws Exception;
 
-    private IcdRepository() throws Exception {
-        super();
-    }
+    Icd getById(Long id) throws Exception;
 
-    public static IcdRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new IcdRepository();
-        }
+    void update(Icd icd) throws Exception;
 
-        return dao;
-    }
+    void delete(Icd icd) throws Exception;
+
+    List<Icd> getAll() throws Exception;
 }

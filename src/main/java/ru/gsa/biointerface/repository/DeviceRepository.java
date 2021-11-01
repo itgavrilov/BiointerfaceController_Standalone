@@ -1,23 +1,20 @@
 package ru.gsa.biointerface.repository;
 
 import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.repository.database.AbstractRepository;
+
+import java.util.List;
 
 /**
- * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 01/11/2021
  */
-public class DeviceRepository extends AbstractRepository<Device, Long> {
-    private static DeviceRepository dao;
+public interface DeviceRepository {
+    void insert(Device device) throws Exception;
 
-    private DeviceRepository() throws Exception {
-        super();
-    }
+    Device getById(Long id) throws Exception;
 
-    public static DeviceRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new DeviceRepository();
-        }
+    void update(Device device) throws Exception;
 
-        return dao;
-    }
+    void delete(Device device) throws Exception;
+
+    List<Device> getAll() throws Exception;
 }

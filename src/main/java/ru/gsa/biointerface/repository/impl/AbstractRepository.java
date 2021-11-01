@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.repository.database;
+package ru.gsa.biointerface.repository.impl;
 
 import org.hibernate.Session;
 import ru.gsa.biointerface.repository.exception.ReadException;

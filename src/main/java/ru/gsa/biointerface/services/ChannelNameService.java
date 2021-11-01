@@ -1,11 +1,11 @@
 package ru.gsa.biointerface.services;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.repository.ChannelNameRepository;
 import ru.gsa.biointerface.repository.exception.InsertException;
+import ru.gsa.biointerface.repository.impl.ChannelNameRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ChannelNameService {
     private final ChannelNameRepository dao;
 
     private ChannelNameService() throws Exception {
-        dao = ChannelNameRepository.getInstance();
+        dao = ChannelNameRepositoryImpl.getInstance();
     }
 
     public static ChannelNameService getInstance() throws Exception {
@@ -46,7 +46,7 @@ public class ChannelNameService {
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        ChannelName entity = dao.read(id);
+        ChannelName entity = dao.getById(id);
 
         if (entity != null) {
             LOGGER.info("Get channelName(id={}) from database", entity.getId());
@@ -68,7 +68,7 @@ public class ChannelNameService {
         if (entity.getChannels() == null)
             throw new NullPointerException("Channels is null");
 
-        ChannelName readEntity = dao.read(entity.getId());
+        ChannelName readEntity = dao.getById(entity.getId());
 
         if (readEntity == null) {
             dao.insert(entity);
@@ -85,7 +85,7 @@ public class ChannelNameService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        ChannelName readEntity = dao.read(entity.getId());
+        ChannelName readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.delete(entity);
@@ -108,7 +108,7 @@ public class ChannelNameService {
         if (entity.getChannels() == null)
             throw new NullPointerException("Channels is null");
 
-        ChannelName readEntity = dao.read(entity.getId());
+        ChannelName readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.update(entity);

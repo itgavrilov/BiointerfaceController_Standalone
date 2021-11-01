@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.repository.IcdRepository;
+import ru.gsa.biointerface.repository.impl.IcdRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -18,7 +19,7 @@ public class IcdService {
     private final IcdRepository dao;
 
     private IcdService() throws Exception {
-        dao = IcdRepository.getInstance();
+        dao = IcdRepositoryImpl.getInstance();
     }
 
     public static IcdService getInstance() throws Exception {
@@ -45,7 +46,7 @@ public class IcdService {
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Icd entity = dao.read(id);
+        Icd entity = dao.getById(id);
 
         if (entity != null) {
             LOGGER.info("Get icd(id={}) from database", entity.getId());
@@ -69,7 +70,7 @@ public class IcdService {
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 
-        Icd readEntity = dao.read(entity.getId());
+        Icd readEntity = dao.getById(entity.getId());
 
         if (readEntity == null) {
             dao.insert(entity);
@@ -86,7 +87,7 @@ public class IcdService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Icd readEntity = dao.read(entity.getId());
+        Icd readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.delete(entity);
@@ -111,7 +112,7 @@ public class IcdService {
         if (entity.getPatientRecords() == null)
             throw new NullPointerException("PatientRecords is null");
 
-        Icd readEntity = dao.read(entity.getId());
+        Icd readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.update(entity);

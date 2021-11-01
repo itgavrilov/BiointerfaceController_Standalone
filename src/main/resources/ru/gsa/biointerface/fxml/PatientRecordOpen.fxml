@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="400.0" maxWidth="500.0" minHeight="400.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="400.0" maxWidth="500.0"
+            minHeight="400.0"
             minWidth="500.0" prefHeight="400.0" prefWidth="500.0"
             xmlns="http://javafx.com/javafx/11.0.2"
             fx:controller="ru.gsa.biointerface.ui.window.PatientRecordOpenController">

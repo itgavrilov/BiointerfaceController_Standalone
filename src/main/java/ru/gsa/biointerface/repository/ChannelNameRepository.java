@@ -1,23 +1,20 @@
 package ru.gsa.biointerface.repository;
 
 import ru.gsa.biointerface.domain.entity.ChannelName;
-import ru.gsa.biointerface.repository.database.AbstractRepository;
+
+import java.util.List;
 
 /**
- * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 01/11/2021
  */
-public class ChannelNameRepository extends AbstractRepository<ChannelName, Long> {
-    private static ChannelNameRepository dao;
+public interface ChannelNameRepository {
+    void insert(ChannelName channelName) throws Exception;
 
-    private ChannelNameRepository() throws Exception {
-        super();
-    }
+    ChannelName getById(Long id) throws Exception;
 
-    public static ChannelNameRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new ChannelNameRepository();
-        }
+    void update(ChannelName channelName) throws Exception;
 
-        return dao;
-    }
+    void delete(ChannelName channelName) throws Exception;
+
+    List<ChannelName> getAll() throws Exception;
 }

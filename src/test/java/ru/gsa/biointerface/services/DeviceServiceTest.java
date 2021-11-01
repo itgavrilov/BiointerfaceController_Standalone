@@ -7,9 +7,9 @@ import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.repository.DeviceRepository;
 import ru.gsa.biointerface.repository.database.DatabaseHandler;
+import ru.gsa.biointerface.repository.impl.DeviceRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,7 +29,7 @@ class DeviceServiceTest {
     static void setUp() throws Exception {
         DatabaseHandler.constructInstanceForTest();
         service = DeviceService.getInstance();
-        repository = DeviceRepository.getInstance();
+        repository = DeviceRepositoryImpl.getInstance();
     }
 
     @Test
@@ -101,10 +101,10 @@ class DeviceServiceTest {
         repository.delete(entity);
         entity.setComment(comment);
         repository.insert(entity);
-        Device entityTest = repository.read(entity.getId());
+        Device entityTest = repository.getById(entity.getId());
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);
-        Assertions.assertNull(repository.read(entity.getId()));
+        Assertions.assertNull(repository.getById(entity.getId()));
     }
 
     @Test
@@ -135,9 +135,9 @@ class DeviceServiceTest {
                 });
 
         entity.setId(id);
-        Assertions.assertEquals(entity, repository.read(id));
+        Assertions.assertEquals(entity, repository.getById(id));
         service.delete(entity);
-        Assertions.assertNull(repository.read(id));
+        Assertions.assertNull(repository.getById(id));
     }
 
     @Test

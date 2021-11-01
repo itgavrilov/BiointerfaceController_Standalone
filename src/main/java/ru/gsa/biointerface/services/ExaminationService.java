@@ -8,6 +8,9 @@ import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.repository.ChannelRepository;
 import ru.gsa.biointerface.repository.ExaminationRepository;
 import ru.gsa.biointerface.repository.SampleRepository;
+import ru.gsa.biointerface.repository.impl.ChannelRepositoryImpl;
+import ru.gsa.biointerface.repository.impl.ExaminationRepositoryImpl;
+import ru.gsa.biointerface.repository.impl.SampleRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -23,9 +26,9 @@ public class ExaminationService {
     private final SampleRepository daoSample;
 
     private ExaminationService() throws Exception {
-        dao = ExaminationRepository.getInstance();
-        daoGraph = ChannelRepository.getInstance();
-        daoSample = SampleRepository.getInstance();
+        dao = ExaminationRepositoryImpl.getInstance();
+        daoGraph = ChannelRepositoryImpl.getInstance();
+        daoSample = SampleRepositoryImpl.getInstance();
     }
 
     public static ExaminationService getInstance() throws Exception {
@@ -107,7 +110,7 @@ public class ExaminationService {
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Examination entity = dao.read(id);
+        Examination entity = dao.getById(id);
 
         if (entity != null) {
             LOGGER.info("Get examination(id={}) from database", entity.getId());
@@ -133,7 +136,7 @@ public class ExaminationService {
         if (entity.getChannels().size() != entity.getDevice().getAmountChannels())
             throw new IllegalArgumentException("Amount channels differs from amount in device");
 
-        Examination readEntity = dao.read(entity.getId());
+        Examination readEntity = dao.getById(entity.getId());
 
         if (readEntity == null) {
             dao.transactionOpen();
@@ -165,7 +168,7 @@ public class ExaminationService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Examination readEntity = dao.read(entity.getId());
+        Examination readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.delete(entity);
@@ -195,7 +198,7 @@ public class ExaminationService {
             throw new IllegalArgumentException("Amount channels differs from amount in device");
 
 
-        Examination readEntity = dao.read(entity.getId());
+        Examination readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.update(entity);
@@ -211,7 +214,7 @@ public class ExaminationService {
         entity.setChannels(daoGraph.getAllByExamination(entity));
 
         for (Channel channel : entity.getChannels()) {
-            channel.setSamples(daoSample.getAllByGraph(channel));
+            channel.setSamples(daoSample.getAllByChannel(channel));
         }
 
         LOGGER.info("Examination(id={}) load with graphs from database", entity.getId());

@@ -3,7 +3,9 @@ package ru.gsa.biointerface.domain.entity;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.

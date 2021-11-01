@@ -1,23 +1,20 @@
 package ru.gsa.biointerface.repository;
 
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.database.AbstractRepository;
+
+import java.util.List;
 
 /**
- * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
+ * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 01/11/2021
  */
-public class PatientRecordRepository extends AbstractRepository<PatientRecord, Long> {
-    private static PatientRecordRepository dao;
+public interface PatientRecordRepository {
+    void insert(PatientRecord patientRecord) throws Exception;
 
-    private PatientRecordRepository() throws Exception {
-        super();
-    }
+    PatientRecord getById(Long id) throws Exception;
 
-    public static PatientRecordRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new PatientRecordRepository();
-        }
+    void update(PatientRecord patientRecord) throws Exception;
 
-        return dao;
-    }
+    void delete(PatientRecord patientRecord) throws Exception;
+
+    List<PatientRecord> getAll() throws Exception;
 }

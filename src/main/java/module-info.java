@@ -49,4 +49,5 @@ module ru.gsa.biointerface {
     opens ru.gsa.biointerface.host to javafx.fxml;
     opens ru.gsa.biointerface.host.exception to javafx.fxml;
     opens ru.gsa.biointerface.domain.entity to org.hibernate.orm.core;
+    exports ru.gsa.biointerface.repository.impl;
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.repository.PatientRecordRepository;
+import ru.gsa.biointerface.repository.impl.PatientRecordRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -18,7 +19,7 @@ public class PatientRecordService {
     private final PatientRecordRepository dao;
 
     private PatientRecordService() throws Exception {
-        dao = PatientRecordRepository.getInstance();
+        dao = PatientRecordRepositoryImpl.getInstance();
     }
 
     public static PatientRecordService getInstance() throws Exception {
@@ -45,7 +46,7 @@ public class PatientRecordService {
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        PatientRecord entity = dao.read(id);
+        PatientRecord entity = dao.getById(id);
 
         if (entity != null) {
             LOGGER.info("Get patientRecord(id={}) from database", entity.getId());
@@ -81,7 +82,7 @@ public class PatientRecordService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        PatientRecord readEntity = dao.read(entity.getId());
+        PatientRecord readEntity = dao.getById(entity.getId());
 
         if (readEntity == null) {
             dao.insert(entity);
@@ -100,7 +101,7 @@ public class PatientRecordService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        PatientRecord readEntity = dao.read(entity.getId());
+        PatientRecord readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.delete(entity);
@@ -135,7 +136,7 @@ public class PatientRecordService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        PatientRecord readEntity = dao.read(entity.getId());
+        PatientRecord readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.update(entity);

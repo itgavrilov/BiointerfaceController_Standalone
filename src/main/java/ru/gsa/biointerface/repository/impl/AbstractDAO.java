@@ -1,9 +1,10 @@
-package ru.gsa.biointerface.repository.database;
+package ru.gsa.biointerface.repository.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.gsa.biointerface.repository.database.DatabaseHandler;
 import ru.gsa.biointerface.repository.exception.DeleteException;
 import ru.gsa.biointerface.repository.exception.InsertException;
 import ru.gsa.biointerface.repository.exception.ReadException;
@@ -42,7 +43,7 @@ public abstract class AbstractDAO<Entity, Key> {
         }
     }
 
-    public Entity read(Key key) throws Exception {
+    public Entity getById(Key key) throws Exception {
         if (key == null)
             throw new NullPointerException("Key is null");
 

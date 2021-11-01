@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.IcdRepository;
 import ru.gsa.biointerface.repository.PatientRecordRepository;
 import ru.gsa.biointerface.repository.database.DatabaseHandler;
+import ru.gsa.biointerface.repository.impl.IcdRepositoryImpl;
+import ru.gsa.biointerface.repository.impl.PatientRecordRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -39,13 +37,13 @@ class PatientRecordServiceTest {
     static void setUp() throws Exception {
         DatabaseHandler.constructInstanceForTest();
         service = PatientRecordService.getInstance();
-        repository = PatientRecordRepository.getInstance();
-        IcdRepository.getInstance().insert(icd);
+        repository = PatientRecordRepositoryImpl.getInstance();
+        IcdRepositoryImpl.getInstance().insert(icd);
     }
 
     @AfterAll
     static void tearDown() throws Exception {
-        IcdRepository.getInstance().delete(icd);
+        IcdRepositoryImpl.getInstance().delete(icd);
     }
 
     @Test
@@ -166,7 +164,7 @@ class PatientRecordServiceTest {
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.save(entity));
-        PatientRecord entityTest = repository.read(id);
+        PatientRecord entityTest = repository.getById(id);
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);
     }
@@ -206,9 +204,9 @@ class PatientRecordServiceTest {
                 });
 
         entity.setId(id);
-        Assertions.assertEquals(entity, repository.read(id));
+        Assertions.assertEquals(entity, repository.getById(id));
         service.delete(entity);
-        Assertions.assertNull(repository.read(id));
+        Assertions.assertNull(repository.getById(id));
     }
 
     @Test
@@ -293,7 +291,7 @@ class PatientRecordServiceTest {
         entity.setComment(commentTest);
         repository.update(entity);
 
-        PatientRecord entityTest = repository.read(id);
+        PatientRecord entityTest = repository.getById(id);
 
         Assertions.assertEquals(secondNameTest, entityTest.getSecondName());
         Assertions.assertEquals(firstNameTest, entityTest.getFirstName());

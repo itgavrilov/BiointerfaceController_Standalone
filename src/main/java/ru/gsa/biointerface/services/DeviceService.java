@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.repository.DeviceRepository;
+import ru.gsa.biointerface.repository.impl.DeviceRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -17,7 +18,7 @@ public class DeviceService {
     private final DeviceRepository dao;
 
     private DeviceService() throws Exception {
-        dao = DeviceRepository.getInstance();
+        dao = DeviceRepositoryImpl.getInstance();
     }
 
     public static DeviceService getInstance() throws Exception {
@@ -44,7 +45,7 @@ public class DeviceService {
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Device entity = dao.read(id);
+        Device entity = dao.getById(id);
 
         if (entity != null) {
             LOGGER.info("Get device(id={}) from database", entity.getId());
@@ -66,7 +67,7 @@ public class DeviceService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        Device readEntity = dao.read(entity.getId());
+        Device readEntity = dao.getById(entity.getId());
 
         if (readEntity == null) {
             dao.insert(entity);
@@ -86,7 +87,7 @@ public class DeviceService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Device readEntity = dao.read(entity.getId());
+        Device readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.delete(entity);
@@ -107,7 +108,7 @@ public class DeviceService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        Device readEntity = dao.read(entity.getId());
+        Device readEntity = dao.getById(entity.getId());
 
         if (readEntity != null) {
             dao.update(entity);

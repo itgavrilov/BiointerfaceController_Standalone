@@ -7,9 +7,9 @@ import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.repository.IcdRepository;
 import ru.gsa.biointerface.repository.database.DatabaseHandler;
+import ru.gsa.biointerface.repository.impl.IcdRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,7 +29,7 @@ class IcdServiceTest {
     void setUp() throws Exception {
         DatabaseHandler.constructInstanceForTest();
         service = IcdService.getInstance();
-        repository = IcdRepository.getInstance();
+        repository = IcdRepositoryImpl.getInstance();
     }
 
     @Test
@@ -97,7 +97,7 @@ class IcdServiceTest {
         entity.setComment("");
         Assertions.assertDoesNotThrow(
                 () -> service.save(entity));
-        Icd entityTest = repository.read(entity.getId());
+        Icd entityTest = repository.getById(entity.getId());
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);
     }
@@ -131,9 +131,9 @@ class IcdServiceTest {
                 });
 
         entity.setId(id);
-        Assertions.assertEquals(entity, repository.read(id));
+        Assertions.assertEquals(entity, repository.getById(id));
         service.delete(entity);
-        Assertions.assertNull(repository.read(id));
+        Assertions.assertNull(repository.getById(id));
     }
 
     @Test

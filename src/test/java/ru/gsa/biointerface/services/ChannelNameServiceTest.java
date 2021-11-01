@@ -8,9 +8,9 @@ import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.repository.ChannelNameRepository;
 import ru.gsa.biointerface.repository.database.DatabaseHandler;
 import ru.gsa.biointerface.repository.exception.InsertException;
+import ru.gsa.biointerface.repository.impl.ChannelNameRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,7 +29,7 @@ class ChannelNameServiceTest {
     static void setUp() throws Exception {
         DatabaseHandler.constructInstanceForTest();
         service = ChannelNameService.getInstance();
-        repository = ChannelNameRepository.getInstance();
+        repository = ChannelNameRepositoryImpl.getInstance();
     }
 
     @Test
@@ -97,7 +97,7 @@ class ChannelNameServiceTest {
         Assertions.assertThrows(
                 InsertException.class,
                 () -> service.save(new ChannelName(name, comment)));
-        ChannelName entityTest = repository.read(entity.getId());
+        ChannelName entityTest = repository.getById(entity.getId());
         Assertions.assertEquals(entity, entityTest);
         repository.delete(entity);
     }
@@ -131,9 +131,9 @@ class ChannelNameServiceTest {
                 });
 
         entity.setId(idTest);
-        Assertions.assertEquals(entity, repository.read(idTest));
+        Assertions.assertEquals(entity, repository.getById(idTest));
         service.delete(entity);
-        Assertions.assertNull(repository.read(idTest));
+        Assertions.assertNull(repository.getById(idTest));
     }
 
     @Test
