@@ -15,10 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
@@ -29,15 +26,12 @@ class PatientRecordServiceTest {
     private static final String firstName = "testFirstName";
     private static final String middleName = "testMiddleName";
     private static final Calendar birthday = new GregorianCalendar(2021, Calendar.NOVEMBER, 27);
-    private static final LocalDate birthdayInLocalDate =
-            LocalDateTime.ofInstant(birthday.toInstant(), ZoneId.systemDefault())
-                    .toLocalDate();
     private static final String comment = "testComment";
     private static final Icd icd = new Icd(
             "testName",
             10,
             comment);
-    private static final List<Examination> examinations = new ArrayList<>();
+    private static final Set<Examination> examinations = new TreeSet<>();
     private static PatientRecordService service;
     private static PatientRecordRepository repository;
 

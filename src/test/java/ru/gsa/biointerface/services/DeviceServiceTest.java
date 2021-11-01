@@ -11,6 +11,8 @@ import ru.gsa.biointerface.repository.database.DatabaseHandler;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
@@ -19,7 +21,7 @@ class DeviceServiceTest {
     private static final long id = 1;
     private static final int amountChannels = 1;
     private static final String comment = "testComment";
-    private static final List<Examination> examinations = new ArrayList<>();
+    private static final Set<Examination> examinations = new TreeSet<>();
     private static DeviceService service;
     private static DeviceRepository repository;
 

@@ -5,9 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -32,7 +30,7 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
 
     @NotNull(message = "Channels can't be null")
     @OneToMany(mappedBy = "channelName", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Channel> channels;
+    private Set<Channel> channels;
 
     public ChannelName() {
     }
@@ -41,7 +39,7 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
         this.id = -1;
         this.name = name;
         this.comment = comment;
-        this.channels = new ArrayList<>();
+        this.channels = new TreeSet<>();
     }
 
     public long getId() {
@@ -68,11 +66,11 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
         this.comment = comment;
     }
 
-    public List<Channel> getChannels() {
+    public Set<Channel> getChannels() {
         return channels;
     }
 
-    public void setChannels(List<Channel> channels) {
+    public void setChannels(Set<Channel> channels) {
         this.channels = channels;
     }
 
@@ -81,10 +79,7 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
             throw new NullPointerException("Channel is null");
 
         channel.setChannelName(this);
-
-        if (!channels.contains(channel)) {
-            channels.add(channel);
-        }
+        channels.add(channel);
     }
 
     public void deleteChannel(Channel channel) {

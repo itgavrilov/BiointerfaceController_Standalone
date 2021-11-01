@@ -3,7 +3,7 @@ package ru.gsa.biointerface.domain.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public class Channel implements Serializable, Comparable<Channel> {
 
     public Channel(Integer id, Examination examination, ChannelName channelName) {
         this.id = id;
-        this.samples = new ArrayList<>();
+        this.samples = new LinkedList<>();
         if(examination != null) {
             examination.addChannel(this);
         }

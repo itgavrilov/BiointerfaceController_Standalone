@@ -12,6 +12,8 @@ import ru.gsa.biointerface.repository.exception.InsertException;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
@@ -19,7 +21,7 @@ import java.util.List;
 class ChannelNameServiceTest {
     private static final String name = "testName";
     private static final String comment = "testComment";
-    private static final List<Channel> channels = new ArrayList<>();
+    private static final Set<Channel> channels = new TreeSet<>();
     private static ChannelNameService service;
     private static ChannelNameRepository repository;
 

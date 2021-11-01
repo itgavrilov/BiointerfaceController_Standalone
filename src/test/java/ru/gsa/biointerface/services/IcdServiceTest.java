@@ -11,6 +11,8 @@ import ru.gsa.biointerface.repository.database.DatabaseHandler;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 27.10.2021.
@@ -19,7 +21,7 @@ class IcdServiceTest {
     private static final String name = "testName";
     private static final int version = 10;
     private static final String comment = "testComment";
-    private static final List<PatientRecord> patientRecords = new ArrayList<>();
+    private static final Set<PatientRecord> patientRecords = new TreeSet<>();
     private static IcdService service;
     private static IcdRepository repository;
 

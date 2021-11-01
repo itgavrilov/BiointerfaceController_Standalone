@@ -3,9 +3,7 @@ package ru.gsa.biointerface.domain.entity;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -35,7 +33,7 @@ public class Icd implements Serializable, Comparable<Icd> {
 
     @NotNull(message = "Patient records can't be null")
     @OneToMany(mappedBy = "icd", fetch = FetchType.LAZY)
-    private List<PatientRecord> patientRecords;
+    private Set<PatientRecord> patientRecords;
 
     public Icd() {
     }
@@ -45,7 +43,7 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.name = name;
         this.version = version;
         this.comment = comment;
-        this.patientRecords = new ArrayList<>();
+        this.patientRecords = new TreeSet<>();
     }
 
     public long getId() {
@@ -80,11 +78,11 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.comment = comment;
     }
 
-    public List<PatientRecord> getPatientRecords() {
+    public Set<PatientRecord> getPatientRecords() {
         return patientRecords;
     }
 
-    public void setPatientRecords(List<PatientRecord> patientRecords) {
+    public void setPatientRecords(Set<PatientRecord> patientRecords) {
         this.patientRecords = patientRecords;
     }
 
@@ -93,10 +91,7 @@ public class Icd implements Serializable, Comparable<Icd> {
             throw new NullPointerException("PatientRecord is null");
 
         patientRecord.setIcd(this);
-
-        if (!patientRecords.contains(patientRecord)) {
-            patientRecords.add(patientRecord);
-        }
+        patientRecords.add(patientRecord);
     }
 
     public void deletePatientRecord(PatientRecord patientRecord) {

@@ -6,9 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -33,7 +31,7 @@ public class Device implements Serializable, Comparable<Device> {
 
     @NotNull(message = "Examinations can't be null")
     @OneToMany(mappedBy = "device", fetch = FetchType.LAZY)
-    private List<Examination> examinations;
+    private Set<Examination> examinations;
 
     public Device() {
     }
@@ -42,7 +40,7 @@ public class Device implements Serializable, Comparable<Device> {
         this.id = id;
         this.amountChannels = amountChannels;
         this.comment = null;
-        this.examinations = new ArrayList<>();
+        this.examinations = new TreeSet<>();
     }
 
     public long getId() {
@@ -69,11 +67,11 @@ public class Device implements Serializable, Comparable<Device> {
         this.comment = comment;
     }
 
-    public List<Examination> getExaminations() {
+    public Set<Examination> getExaminations() {
         return examinations;
     }
 
-    public void setExaminations(List<Examination> examinations) {
+    public void setExaminations(Set<Examination> examinations) {
         this.examinations = examinations;
     }
 
@@ -82,9 +80,7 @@ public class Device implements Serializable, Comparable<Device> {
             throw new NullPointerException("Examination is null");
 
         examination.setDevice(this);
-        if (!examinations.contains(examination)) {
-            examinations.add(examination);
-        }
+        examinations.add(examination);
     }
 
     public void deleteExamination(Examination examination) {

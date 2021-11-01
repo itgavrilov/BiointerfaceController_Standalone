@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -57,7 +54,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
 
     @NotNull(message = "Examinations can't be null")
     @OneToMany(mappedBy = "patientRecord", fetch = FetchType.LAZY)
-    private List<Examination> examinations;
+    private Set<Examination> examinations;
 
     public PatientRecord() {
     }
@@ -69,7 +66,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.patronymic = patronymic;
         this.birthday = birthday;
         this.comment = comment;
-        this.examinations = new ArrayList<>();
+        this.examinations = new TreeSet<>();
         if(icd != null) {
             icd.addPatientRecord(this);
         }
@@ -140,11 +137,11 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
         this.comment = comment;
     }
 
-    public List<Examination> getExaminations() {
+    public Set<Examination> getExaminations() {
         return examinations;
     }
 
-    public void setExaminations(List<Examination> examinations) {
+    public void setExaminations(Set<Examination> examinations) {
         this.examinations = examinations;
     }
 
@@ -153,10 +150,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
             throw new NullPointerException("Examination is null");
 
         examination.setPatientRecord(this);
-
-        if (!examinations.contains(examination)) {
-            examinations.add(examination);
-        }
+        examinations.add(examination);
     }
 
     public void deleteExamination(Examination examination) {
