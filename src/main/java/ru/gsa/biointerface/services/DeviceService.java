@@ -8,6 +8,7 @@ import ru.gsa.biointerface.repository.impl.DeviceRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -15,10 +16,10 @@ import java.util.List;
 public class DeviceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
     private static DeviceService instance = null;
-    private final DeviceRepository dao;
+    private final DeviceRepository repository;
 
     private DeviceService() throws Exception {
-        dao = DeviceRepositoryImpl.getInstance();
+        repository = DeviceRepositoryImpl.getInstance();
     }
 
     public static DeviceService getInstance() throws Exception {
@@ -29,8 +30,8 @@ public class DeviceService {
         return instance;
     }
 
-    public List<Device> getAll() throws Exception {
-        List<Device> entities = dao.getAll();
+    public List<Device> findAll() throws Exception {
+        List<Device> entities = repository.findAll();
 
         if (entities.size() > 0) {
             LOGGER.info("Get all devices from database");
@@ -41,23 +42,25 @@ public class DeviceService {
         return entities;
     }
 
-    public Device getById(long id) throws Exception {
+    public Device findById(Integer id) throws Exception {
+        if (id == null)
+            throw new NullPointerException("Id is null");
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Device entity = dao.getById(id);
+        Optional<Device> optional = repository.findById(id);
 
-        if (entity != null) {
-            LOGGER.info("Get device(id={}) from database", entity.getId());
+        if (optional.isPresent()) {
+            LOGGER.info("Get device(id={}) from database", optional.get().getId());
+
+            return optional.get();
         } else {
             LOGGER.error("Device(id={}) is not found in database", id);
             throw new EntityNotFoundException("Device(id=" + id + ") is not found in database");
         }
-
-        return entity;
     }
 
-    public void save(Device entity) throws Exception {
+    public Device save(Device entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
@@ -67,18 +70,10 @@ public class DeviceService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        Device readEntity = dao.getById(entity.getId());
+        entity = repository.save(entity);
+        LOGGER.info("Device(id={}) is recorded in database", entity.getId());
 
-        if (readEntity == null) {
-            dao.insert(entity);
-            LOGGER.info("Device(id={}) is recorded in database", entity.getId());
-        } else {
-            LOGGER.warn("Device(id={}) already exists in database", entity.getId());
-            if (readEntity.getAmountChannels() != entity.getAmountChannels()) {
-                LOGGER.error("Amount of channels does not match previously recorded");
-                throw new IllegalArgumentException("Amount of channels does not match previously recorded");
-            }
-        }
+        return entity;
     }
 
     public void delete(Device entity) throws Exception {
@@ -87,34 +82,13 @@ public class DeviceService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Device readEntity = dao.getById(entity.getId());
+        Optional<Device> optional = repository.findById(entity.getId());
 
-        if (readEntity != null) {
-            dao.delete(entity);
-            LOGGER.info("Device(id={}) is deleted in database", entity.getId());
+        if (optional.isPresent()) {
+            repository.delete(optional.get());
+            LOGGER.info("Device(id={}) is deleted in database", optional.get().getId());
         } else {
             LOGGER.info("Device(id={}) not found in database", entity.getId());
-            throw new EntityNotFoundException("Device(id=" + entity.getId() + ") not found in database");
-        }
-    }
-
-    public void update(Device entity) throws Exception {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-        if (entity.getId() <= 0)
-            throw new IllegalArgumentException("Id <= 0");
-        if (entity.getAmountChannels() <= 0)
-            throw new IllegalArgumentException("Amount channels <= 0");
-        if (entity.getExaminations() == null)
-            throw new NullPointerException("Examinations is null");
-
-        Device readEntity = dao.getById(entity.getId());
-
-        if (readEntity != null) {
-            dao.update(entity);
-            LOGGER.info("Device(id={}) updated in database", entity.getId());
-        } else {
-            LOGGER.error("Device(id={}) not found in database", entity.getId());
             throw new EntityNotFoundException("Device(id=" + entity.getId() + ") not found in database");
         }
     }

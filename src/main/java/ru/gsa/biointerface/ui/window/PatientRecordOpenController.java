@@ -48,7 +48,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     @FXML
     private TableColumn<Examination, String> startTimeCol;
     @FXML
-    private TableColumn<Examination, Long> deviceIdCol;
+    private TableColumn<Examination, Integer> deviceIdCol;
     @FXML
     private Button deleteButton;
 
@@ -84,7 +84,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         tableView.getItems().clear();
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
         try {
-            examinations.addAll(ExaminationService.getInstance().getByPatientRecord(patientRecord));
+            examinations.addAll(ExaminationService.getInstance().findAllByPatientRecord(patientRecord));
         } catch (Exception e) {
             new AlertError("Error load list examinations: " + e.getMessage());
         }
@@ -118,7 +118,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
             String comment = patientRecord.getComment();
             patientRecord.setComment(commentField.getText());
             try {
-                PatientRecordService.getInstance().update(patientRecord);
+                PatientRecordService.getInstance().save(patientRecord);
             } catch (Exception e) {
                 commentField.setText(comment);
                 patientRecord.setComment(comment);

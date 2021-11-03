@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.repository.ChannelNameRepository;
-import ru.gsa.biointerface.repository.exception.InsertException;
 import ru.gsa.biointerface.repository.impl.ChannelNameRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -16,10 +16,10 @@ import java.util.List;
 public class ChannelNameService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelNameService.class);
     private static ChannelNameService instance = null;
-    private final ChannelNameRepository dao;
+    private final ChannelNameRepository repository;
 
     private ChannelNameService() throws Exception {
-        dao = ChannelNameRepositoryImpl.getInstance();
+        repository = ChannelNameRepositoryImpl.getInstance();
     }
 
     public static ChannelNameService getInstance() throws Exception {
@@ -30,8 +30,8 @@ public class ChannelNameService {
         return instance;
     }
 
-    public List<ChannelName> getAll() throws Exception {
-        List<ChannelName> entities = dao.getAll();
+    public List<ChannelName> findAll() throws Exception {
+        List<ChannelName> entities = repository.findAll();
 
         if (entities.size() > 0) {
             LOGGER.info("Get all channelNames from database");
@@ -42,23 +42,25 @@ public class ChannelNameService {
         return entities;
     }
 
-    public ChannelName getById(long id) throws Exception {
+    public ChannelName findById(Integer id) throws Exception {
+        if (id == null)
+            throw new NullPointerException("Id is null");
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        ChannelName entity = dao.getById(id);
+        Optional<ChannelName> optional = repository.findById(id);
 
-        if (entity != null) {
-            LOGGER.info("Get channelName(id={}) from database", entity.getId());
+        if (optional.isPresent()) {
+            LOGGER.info("Get channelName(id={}) from database", optional.get().getId());
+
+            return optional.get();
         } else {
             LOGGER.error("ChannelName(id={}) is not found in database", id);
             throw new EntityNotFoundException("ChannelName(id=" + id + ") is not found in database");
         }
-
-        return entity;
     }
 
-    public void save(ChannelName entity) throws Exception {
+    public ChannelName save(ChannelName entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getName() == null)
@@ -68,15 +70,10 @@ public class ChannelNameService {
         if (entity.getChannels() == null)
             throw new NullPointerException("Channels is null");
 
-        ChannelName readEntity = dao.getById(entity.getId());
+        entity = repository.save(entity);
+        LOGGER.info("ChannelName(id={})  is recorded in database", entity.getId());
 
-        if (readEntity == null) {
-            dao.insert(entity);
-            LOGGER.info("ChannelName(id={})  is recorded in database", entity.getId());
-        } else {
-            LOGGER.error("ChannelName(id={}) already exists in database", entity.getId());
-            throw new InsertException("ChannelName(id=" + entity.getId() + ") already exists in database");
-        }
+        return entity;
     }
 
     public void delete(ChannelName entity) throws Exception {
@@ -85,36 +82,13 @@ public class ChannelNameService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        ChannelName readEntity = dao.getById(entity.getId());
+        Optional<ChannelName> optional = repository.findById(entity.getId());
 
-        if (readEntity != null) {
-            dao.delete(entity);
-            LOGGER.info("ChannelName(id={}) is deleted in database", entity.getId());
+        if (optional.isPresent()) {
+            repository.delete(optional.get());
+            LOGGER.info("ChannelName(id={}) is deleted in database", optional.get().getId());
         } else {
             LOGGER.info("ChannelName(id={}) not found in database", entity.getId());
-            throw new EntityNotFoundException("ChannelName(id=" + entity.getId() + ") not found in database");
-        }
-    }
-
-    public void update(ChannelName entity) throws Exception {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-        if (entity.getId() <= 0)
-            throw new IllegalArgumentException("Id <= 0");
-        if (entity.getName() == null)
-            throw new NullPointerException("Name is null");
-        if (entity.getName().isBlank())
-            throw new IllegalArgumentException("Name is blank");
-        if (entity.getChannels() == null)
-            throw new NullPointerException("Channels is null");
-
-        ChannelName readEntity = dao.getById(entity.getId());
-
-        if (readEntity != null) {
-            dao.update(entity);
-            LOGGER.info("ChannelName(id={}) updated in database", entity.getId());
-        } else {
-            LOGGER.error("ChannelName(id={}) not found in database", entity.getId());
             throw new EntityNotFoundException("ChannelName(id=" + entity.getId() + ") not found in database");
         }
     }

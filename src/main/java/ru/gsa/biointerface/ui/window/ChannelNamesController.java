@@ -48,7 +48,7 @@ public class ChannelNamesController extends AbstractWindow {
             throw new NullPointerException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<ChannelName> channelNames = FXCollections.observableArrayList();
-        channelNames.addAll(channelNameService.getAll());
+        channelNames.addAll(channelNameService.findAll());
         tableView.setItems(channelNames);
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         transitionGUI.show();
@@ -68,7 +68,7 @@ public class ChannelNamesController extends AbstractWindow {
             String comment = channelName.getComment();
             channelName.setComment(commentField.getText());
             try {
-                channelNameService.update(channelName);
+                channelNameService.save(channelName);
             } catch (Exception e) {
                 channelName.setComment(comment);
                 commentField.setText(comment);

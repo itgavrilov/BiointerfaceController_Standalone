@@ -23,8 +23,8 @@ import java.util.ResourceBundle;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public final class ChannelController implements ContentForWindow {
-    private final ArrayList<XYChart.Data<Long, Integer>> samples = new ArrayList<>();
-    private final ObservableList<XYChart.Data<Long, Integer>> dataLineGraphic = FXCollections.observableArrayList();
+    private final ArrayList<XYChart.Data<Integer, Integer>> samples = new ArrayList<>();
+    private final ObservableList<XYChart.Data<Integer, Integer>> dataLineGraphic = FXCollections.observableArrayList();
     private Channel channel;
     private int start = 0;
     private int capacity = 0;
@@ -38,7 +38,7 @@ public final class ChannelController implements ContentForWindow {
     @FXML
     private NumberAxis axisY;
     @FXML
-    private LineChart<Long, Integer> graphic;
+    private LineChart<Integer, Integer> graphic;
 
     public ChannelController() {
     }
@@ -65,11 +65,11 @@ public final class ChannelController implements ContentForWindow {
             ChannelName channelName = channel.getChannelName();
             nameText.setText(channelName.getName());
         } else {
-            nameText.setText("Channel " + (channel.getId() + 1));
+            nameText.setText("Channel " + (channel.getId().getNumber() + 1));
         }
 
         for (Sample sample : channel.getSamples()) {
-            samples.add(new XYChart.Data<>(sample.getId(), sample.getValue()));
+            samples.add(new XYChart.Data<>(sample.getId().getId(), sample.getValue()));
         }
         Platform.runLater(() -> {
             dataLineGraphic.clear();

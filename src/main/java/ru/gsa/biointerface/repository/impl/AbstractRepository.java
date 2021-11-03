@@ -15,7 +15,7 @@ public abstract class AbstractRepository<Entity, Key> extends AbstractDAO<Entity
         super();
     }
 
-    public List<Entity> getAll() throws Exception {
+    public List<Entity> findAll() throws Exception {
         try (final Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -30,5 +30,9 @@ public abstract class AbstractRepository<Entity, Key> extends AbstractDAO<Entity
             LOGGER.error("Error reading all entities", e);
             throw new ReadException(e);
         }
+    }
+
+    public boolean existsById(Key key) throws Exception {
+        return findById(key).isPresent();
     }
 }

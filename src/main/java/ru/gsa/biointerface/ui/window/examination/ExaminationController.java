@@ -129,7 +129,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
             }
 
             channelGUIs.add(node);
-            ChannelCheckBox checkBox = new ChannelCheckBox(channel.getId());
+            ChannelCheckBox checkBox = new ChannelCheckBox(channel.getId().getNumber());
             checkBox.setText(channelController.getName());
             checkBox.setOnAction(event -> {
                 node.getNode().setVisible(checkBox.isSelected());
@@ -193,7 +193,7 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
             String comment = examination.getComment();
             examination.setComment(commentField.getText());
             try {
-                examinationService.update(examination);
+                examinationService.save(examination);
             } catch (Exception e) {
                 examination.setComment(comment);
                 commentField.setText(comment);

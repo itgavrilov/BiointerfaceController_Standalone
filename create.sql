@@ -45,10 +45,10 @@ CREATE TABLE examination
 
 CREATE TABLE channel
 (
-    id             INTEGER NOT NULL,
+    number         INTEGER NOT NULL,
     examination_id INTEGER NOT NULL,
     channelName_id INTEGER,
-    PRIMARY KEY (id, examination_id),
+    PRIMARY KEY (number, examination_id),
     FOREIGN KEY (examination_id) REFERENCES examination (id) ON DELETE CASCADE,
     FOREIGN KEY (channelName_id) REFERENCES channelName (id)
 );
@@ -56,9 +56,9 @@ CREATE TABLE channel
 CREATE TABLE sample
 (
     id             INTEGER NOT NULL,
-    channel_id     INTEGER NOT NULL,
+    channel_number INTEGER NOT NULL,
     examination_id INTEGER NOT NULL,
     value          INTEGER NOT NULL,
-    PRIMARY KEY (id, channel_id, examination_id),
-    FOREIGN KEY (channel_id, examination_id) REFERENCES channel (id, examination_id) ON DELETE CASCADE
+    PRIMARY KEY (id, channel_number, examination_id),
+    FOREIGN KEY (channel_number, examination_id) REFERENCES channel (number, examination_id) ON DELETE CASCADE
 );

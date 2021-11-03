@@ -11,20 +11,19 @@ import java.util.Objects;
  */
 @Entity(name = "sample")
 @Table(name = "sample")
-@IdClass(SampleID.class)
 public class Sample implements Serializable, Comparable<Sample> {
     @NotNull(message = "Id can't be null")
     @Min(value = 0, message = "Id can't be lass then 0")
-    @Id
-    private long id;
+    @EmbeddedId
+    private SampleID id;
 
     @NotNull(message = "Channel can't be null")
-    @Id
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumns({
             @JoinColumn(name = "examination_id", referencedColumnName = "examination_id", nullable = false),
-            @JoinColumn(name = "channel_id", referencedColumnName = "id", nullable = false)
+            @JoinColumn(name = "channel_number", referencedColumnName = "number", nullable = false)
     })
+    @MapsId("channel_id")
     private Channel channel;
 
     @NotNull(message = "Value can't be null")
@@ -34,17 +33,18 @@ public class Sample implements Serializable, Comparable<Sample> {
     public Sample() {
     }
 
-    public Sample(long id, Channel channel, int value) {
-        this.id = id;
+    public Sample(int id, Channel channel, int value) {
+        this.id = new SampleID(id, channel.getId());
         this.channel = channel;
+        channel.getSamples().add(this);
         this.value = value;
     }
 
-    public long getId() {
+    public SampleID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(SampleID id) {
         this.id = id;
     }
 
@@ -69,35 +69,23 @@ public class Sample implements Serializable, Comparable<Sample> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sample that = (Sample) o;
-        return id == that.id && Objects.equals(channel, that.channel);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, channel);
+        return Objects.hash(id);
     }
 
     @Override
     public int compareTo(Sample o) {
-        int result = channel.compareTo(o.channel);
-
-        if (result == 0) {
-            if (id > o.id) {
-                result = 1;
-            } else if (id < o.id) {
-                result = -1;
-            }
-        }
-
-        return result;
+        return id.compareTo(o.id);
     }
 
     @Override
     public String toString() {
         return "Sample{" +
                 "id=" + id +
-                ", examination_id=" + channel.getExamination().getId() +
-                ", numberOfChannel=" + channel.getId() +
                 ", value=" + value +
                 '}';
     }

@@ -50,7 +50,7 @@ public class IcdsController extends AbstractWindow {
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<Icd> icds = FXCollections.observableArrayList();
-        icds.addAll(icdService.getAll());
+        icds.addAll(icdService.findAll());
         tableView.setItems(icds);
         icdCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         versionCol.setCellValueFactory(new PropertyValueFactory<>("version"));
@@ -72,7 +72,7 @@ public class IcdsController extends AbstractWindow {
             String comment = icd.getComment();
             icd.setComment(commentField.getText());
             try {
-                icdService.update(icd);
+                icdService.save(icd);
             } catch (Exception e) {
                 commentField.setText(comment);
                 icd.setComment(comment);

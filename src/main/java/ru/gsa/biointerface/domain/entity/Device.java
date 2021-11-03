@@ -19,7 +19,7 @@ public class Device implements Serializable, Comparable<Device> {
     @NotNull(message = "Id can't be null")
     @Min(value = 1, message = "Id can't be lass then 1")
     @Id
-    private long id;
+    private int id;
 
     @NotNull(message = "Amount channels can't be null")
     @Min(value = 1, message = "Amount channels can't be lass then 1")
@@ -38,18 +38,18 @@ public class Device implements Serializable, Comparable<Device> {
     public Device() {
     }
 
-    public Device(long id, int amountChannels) {
+    public Device(int id, int amountChannels) {
         this.id = id;
         this.amountChannels = amountChannels;
         this.comment = null;
         this.examinations = new TreeSet<>();
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

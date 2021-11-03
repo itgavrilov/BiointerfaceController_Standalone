@@ -8,7 +8,7 @@ import ru.gsa.biointerface.repository.impl.PatientRecordRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -16,10 +16,10 @@ import java.util.NoSuchElementException;
 public class PatientRecordService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordService.class);
     private static PatientRecordService instance = null;
-    private final PatientRecordRepository dao;
+    private final PatientRecordRepository repository;
 
     private PatientRecordService() throws Exception {
-        dao = PatientRecordRepositoryImpl.getInstance();
+        repository = PatientRecordRepositoryImpl.getInstance();
     }
 
     public static PatientRecordService getInstance() throws Exception {
@@ -30,8 +30,8 @@ public class PatientRecordService {
         return instance;
     }
 
-    public List<PatientRecord> getAll() throws Exception {
-        List<PatientRecord> entities = dao.getAll();
+    public List<PatientRecord> findAll() throws Exception {
+        List<PatientRecord> entities = repository.findAll();
 
         if (entities.size() > 0) {
             LOGGER.info("Get all patientRecords from database");
@@ -42,22 +42,23 @@ public class PatientRecordService {
         return entities;
     }
 
-    public PatientRecord getById(long id) throws Exception {
+    public PatientRecord findById(Integer id) throws Exception {
+        if (id == null)
+            throw new NullPointerException("Id is null");
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        PatientRecord entity = dao.getById(id);
+        Optional<PatientRecord> optional = repository.findById(id);
 
-        if (entity != null) {
-            LOGGER.info("Get patientRecord(id={}) from database", entity.getId());
+        if (optional.isPresent()) {
+            LOGGER.info("Get patientRecord(id={}) from database", optional.get().getId());
+            return optional.get();
         } else {
             LOGGER.error("PatientRecord(id={}) is not found in database", id);
             throw new EntityNotFoundException(
                     "PatientRecord(id=" + id + ") is not found in database"
             );
         }
-
-        return entity;
     }
 
     public void save(PatientRecord entity) throws Exception {
@@ -82,17 +83,8 @@ public class PatientRecordService {
         if (entity.getExaminations() == null)
             throw new NullPointerException("Examinations is null");
 
-        PatientRecord readEntity = dao.getById(entity.getId());
-
-        if (readEntity == null) {
-            dao.insert(entity);
-            LOGGER.info("PatientRecord(id={}) is recorded in database", entity.getId());
-        } else {
-            LOGGER.error("PatientRecord(id={}) already exists in database", entity.getId());
-            throw new IllegalArgumentException(
-                    "PatientRecord(id=" + entity.getId() + ") already exists in database"
-            );
-        }
+        repository.save(entity);
+        LOGGER.info("PatientRecord(id={}) is recorded in database", entity.getId());
     }
 
     public void delete(PatientRecord entity) throws Exception {
@@ -101,49 +93,16 @@ public class PatientRecordService {
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        PatientRecord readEntity = dao.getById(entity.getId());
+        Optional<PatientRecord> optional = repository.findById(entity.getId());
 
-        if (readEntity != null) {
-            dao.delete(entity);
-            LOGGER.info("PatientRecord(id={}) is deleted in database", entity.getId());
+        if (optional.isPresent()) {
+            repository.delete(optional.get());
+            LOGGER.info("PatientRecord(id={}) is deleted in database", optional.get().getId());
         } else {
             LOGGER.error("PatientRecord(id={}) not found in database", entity.getId());
             throw new EntityNotFoundException(
                     "PatientRecord(id=" + entity.getId() + ") not found in database"
             );
-        }
-    }
-
-    public void update(PatientRecord entity) throws Exception {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-        if (entity.getId() <= 0)
-            throw new IllegalArgumentException("Id <= 0");
-        if (entity.getSecondName() == null)
-            throw new NullPointerException("SecondName is null");
-        if (entity.getSecondName().isBlank())
-            throw new IllegalArgumentException("SecondName is blank");
-        if (entity.getFirstName() == null)
-            throw new NullPointerException("FirstName is null");
-        if (entity.getFirstName().isBlank())
-            throw new IllegalArgumentException("FirstName is blank");
-        if (entity.getPatronymic() == null)
-            throw new NullPointerException("MiddleName is null");
-        if (entity.getPatronymic().isBlank())
-            throw new IllegalArgumentException("MiddleName is blank");
-        if (entity.getBirthday() == null)
-            throw new NullPointerException("Birthday is null");
-        if (entity.getExaminations() == null)
-            throw new NullPointerException("Examinations is null");
-
-        PatientRecord readEntity = dao.getById(entity.getId());
-
-        if (readEntity != null) {
-            dao.update(entity);
-            LOGGER.info("PatientRecord(id={}) updated in database", entity.getId());
-        } else {
-            LOGGER.error("PatientRecord(id={}) not found in database", entity.getId());
-            throw new NoSuchElementException("PatientRecord(id=" + entity.getId() + ") not found in database");
         }
     }
 }

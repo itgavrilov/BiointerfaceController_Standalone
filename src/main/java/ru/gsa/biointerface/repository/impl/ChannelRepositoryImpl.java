@@ -14,28 +14,29 @@ import java.util.List;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ChannelRepositoryImpl extends AbstractRepository<Channel, ChannelID> implements ChannelRepository {
-    private static ChannelRepository dao;
+    private static ChannelRepository repository;
 
     private ChannelRepositoryImpl() throws Exception {
         super();
     }
 
     public static ChannelRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new ChannelRepositoryImpl();
+        if (repository == null) {
+            repository = new ChannelRepositoryImpl();
         }
 
-        return dao;
+        return repository;
     }
 
-    public List<Channel> getAllByExamination(Examination examination) throws Exception {
+    @Override
+    public List<Channel> findAllByExamination(Examination entity) throws Exception {
         List<Channel> entities;
 
         try (final Session session = sessionFactory.openSession()) {
             String hql = "FROM channel where examination_id  = :id";
             //noinspection unchecked
             Query<Channel> query = session.createQuery(hql);
-            query.setParameter("id", examination.getId());
+            query.setParameter("id", entity.getId());
 
             entities = query.list();
         } catch (Exception e) {
@@ -43,5 +44,19 @@ public class ChannelRepositoryImpl extends AbstractRepository<Channel, ChannelID
         }
 
         return entities;
+    }
+
+    @Override
+    public Channel save(Channel entity) throws Exception {
+        if (entity == null)
+            throw new NullPointerException("Entity is null");
+
+        if (entity.getId().getNumber() >= 0 && entity.getId().getExamination_id() > 0 && existsById(entity.getId())) {
+            update(entity);
+        } else {
+            insert(entity);
+        }
+
+        return entity;
     }
 }

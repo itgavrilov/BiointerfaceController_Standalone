@@ -257,7 +257,7 @@ public class PatientRecordAddController extends AbstractWindow {
     private void setIcdComboBox() {
         ObservableList<Icd> icds = FXCollections.observableArrayList();
         try {
-            List<Icd> icdList = icdService.getAll();
+            List<Icd> icdList = icdService.findAll();
             icds.add(null);
             icds.addAll(icdList);
         } catch (Exception e) {

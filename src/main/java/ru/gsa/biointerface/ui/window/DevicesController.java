@@ -53,7 +53,7 @@ public class DevicesController extends AbstractWindow {
             );
 
         ObservableList<Device> devices = FXCollections.observableArrayList();
-        devices.addAll(deviceService.getAll());
+        devices.addAll(deviceService.findAll());
         tableView.setItems(devices);
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
@@ -75,7 +75,7 @@ public class DevicesController extends AbstractWindow {
             String comment = device.getComment();
             device.setComment(commentField.getText());
             try {
-                deviceService.update(device);
+                deviceService.save(device);
             } catch (Exception e) {
                 device.setComment(comment);
                 commentField.setText(comment);

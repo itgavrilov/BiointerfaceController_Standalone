@@ -1,6 +1,7 @@
 package ru.gsa.biointerface.host;
 
 import ru.gsa.biointerface.domain.entity.ChannelName;
+import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.PatientRecord;
 import ru.gsa.biointerface.host.cash.DataListener;
 
@@ -11,6 +12,8 @@ public interface HostHandler {
     void setPatientRecord(PatientRecord patientRecord);
 
     int getAmountChannels();
+
+    Device getDevice();
 
     void setNameInChannel(int numberOfChannel, ChannelName channelName);
 

@@ -6,18 +6,32 @@ import ru.gsa.biointerface.repository.ChannelNameRepository;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class ChannelNameRepositoryImpl extends AbstractRepository<ChannelName, Long> implements ChannelNameRepository {
-    private static ChannelNameRepository dao;
+public class ChannelNameRepositoryImpl extends AbstractRepository<ChannelName, Integer> implements ChannelNameRepository {
+    private static ChannelNameRepository repository;
 
     private ChannelNameRepositoryImpl() throws Exception {
         super();
     }
 
     public static ChannelNameRepository getInstance() throws Exception {
-        if (dao == null) {
-            dao = new ChannelNameRepositoryImpl();
+        if (repository == null) {
+            repository = new ChannelNameRepositoryImpl();
         }
 
-        return dao;
+        return repository;
+    }
+
+    @Override
+    public ChannelName save(ChannelName entity) throws Exception {
+        if (entity == null)
+            throw new NullPointerException("Entity is null");
+
+        if (entity.getId() > 0 && existsById(entity.getId())) {
+            update(entity);
+        } else {
+            insert(entity);
+        }
+
+        return entity;
     }
 }

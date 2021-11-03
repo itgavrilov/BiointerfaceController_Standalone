@@ -23,7 +23,7 @@ public class Examination implements Serializable, Comparable<Examination> {
     @NotNull(message = "Id can't be null")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @NotNull(message = "Start time can't be null")
     @Past(message = "Start time should be in past")
@@ -49,9 +49,6 @@ public class Examination implements Serializable, Comparable<Examination> {
     @OneToMany(mappedBy = "examination", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Channel> channels;
 
-    @Transient
-    private boolean recording = false;
-
     public Examination() {
     }
 
@@ -60,15 +57,15 @@ public class Examination implements Serializable, Comparable<Examination> {
         this.startTime = Timestamp.valueOf(LocalDateTime.now());
         this.comment = comment;
         this.channels = new ArrayList<>();
-        this.patientRecord = patientRecord;
         this.device = device;
+        this.patientRecord = patientRecord;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -116,44 +113,6 @@ public class Examination implements Serializable, Comparable<Examination> {
 
     public void setChannels(List<Channel> channels) {
         this.channels = channels;
-    }
-
-    public void setNameInChannel(int number, ChannelName channelName) {
-        if (channels == null)
-            throw new NullPointerException("Channels is null");
-        if (number < 0)
-            throw new IllegalArgumentException("number < 0");
-        if (number >= channels.size())
-            throw new IllegalArgumentException("I > amount channels");
-
-        channels.get(number).setChannelName(channelName);
-    }
-
-    public void setSampleInChannel(int numberOfChannel, int value) {
-        if (numberOfChannel >= channels.size() || numberOfChannel < 0)
-            throw new IllegalArgumentException("NumberOfChannel < 0 or > amount channels");
-
-        Channel channel = channels.get(numberOfChannel);
-        List<Sample> entities = channel.getSamples();
-        Sample sample =
-                new Sample(
-                        entities.size(),
-                        channel,
-                        value
-                );
-        entities.add(entities.size(), sample);
-    }
-
-    public boolean isRecording() {
-        return recording;
-    }
-
-    public void recordingStart() {
-        this.recording = true;
-    }
-
-    public void recordingStop() {
-        this.recording = false;
     }
 
     @Override

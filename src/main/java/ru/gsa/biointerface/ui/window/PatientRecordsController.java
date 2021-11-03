@@ -78,7 +78,7 @@ public class PatientRecordsController extends AbstractWindow {
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<PatientRecord> patientRecords = FXCollections.observableArrayList();
-        patientRecords.addAll(patientRecordService.getAll());
+        patientRecords.addAll(patientRecordService.findAll());
         tableView.setItems(patientRecords);
         tableView.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
@@ -103,7 +103,7 @@ public class PatientRecordsController extends AbstractWindow {
     private void setIcdComboBox() {
         ObservableList<Icd> icds = FXCollections.observableArrayList();
         try {
-            List<Icd> icdList = icdService.getAll();
+            List<Icd> icdList = icdService.findAll();
             icds.add(null);
             icds.addAll(icdList);
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class PatientRecordsController extends AbstractWindow {
                 LOGGER.info("Set new icd in patientRecord(number={})", patientRecord.getId());
                 try {
                     patientRecord.setIcd(newIcd);
-                    patientRecordService.update(patientRecord);
+                    patientRecordService.save(patientRecord);
                 } catch (Exception e) {
                     patientRecord.setIcd(icd);
                     LOGGER.error("Error set new icd in patientRecord(number={})", patientRecord.getId());
@@ -179,7 +179,7 @@ public class PatientRecordsController extends AbstractWindow {
         if (Objects.equals(patientRecord.getComment(), commentField.getText())) {
             patientRecord.setComment(commentField.getText());
             try {
-                patientRecordService.update(patientRecord);
+                patientRecordService.save(patientRecord);
                 LOGGER.info("New comment is set in patientRecord(number={})", patientRecord.getId());
             } catch (Exception e) {
                 commentField.setText(patientRecord.getComment());

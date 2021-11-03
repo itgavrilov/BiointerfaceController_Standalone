@@ -12,6 +12,7 @@ import ru.gsa.biointerface.repository.exception.UpdateException;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.Optional;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -28,22 +29,7 @@ public abstract class AbstractDAO<Entity, Key> {
         sessionFactory = DatabaseHandler.getInstance().getSessionFactory();
     }
 
-    public void insert(Entity entity) throws Exception {
-        if (entity == null)
-            throw new NullPointerException("Entity is null");
-
-        try (final Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.save(entity);
-            session.getTransaction().commit();
-            LOGGER.info("Entity insert successful");
-        } catch (Exception e) {
-            LOGGER.error("Insert entity error", e);
-            throw new InsertException(e);
-        }
-    }
-
-    public Entity getById(Key key) throws Exception {
+    public Optional<Entity> findById(Key key) throws Exception {
         if (key == null)
             throw new NullPointerException("Key is null");
 
@@ -57,7 +43,24 @@ public abstract class AbstractDAO<Entity, Key> {
             throw new ReadException(e);
         }
 
-        return entity;
+        return Optional.ofNullable(entity);
+    }
+
+    public Entity insert(Entity entity) throws Exception {
+        if (entity == null)
+            throw new NullPointerException("Entity is null");
+
+        try (final Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.save(entity);
+            session.getTransaction().commit();
+            LOGGER.info("Entity insert successful");
+
+            return entity;
+        } catch (Exception e) {
+            LOGGER.error("Insert entity error", e);
+            throw new InsertException(e);
+        }
     }
 
     public void update(Entity entity) throws Exception {

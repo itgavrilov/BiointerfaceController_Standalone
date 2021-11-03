@@ -97,7 +97,7 @@ public final class ChannelForMeteringController implements DataListener, Content
     public void onNameComboBoxShowing() {
         ObservableList<ChannelName> channelNames = FXCollections.observableArrayList();
         try {
-            channelNames.addAll(channelNameService.getAll());
+            channelNames.addAll(channelNameService.findAll());
         } catch (Exception e) {
             new AlertError("Error load list channel names: " + e.getMessage());
         }

@@ -1,5 +1,6 @@
 package ru.gsa.biointerface.domain.entity;
 
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -7,19 +8,36 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
+@Embeddable
 public class ChannelID implements Serializable, Comparable<ChannelID> {
-    @NotNull
-    private int id;
+    @NotNull(message = "Id can't be null")
+    private int number;
 
-    @NotNull
-    private Examination examination;
+    @NotNull(message = "Id can't be null")
+    private int examination_id;
 
     public ChannelID() {
     }
 
-    public ChannelID(int id, Examination examination) {
-        this.id = id;
-        this.examination = examination;
+    public ChannelID(int id, int examination_id) {
+        this.number = id;
+        this.examination_id = examination_id;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public int getExamination_id() {
+        return examination_id;
+    }
+
+    public void setExamination_id(int examination_id) {
+        this.examination_id = examination_id;
     }
 
     @Override
@@ -27,29 +45,29 @@ public class ChannelID implements Serializable, Comparable<ChannelID> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChannelID that = (ChannelID) o;
-        return id == that.id && Objects.equals(examination, that.examination);
+        return number == that.number && examination_id == that.examination_id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, examination);
+        return Objects.hash(number, examination_id);
     }
 
     @Override
     public int compareTo(ChannelID o) {
-        int result = examination.compareTo(o.examination);
+        int result = examination_id - o.examination_id;
 
         if (result == 0)
-            result = id - o.id;
+            result = number - o.number;
 
         return result;
     }
 
     @Override
     public String toString() {
-        return "ChannelID{" +
-                "number=" + id +
-                ", examination=" + examination +
+        return "Channel{" +
+                "number=" + number +
+                ", examinationEntity_id=" + examination_id +
                 '}';
     }
 }

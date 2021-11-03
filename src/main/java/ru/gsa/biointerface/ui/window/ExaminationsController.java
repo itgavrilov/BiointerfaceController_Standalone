@@ -31,7 +31,7 @@ public class ExaminationsController extends AbstractWindow {
     @FXML
     private TableColumn<Examination, String> patientCol;
     @FXML
-    private TableColumn<Examination, Long> deviceIdCol;
+    private TableColumn<Examination, Integer> deviceIdCol;
 
     @FXML
     private TextArea commentField;
@@ -58,7 +58,7 @@ public class ExaminationsController extends AbstractWindow {
             throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
 
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
-        examinations.addAll(examinationService.getAll());
+        examinations.addAll(examinationService.findAll());
         tableView.setItems(examinations);
         startTimeCol.setCellValueFactory(param -> {
             LocalDateTime dateTime = param.getValue().getStartTimeInLocalDateTime();
@@ -101,7 +101,7 @@ public class ExaminationsController extends AbstractWindow {
             String comment = examination.getComment();
             examination.setComment(commentField.getText());
             try {
-                examinationService.update(examination);
+                examinationService.save(examination);
             } catch (Exception e) {
                 examination.setComment(comment);
                 commentField.setText(comment);

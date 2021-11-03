@@ -7,15 +7,16 @@ import ru.gsa.biointerface.domain.entity.*;
 import ru.gsa.biointerface.host.cash.Cash;
 import ru.gsa.biointerface.host.cash.DataListener;
 import ru.gsa.biointerface.host.cash.SampleCash;
-import ru.gsa.biointerface.host.exception.HostException;
 import ru.gsa.biointerface.host.exception.HostNotRunningException;
 import ru.gsa.biointerface.host.exception.HostNotTransmissionException;
 import ru.gsa.biointerface.host.serialport.ControlMessages;
 import ru.gsa.biointerface.host.serialport.DataCollector;
 import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.serialport.SerialPortHost;
+import ru.gsa.biointerface.services.ChannelService;
 import ru.gsa.biointerface.services.DeviceService;
 import ru.gsa.biointerface.services.ExaminationService;
+import ru.gsa.biointerface.services.SampleService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,8 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     private final SerialPortHost serialPortHost;
     private final ExaminationService examinationService;
     private final DeviceService deviceService;
+    private final ChannelService channelService;
+    private final SampleService sampleService;
     private final List<Cash> cashList = new ArrayList<>();
     private final List<ChannelName> channelNames = new ArrayList<>();
 
@@ -43,17 +46,17 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
             throw new NullPointerException("SerialPort is null");
 
         examinationService = ExaminationService.getInstance();
+        channelService = ChannelService.getInstance();
+        sampleService = SampleService.getInstance();
         deviceService = DeviceService.getInstance();
         serialPortHost = new SerialPortHost(serialPort);
         serialPortHost.handler(new SerialPortHandler(this));
 
         serialPortHost.start();
         serialPortHost.sendPackage(ControlMessages.GET_CONFIG);
+        LOGGER.info("Crate connection to serialPort(SystemPortName={})", serialPort.getSystemPortName());
     }
 
-    public PatientRecord getPatientRecord() {
-        return patientRecord;
-    }
 
     @Override
     public void setPatientRecord(PatientRecord patientRecord) {
@@ -70,27 +73,9 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         return device.getAmountChannels();
     }
 
+    @Override
     public Device getDevice() {
         return device;
-    }
-
-    @Override
-    public void setDevice(int id, int amountChannels) {
-        if (id <= 0)
-            throw new IllegalArgumentException("SerialNumber <= 0");
-        if (amountChannels <= 0 || amountChannels > 8)
-            throw new IllegalArgumentException("amountChannels <= 0 or > 8");
-
-        if (device == null || device.getId() != id) {
-            device = new Device(id, amountChannels);
-            examination = null;
-            patientRecord = null;
-
-            for (int i = 0; i < device.getAmountChannels(); i++) {
-                cashList.add(new SampleCash());
-                channelNames.add(null);
-            }
-        }
     }
 
     @Override
@@ -111,20 +96,6 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     }
 
     @Override
-    public void setSampleInChannel(int number, int value) {
-        if (number >= cashList.size() || number < 0)
-            throw new IllegalArgumentException("Number > amount cashList");
-        if (device == null)
-            throw new NullPointerException("Device is null");
-
-        cashList.get(number).add(value);
-
-        if (isRecording()) {
-            examination.setSampleInChannel(number, value);
-        }
-    }
-
-    @Override
     public void setNameInChannel(int number, ChannelName channelName) {
         if (number < 0)
             throw new IllegalArgumentException("Number < 0");
@@ -136,7 +107,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         channelNames.set(number, channelName);
 
         if (examination != null) {
-            examination.setNameInChannel(number, channelName);
+            examination.getChannels().get(number).setChannelName(channelName);
         }
 
         if (channelName != null) {
@@ -156,7 +127,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
             if (Objects.equals(comment, newComment)) {
                 try {
                     examination.setComment(newComment);
-                    examinationService.update(examination);
+                    examinationService.save(examination);
                     LOGGER.info("New comment is set in examination(number={})", examination.getId());
                 } catch (Exception e) {
                     examination.setComment(comment);
@@ -167,7 +138,8 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         }
     }
 
-    public void connect() throws Exception {
+    @Override
+    public void connect() {
         if (!isConnected()) {
             try {
                 serialPortHost.start();
@@ -175,7 +147,6 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
                 LOGGER.info("Connecting to device");
             } catch (Exception e) {
                 LOGGER.error("Host is not running", e);
-                throw e;
             }
         } else {
             LOGGER.warn("Device is already connected");
@@ -241,11 +212,6 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     }
 
     @Override
-    public void setFlagTransmission() {
-        flagTransmission = true;
-    }
-
-    @Override
     public boolean isTransmission() {
         return flagTransmission;
     }
@@ -260,26 +226,18 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
             throw new HostNotTransmissionException();
 
         if (!isRecording()) {
-            examination = new Examination(
-                    patientRecord,
-                    device,
-                    comment);
+            examination = new Examination(patientRecord, device, comment);
+            device = deviceService.save(device);
+            examination = examinationService.save(examination);
 
             for (int i = 0; i < device.getAmountChannels(); i++) {
-                ChannelName channelName = channelNames.get(i);
-                Channel channel = new Channel(i, examination, channelName);
+                Channel channel = new Channel(i, examination, channelNames.get(i));
+                channel = channelService.save(channel);
                 examination.getChannels().add(channel);
             }
 
-            try {
-                deviceService.save(device);
-                examinationService.recordingStart(examination);
-                LOGGER.info("Start recording");
-            } catch (Exception e) {
-                examination = null;
-                LOGGER.error("Error recording started", e);
-                throw new HostException("Error recording started", e);
-            }
+            examinationService.recordingStart(examination);
+            LOGGER.info("Start recording");
         } else {
             LOGGER.warn("Recording is already in progress");
         }
@@ -290,7 +248,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         if (!isRecording())
             throw new HostNotRunningException();
 
-        examinationService.recordingStop(examination);
+        examinationService.recordingStop();
         examination = null;
         LOGGER.info("Stop recording");
     }
@@ -300,7 +258,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         boolean result = false;
 
         if (examination != null) {
-            result = examination.isRecording();
+            result = examinationService.isRecording();
         }
 
         return result;
@@ -316,6 +274,51 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         serialPortHost.sendPackage(ControlMessages.REBOOT);
         disconnect();
         LOGGER.info("Reboot controller");
+    }
+
+    @Override
+    public void setDevice(int serialNumber, int amountChannels) {
+        if (serialNumber <= 0)
+            throw new IllegalArgumentException("SerialNumber <= 0");
+        if (amountChannels <= 0 || amountChannels > 8)
+            throw new IllegalArgumentException("amountChannels <= 0 or > 8");
+
+        if (device == null || device.getId() != serialNumber) {
+            device = new Device(serialNumber, amountChannels);
+            examination = null;
+            patientRecord = null;
+
+            for (int i = 0; i < device.getAmountChannels(); i++) {
+                cashList.add(new SampleCash());
+                channelNames.add(null);
+            }
+        }
+    }
+
+    @Override
+    public void setSampleInChannel(int number, int value) {
+        if (number >= cashList.size() || number < 0)
+            throw new IllegalArgumentException("Number > amount cashList");
+        if (device == null)
+            throw new NullPointerException("Device is null");
+
+        cashList.get(number).add(value);
+
+        if (isRecording()) {
+            try {
+                sampleService.setSampleInChannel(
+                        examination.getChannels().get(number),
+                        value
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void setFlagTransmission() {
+        flagTransmission = true;
     }
 
     @Override
