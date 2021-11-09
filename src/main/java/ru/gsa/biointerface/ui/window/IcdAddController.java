@@ -46,7 +46,9 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void nameChange() {
-        String str = nameField.getText().replaceAll(" {2}.*", "").replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
+        String str = nameField.getText()
+                .replaceAll(" {2}.*", "")
+                .replaceAll("[^a-zA-Zа-яА-Я0-9.:\s]", "");
 
         if (str.length() > 35)
             str = str.substring(0, 35);
@@ -68,7 +70,9 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void versionChange() {
-        String str = versionField.getText().replaceAll("\s.*", "").replaceAll("[^0-9]", "");
+        String str = versionField.getText()
+                .replaceAll("\s.*", "")
+                .replaceAll("[^0-9]", "");
 
         if (str.length() > 2)
             str = str.substring(0, 2);
@@ -90,7 +94,8 @@ public class IcdAddController extends AbstractWindow {
     }
 
     public void commentChange() {
-        String str = commentField.getText().replaceAll("\"'", "");
+        String str = commentField.getText()
+                .replaceAll("\"'", "");
         commentField.setText(str);
         commentField.positionCaret(str.length());
     }

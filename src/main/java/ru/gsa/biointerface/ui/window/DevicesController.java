@@ -57,7 +57,6 @@ public class DevicesController extends AbstractWindow {
         tableView.setItems(devices);
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         amountChannelsCol.setCellValueFactory(new PropertyValueFactory<>("amountChannels"));
-        amountChannelsCol.setStyle("-fx-alignment: center;");
         transitionGUI.show();
     }
 
@@ -86,7 +85,7 @@ public class DevicesController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/Patients.fxml").showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient records: " + e.getMessage());
         }

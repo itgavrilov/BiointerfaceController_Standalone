@@ -6,7 +6,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="1.7976931348623157E308"
             maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="400.0" prefHeight="400.0"
             prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.2"
-            fx:controller="ru.gsa.biointerface.ui.window.PatientRecordAddController">
+            fx:controller="ru.gsa.biointerface.ui.window.PatientAddController">
     <AnchorPane centerShape="false" maxHeight="175.0" maxWidth="205.0" minHeight="175.0" minWidth="205.0"
                 prefHeight="175.0" prefWidth="205.0" scaleShape="false" AnchorPane.leftAnchor="97.5"
                 AnchorPane.topAnchor="5.0">

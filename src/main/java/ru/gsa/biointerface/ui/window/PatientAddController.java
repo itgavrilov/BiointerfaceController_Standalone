@@ -6,9 +6,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.IcdService;
-import ru.gsa.biointerface.services.PatientRecordService;
+import ru.gsa.biointerface.services.PatientService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,8 +18,8 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class PatientRecordAddController extends AbstractWindow {
-    private final PatientRecordService patientRecordService;
+public class PatientAddController extends AbstractWindow {
+    private final PatientService patientService;
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -52,8 +52,8 @@ public class PatientRecordAddController extends AbstractWindow {
     @FXML
     private Button registerAndOpenButton;
 
-    public PatientRecordAddController() throws Exception {
-        patientRecordService = PatientRecordService.getInstance();
+    public PatientAddController() throws Exception {
+        patientService = PatientService.getInstance();
     }
 
     private static Calendar localDateToDate(LocalDate localDate) {
@@ -80,7 +80,7 @@ public class PatientRecordAddController extends AbstractWindow {
 
     @Override
     public String getTitleWindow() {
-        return ": new patient record";
+        return ": new patient";
     }
 
     @Override
@@ -275,7 +275,7 @@ public class PatientRecordAddController extends AbstractWindow {
 
     public void onAddButtonPush() {
         try {
-            PatientRecord patientRecord = new PatientRecord(
+            Patient patient = new Patient(
                     Integer.parseInt(externalIDField.getText().trim()),
                     secondNameField.getText().trim(),
                     firstNameField.getText().trim(),
@@ -284,18 +284,18 @@ public class PatientRecordAddController extends AbstractWindow {
                     icdComboBox.getValue(),
                     commentField.getText().trim()
             );
-            patientRecordService.save(patientRecord);
+            patientService.save(patient);
         } catch (Exception e) {
-            new AlertError("Error create new patient record: " + e.getMessage());
+            new AlertError("Error create new patient: " + e.getMessage());
         }
         onBackButtonPush();
     }
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/Patients.fxml").showWindow();
         } catch (Exception e) {
-            new AlertError("Error load patient records: " + e.getMessage());
+            new AlertError("Error load patients: " + e.getMessage());
         }
     }
 

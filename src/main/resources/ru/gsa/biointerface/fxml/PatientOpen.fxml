@@ -7,7 +7,7 @@
             minHeight="400.0"
             minWidth="500.0" prefHeight="400.0" prefWidth="500.0"
             xmlns="http://javafx.com/javafx/11.0.2"
-            fx:controller="ru.gsa.biointerface.ui.window.PatientRecordOpenController">
+            fx:controller="ru.gsa.biointerface.ui.window.PatientOpenController">
     <AnchorPane maxHeight="90.0" maxWidth="230.0" minHeight="90.0" minWidth="230.0" prefHeight="90.0" prefWidth="230.0"
                 AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
         <Text fx:id="icdText" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="150.0"

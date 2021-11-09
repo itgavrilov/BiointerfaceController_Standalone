@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Device;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.host.ConnectionToDeviceHandlerFactory;
 import ru.gsa.biointerface.host.HostHandler;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 07.11.2019.
  */
-public class MeteringController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
+public class MeteringController extends AbstractWindow implements WindowWithProperty<Patient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeteringController.class);
     private static MeteringController instants;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -53,7 +53,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
     };
     private HostHandler hostHandler;
-    private PatientRecord patientRecord;
+    private Patient patient;
     @FXML
     private AnchorPane anchorPaneControl;
     @FXML
@@ -106,31 +106,39 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
     }
 
     @Override
-    public WindowWithProperty<PatientRecord> setProperty(PatientRecord patientRecord) {
-        if (patientRecord == null)
-            throw new NullPointerException("patientRecord is null");
+    public WindowWithProperty<Patient> setProperty(Patient patient) {
+        if (patient == null)
+            throw new NullPointerException("patient is null");
 
-        this.patientRecord = patientRecord;
+        this.patient = patient;
 
         return this;
     }
 
     @Override
     public void showWindow() {
-        if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
-        if (patientRecord == null)
-            throw new NullPointerException("servicePatientRecord is null. First call setParameter()");
+        if (resourceSource == null || transitionGUI == null) {
+            throw new NullPointerException("" +
+                    "resourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()" +
+                    "");
+        }
+        if (patient == null) {
+            throw new NullPointerException("" +
+                    "servicePatientRecord is null. " +
+                    "First call setParameter()" +
+                    "");
+        }
 
-        patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
-        secondNameText.setText(patientRecord.getSecondName());
-        firstNameText.setText(patientRecord.getFirstName());
-        patronymicText.setText(patientRecord.getPatronymic());
-        birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
+        patientRecordIdText.setText(String.valueOf(patient.getId()));
+        secondNameText.setText(patient.getSecondName());
+        firstNameText.setText(patient.getFirstName());
+        patronymicText.setText(patient.getPatronymic());
+        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
         deviceComboBox.setConverter(converter);
 
-        if (patientRecord.getIcd() != null) {
-            Icd icd = patientRecord.getIcd();
+        if (patient.getIcd() != null) {
+            Icd icd = patient.getIcd();
             icdText.setText(icd.getName() + " (ICD-" + icd.getVersion() + ")");
         } else {
             icdText.setText("-");
@@ -158,7 +166,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
             try {
                 hostHandler = connectionToDeviceHandlerFactory.getConnection(deviceComboBox.getValue());
                 hostHandler.connect();
-                hostHandler.setPatientRecord(patientRecord);
+                hostHandler.setPatient(patient);
                 buildingChannelsGUIs();
                 if (hostHandler.isConnected()) {
                     controlInterface(true);
@@ -184,7 +192,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
                     );
             ChannelForMeteringController graphController = node.getController();
 
-            graphController.setNumberOfChannel(i);
+            graphController.setNumber(i);
             graphController.setConnection(hostHandler);
             graphController.setCapacity(capacity);
             hostHandler.setListenerInChannel(i, graphController);
@@ -292,11 +300,11 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         }
         try {
             //noinspection unchecked
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
-                    .setProperty(patientRecord)
+            ((WindowWithProperty<Patient>) generateNewWindow("fxml/PatientOpen.fxml"))
+                    .setProperty(patient)
                     .showWindow();
         } catch (Exception e) {
-            new AlertError("Error load patient record: " + e.getMessage());
+            new AlertError("Error load patient: " + e.getMessage());
         }
     }
 

@@ -2,14 +2,14 @@ package ru.gsa.biointerface.host;
 
 import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.domain.entity.Device;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.host.cash.DataListener;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public interface HostHandler {
-    void setPatientRecord(PatientRecord patientRecord);
+    void setPatient(Patient patient);
 
     int getAmountChannels();
 

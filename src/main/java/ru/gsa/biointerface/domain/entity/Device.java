@@ -24,7 +24,7 @@ public class Device implements Serializable, Comparable<Device> {
     @NotNull(message = "Amount channels can't be null")
     @Min(value = 1, message = "Amount channels can't be lass then 1")
     @Max(value = 8, message = "Amount channels can't be more than 8")
-    @Column(nullable = false)
+    @Column(name = "amount_channels", nullable = false)
     private int amountChannels;
 
     @Size(max = 400, message = "Comment can't be more than 400 chars")

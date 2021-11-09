@@ -15,9 +15,9 @@ import java.util.TreeSet;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-@Entity(name = "patientRecord")
-@Table(name = "patientRecord")
-public class PatientRecord implements Serializable, Comparable<PatientRecord> {
+@Entity(name = "patient")
+@Table(name = "patient")
+public class Patient implements Serializable, Comparable<Patient> {
     @NotNull(message = "Id can't be null")
     @Min(value = 1, message = "Id can't be lass then 1")
     @Id
@@ -26,13 +26,13 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     @NotNull(message = "Second name can't be null")
     @NotBlank(message = "Second name can't be blank")
     @Size(min = 3, max = 20, message = "Second name should be have chars between 3-20")
-    @Column(nullable = false, length = 20)
+    @Column(name = "second_name", nullable = false, length = 20)
     private String secondName;
 
     @NotNull(message = "First name can't be null")
     @NotBlank(message = "First name can't be blank")
     @Size(min = 3, max = 20, message = "First name should be have chars between 3-20")
-    @Column(nullable = false, length = 20)
+    @Column(name = "first_name", nullable = false, length = 20)
     private String firstName;
 
     @NotNull(message = "Patronymic can't be null")
@@ -56,13 +56,13 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     private String comment;
 
     @NotNull(message = "Examinations can't be null")
-    @OneToMany(mappedBy = "patientRecord", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<Examination> examinations;
 
-    public PatientRecord() {
+    public Patient() {
     }
 
-    public PatientRecord(int id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment) {
+    public Patient(int id, String secondName, String firstName, String patronymic, Calendar birthday, Icd icd, String comment) {
         this.id = id;
         this.secondName = secondName;
         this.firstName = firstName;
@@ -150,7 +150,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PatientRecord that = (PatientRecord) o;
+        Patient that = (Patient) o;
         return id == that.id;
     }
 
@@ -160,7 +160,7 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
     }
 
     @Override
-    public int compareTo(PatientRecord o) {
+    public int compareTo(Patient o) {
         int result = 0;
 
         if (id > o.id) {
@@ -185,8 +185,8 @@ public class PatientRecord implements Serializable, Comparable<PatientRecord> {
 
         return "PatientRecord{" +
                 "id=" + id +
-                ", secondName='" + secondName + '\'' +
-                ", firstName='" + firstName + '\'' +
+                ", second_name='" + secondName + '\'' +
+                ", first_name='" + firstName + '\'' +
                 ", patronymic='" + patronymic + '\'' +
                 ", birthday=" + birthday +
                 ", icd_id=" + icd_id +

@@ -31,11 +31,11 @@ public final class ChannelForMeteringController implements DataListener, Content
     private ChannelName channelName;
     private HostHandler hostHandler;
     private ChannelCheckBox checkBox;
-    private int numberOfChannel;
+    private int number;
     private final StringConverter<ChannelName> converter = new StringConverter<>() {
         @Override
         public String toString(ChannelName channelName) {
-            return getChannelName(numberOfChannel, channelName);
+            return getChannelName(number, channelName);
         }
 
         @Override
@@ -80,11 +80,11 @@ public final class ChannelForMeteringController implements DataListener, Content
         nameComboBox.setConverter(converter);
     }
 
-    public void setNumberOfChannel(int numberOfChannel) {
-        if (numberOfChannel < 0)
-            throw new IllegalArgumentException("NumberOfChannel < 0");
+    public void setNumber(int number) {
+        if (number < 0)
+            throw new IllegalArgumentException("Number < 0");
 
-        this.numberOfChannel = numberOfChannel;
+        this.number = number;
     }
 
     public void setConnection(HostHandler hostHandler) {
@@ -107,22 +107,22 @@ public final class ChannelForMeteringController implements DataListener, Content
 
     public void nameComboBoxSelect() {
         channelName = nameComboBox.getValue();
-        hostHandler.setNameInChannel(numberOfChannel, channelName);
-        checkBox.setText(getChannelName(numberOfChannel, channelName));
+        hostHandler.setNameInChannel(number, channelName);
+        checkBox.setText(getChannelName(number, channelName));
     }
 
     public void setCheckBox(ChannelCheckBox checkBox) {
         if (checkBox == null)
             throw new NullPointerException("checkBox is null");
 
-        String channelName = getChannelName(numberOfChannel, this.channelName);
+        String channelName = getChannelName(number, this.channelName);
 
         this.checkBox = checkBox;
         checkBox.setText(channelName);
     }
 
     @Override
-    public void setNewSamples(Deque<Integer> data) {
+    public void addSamples(Deque<Integer> data) {
         samples.addAll(data);
         Platform.runLater(this::filling);
     }
@@ -190,11 +190,11 @@ public final class ChannelForMeteringController implements DataListener, Content
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChannelForMeteringController that = (ChannelForMeteringController) o;
-        return numberOfChannel == that.numberOfChannel;
+        return number == that.number;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(numberOfChannel);
+        return Objects.hash(number);
     }
 }

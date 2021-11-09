@@ -70,7 +70,7 @@ public class IcdService {
             throw new IllegalArgumentException("Name is blank");
         if (entity.getVersion() <= 0)
             throw new IllegalArgumentException("Version <= 0");
-        if (entity.getPatientRecords() == null)
+        if (entity.getPatients() == null)
             throw new NullPointerException("PatientRecords is null");
 
 

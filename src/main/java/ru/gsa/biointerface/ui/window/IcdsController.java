@@ -46,8 +46,12 @@ public class IcdsController extends AbstractWindow {
 
     @Override
     public void showWindow() throws Exception {
-        if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+        if (resourceSource == null || transitionGUI == null) {
+            throw new NullPointerException("" +
+                    "resourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()" +
+                    "");
+        }
 
         ObservableList<Icd> icds = FXCollections.observableArrayList();
         icds.addAll(icdService.findAll());
@@ -83,7 +87,7 @@ public class IcdsController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/Patients.fxml").showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient records: " + e.getMessage());
         }

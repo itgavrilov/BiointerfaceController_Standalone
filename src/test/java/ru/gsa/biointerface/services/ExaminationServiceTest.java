@@ -22,7 +22,7 @@ import java.util.*;
  */
 class ExaminationServiceTest {
     private static final String comment = "testComment";
-    private static final PatientRecord patientRecord = new PatientRecord(
+    private static final Patient patient = new Patient(
             1,
             "secondNameTest",
             "firstNameTest",
@@ -44,13 +44,13 @@ class ExaminationServiceTest {
         channelRepository = ChannelRepositoryImpl.getInstance();
         sampleRepository = SampleRepositoryImpl.getInstance();
 
-        PatientRecordRepositoryImpl.getInstance().save(patientRecord);
+        PatientRepositoryImpl.getInstance().save(patient);
         DeviceRepositoryImpl.getInstance().save(device);
     }
 
     @AfterAll
     static void tearDown() throws Exception {
-        PatientRecordRepositoryImpl.getInstance().delete(patientRecord);
+        PatientRepositoryImpl.getInstance().delete(patient);
         DeviceRepositoryImpl.getInstance().delete(device);
     }
 
@@ -61,7 +61,7 @@ class ExaminationServiceTest {
 
     @Test
     void findAll() throws Exception {
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = repository.save(entity);
 
         List<Examination> examinations = service.findAll();
@@ -72,14 +72,14 @@ class ExaminationServiceTest {
 
     @Test
     void getByPatientRecord() {
-        Examination entity = new Examination(patientRecord, device, comment);
-        PatientRecord patientRecordTest = entity.getPatientRecord();
-        Assertions.assertEquals(patientRecord, patientRecordTest);
+        Examination entity = new Examination(patient, device, comment);
+        Patient patientTest = entity.getPatient();
+        Assertions.assertEquals(patient, patientTest);
     }
 
     @Test
     void findById() throws Exception {
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = repository.save(entity);
 
         Assertions.assertThrows(
@@ -104,7 +104,7 @@ class ExaminationServiceTest {
                 NullPointerException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setStartTime(null);
                     service.save(entityTest);
                 });
@@ -112,7 +112,7 @@ class ExaminationServiceTest {
                 NullPointerException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setDevice(null);
                     service.save(entityTest);
                 });
@@ -120,27 +120,27 @@ class ExaminationServiceTest {
                 NullPointerException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
-                    entityTest.setPatientRecord(null);
+                            new Examination(patient, device, comment);
+                    entityTest.setPatient(null);
                     service.save(entityTest);
                 });
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setChannels(null);
                     service.save(entityTest);
                 });
 
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = service.save(entity);
         Optional<Examination> optionalEntityTest = repository.findById(entity.getId());
         Assertions.assertTrue(optionalEntityTest.isPresent());
         Examination entityTest = optionalEntityTest.get();
         Assertions.assertEquals(entity, entityTest);
         Assertions.assertEquals(device, entityTest.getDevice());
-        Assertions.assertEquals(patientRecord, entityTest.getPatientRecord());
+        Assertions.assertEquals(patient, entityTest.getPatient());
         Assertions.assertEquals(comment, entityTest.getComment());
         entity = entityTest;
 
@@ -159,7 +159,7 @@ class ExaminationServiceTest {
         Assertions.assertEquals(entity, optionalEntityTest.get());
         entityTest = optionalEntityTest.get();
         Assertions.assertEquals(device, entityTest.getDevice());
-        Assertions.assertEquals(patientRecord, entityTest.getPatientRecord());
+        Assertions.assertEquals(patient, entityTest.getPatient());
         Assertions.assertEquals(commentTest, entityTest.getComment());
 
         repository.delete(entityTest);
@@ -179,13 +179,13 @@ class ExaminationServiceTest {
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> service.recordingStart(
-                        new Examination(patientRecord, null, comment)
+                        new Examination(patient, null, comment)
                 ));
         Assertions.assertThrows(
                 NullPointerException.class,
                 () -> {
                     Examination entity =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entity.setChannels(null);
                     service.recordingStart(entity);
                 });
@@ -193,11 +193,11 @@ class ExaminationServiceTest {
                 IllegalArgumentException.class,
                 () -> {
                     Examination entity =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entity.setChannels(new ArrayList<>());
                     service.recordingStart(entity);
                 });
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity.getChannels().add(null);
         Examination finalEntity = entity;
         Assertions.assertThrows(
@@ -231,7 +231,7 @@ class ExaminationServiceTest {
 
     @Test
     void recordingStop() throws Exception {
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = repository.save(entity);
         Channel channel = new Channel(0, entity, null);
         channel = channelRepository.save(channel);
@@ -255,7 +255,7 @@ class ExaminationServiceTest {
 
     @Test
     void delete() throws Exception {
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = repository.save(entity);
         Channel channel = new Channel(0, entity, null);
         channel = channelRepository.save(channel);
@@ -272,7 +272,7 @@ class ExaminationServiceTest {
                 IllegalArgumentException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setId(-1);
                     service.delete(entityTest);
                 });
@@ -280,16 +280,16 @@ class ExaminationServiceTest {
                 IllegalArgumentException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setId(0);
                     service.delete(entityTest);
                 });
-        Integer idTest = entity.getId();
+        int idTest = entity.getId();
         Assertions.assertThrows(
                 EntityNotFoundException.class,
                 () -> {
                     Examination entityTest =
-                            new Examination(patientRecord, device, comment);
+                            new Examination(patient, device, comment);
                     entityTest.setId(idTest + 1);
                     service.delete(entityTest);
                 });
@@ -307,7 +307,7 @@ class ExaminationServiceTest {
 
     @Test
     void loadWithGraphsById() throws Exception {
-        Examination entity = new Examination(patientRecord, device, comment);
+        Examination entity = new Examination(patient, device, comment);
         entity = repository.save(entity);
         Channel channel = new Channel(0, entity, null);
         channel = channelRepository.save(channel);
@@ -322,7 +322,7 @@ class ExaminationServiceTest {
 
         Assertions.assertEquals(entity, entityTest);
         Assertions.assertEquals(device, entityTest.getDevice());
-        Assertions.assertEquals(patientRecord, entityTest.getPatientRecord());
+        Assertions.assertEquals(patient, entityTest.getPatient());
         Assertions.assertEquals(comment, entityTest.getComment());
         Assertions.assertEquals(channel, entityTest.getChannels().get(0));
         Assertions.assertEquals(

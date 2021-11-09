@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.ResourceSource;
-import ru.gsa.biointerface.services.PatientRecordService;
+import ru.gsa.biointerface.services.PatientService;
 import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.Window;
 
@@ -23,7 +23,7 @@ import static javafx.scene.layout.AnchorPane.*;
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class ProxyGUI implements TransitionGUI {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientService.class);
     private Stage stage;
     private ResourceSource resourceSource;
     private Window controller;
@@ -104,7 +104,7 @@ public class ProxyGUI implements TransitionGUI {
 
         this.resourceSource = resourceSource;
         try {
-            transition(new FXMLLoader(resourceSource.getResource("fxml/PatientRecords.fxml")))
+            transition(new FXMLLoader(resourceSource.getResource("fxml/Patients.fxml")))
                     .setResourceAndTransition(resourceSource, this)
                     .showWindow();
         } catch (Exception e) {

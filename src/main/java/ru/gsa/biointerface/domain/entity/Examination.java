@@ -28,13 +28,13 @@ public class Examination implements Serializable, Comparable<Examination> {
     @NotNull(message = "Start time can't be null")
     @Past(message = "Start time should be in past")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
+    @Column(name = "starttime", nullable = false)
     private Date startTime;
 
-    @NotNull(message = "Patient record can't be null")
+    @NotNull(message = "Patient can't be null")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "patientRecord_id", referencedColumnName = "id", nullable = false)
-    private PatientRecord patientRecord;
+    @JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
+    private Patient patient;
 
     @NotNull(message = "Device can't be null")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
@@ -52,13 +52,13 @@ public class Examination implements Serializable, Comparable<Examination> {
     public Examination() {
     }
 
-    public Examination(PatientRecord patientRecord, Device device, String comment) {
+    public Examination(Patient patient, Device device, String comment) {
         this.id = -1;
         this.startTime = Timestamp.valueOf(LocalDateTime.now());
         this.comment = comment;
         this.channels = new ArrayList<>();
         this.device = device;
-        this.patientRecord = patientRecord;
+        this.patient = patient;
     }
 
     public int getId() {
@@ -83,12 +83,12 @@ public class Examination implements Serializable, Comparable<Examination> {
                 .toLocalDateTime();
     }
 
-    public PatientRecord getPatientRecord() {
-        return patientRecord;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientRecord(PatientRecord patientRecord) {
-        this.patientRecord = patientRecord;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public Device getDevice() {
@@ -150,7 +150,7 @@ public class Examination implements Serializable, Comparable<Examination> {
         return "Examination{" +
                 "id=" + id +
                 ", dateTime=" + startTime +
-                ", patientRecord_id=" + patientRecord.getId() +
+                ", patient_id=" + patient.getId() +
                 ", device_id=" + device.getId() +
                 '}';
     }

@@ -23,7 +23,7 @@ public class Channel implements Serializable, Comparable<Channel> {
     private Examination examination;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "channelName_id", referencedColumnName = "id")
+    @JoinColumn(name = "channel_name_id", referencedColumnName = "id")
     private ChannelName channelName;
 
     @NotNull(message = "Samples can't be null")
@@ -100,7 +100,7 @@ public class Channel implements Serializable, Comparable<Channel> {
         return "Channel{" +
                 "number=" + id.getNumber() +
                 ", examination_id=" + id.getExamination_id() +
-                ", channelName_id=" + channelNameId +
+                ", channel_name_id=" + channelNameId +
                 '}';
     }
 }

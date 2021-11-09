@@ -7,6 +7,6 @@ import java.util.Deque;
  * Class for caching input data before output.
  */
 public interface DataListener {
-    void setNewSamples(Deque<Integer> data);
+    void addSamples(Deque<Integer> data);
 }
 

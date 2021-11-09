@@ -3,24 +3,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="660.0"
-            maxWidth="1.7976931348623157E308"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPaneRoot" maxHeight="660.0" maxWidth="1.7976931348623157E308"
             minHeight="400.0" minWidth="660.0" prefHeight="400.0" prefWidth="660.0"
-            xmlns="http://javafx.com/javafx/11.0.2"
-            fx:controller="ru.gsa.biointerface.ui.window.PatientRecordsController">
+            xmlns="http://javafx.com/javafx/11.0.2" fx:controller="ru.gsa.biointerface.ui.window.PatientsController">
     <TableView fx:id="tableView" editable="true" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="650.0"
                minHeight="-Infinity" minWidth="650.0" prefWidth="650.0" AnchorPane.bottomAnchor="125.0"
                AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <TableColumn prefWidth="75.0" text="id"/>
         <TableColumn prefWidth="75.0" text="C2"/>
         <columns>
-            <TableColumn fx:id="idCol" maxWidth="80.0" minWidth="80.0" text="id"/>
+            <TableColumn fx:id="idCol" maxWidth="80.0" minWidth="80.0" style="-fx-alignment: center-right;" text="id"/>
             <TableColumn fx:id="secondNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="second name"/>
             <TableColumn fx:id="firstNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="first name"/>
             <TableColumn fx:id="middleNameCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="patronymic"/>
             <TableColumn fx:id="birthdayCol" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" resizable="false"
-                         text="birthday"/>
-            <TableColumn fx:id="icdCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" text="ICD"/>
+                         style="-fx-alignment: center;" text="birthday"/>
+            <TableColumn fx:id="icdCol" maxWidth="125.0" minWidth="125.0" prefWidth="125.0"
+                         style="-fx-alignment: center;" text="ICD"/>
         </columns>
     </TableView>
     <Text layoutX="3.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment to patient record:"

@@ -36,7 +36,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     private final List<ChannelName> channelNames = new ArrayList<>();
 
     private Device device;
-    private PatientRecord patientRecord;
+    private Patient patient;
     private Examination examination;
     private String comment;
     private boolean flagTransmission = false;
@@ -58,14 +58,13 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     }
 
 
-    @Override
-    public void setPatientRecord(PatientRecord patientRecord) {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
+    public void setPatient(Patient patient) {
+        if (patient == null)
+            throw new NullPointerException("Patient is null");
         if (device == null)
             throw new NullPointerException("Device null");
 
-        this.patientRecord = patientRecord;
+        this.patient = patient;
     }
 
     @Override
@@ -187,7 +186,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
             throw new HostNotRunningException();
         if (device == null)
             throw new NullPointerException("Device null");
-        if (patientRecord == null)
+        if (patient == null)
             throw new NullPointerException("PatientRecordService is not init. First call setPatientRecord()");
 
         serialPortHost.sendPackage(ControlMessages.START_TRANSMISSION);
@@ -220,13 +219,13 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
     public void recordingStart() throws Exception {
         if (device == null)
             throw new NullPointerException("Device null");
-        if (patientRecord == null)
+        if (patient == null)
             throw new NullPointerException("PatientRecordService is not init. First call setPatientRecord()");
         if (!flagTransmission)
             throw new HostNotTransmissionException();
 
         if (!isRecording()) {
-            examination = new Examination(patientRecord, device, comment);
+            examination = new Examination(patient, device, comment);
             device = deviceService.save(device);
             examination = examinationService.save(examination);
 
@@ -286,7 +285,7 @@ public class SerialPortHostHandler implements DataCollector, HostHandler {
         if (device == null || device.getId() != serialNumber) {
             device = new Device(serialNumber, amountChannels);
             examination = null;
-            patientRecord = null;
+            patient = null;
 
             for (int i = 0; i < device.getAmountChannels(); i++) {
                 cashList.add(new SampleCash());

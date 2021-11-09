@@ -10,7 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.ExaminationService;
 
 import java.time.LocalDateTime;
@@ -65,11 +65,11 @@ public class ExaminationsController extends AbstractWindow {
             return new SimpleObjectProperty<>(dateTime.format(dateFormatter));
         });
         patientCol.setCellValueFactory(param -> {
-            PatientRecord patientRecord = param.getValue().getPatientRecord();
-            String initials = patientRecord.getSecondName() + " " +
-                    patientRecord.getFirstName().charAt(0) + ".";
-            if (!"".equals(patientRecord.getPatronymic()))
-                initials += patientRecord.getPatronymic().charAt(0) + ".";
+            Patient patient = param.getValue().getPatient();
+            String initials = patient.getSecondName() + " " +
+                    patient.getFirstName().charAt(0) + ".";
+            if (!"".equals(patient.getPatronymic()))
+                initials += patient.getPatronymic().charAt(0) + ".";
 
             return new SimpleObjectProperty<>(initials);
         });
@@ -112,7 +112,7 @@ public class ExaminationsController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/Patients.fxml").showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient records: " + e.getMessage());
         }

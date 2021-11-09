@@ -3,7 +3,7 @@ package ru.gsa.biointerface.repository.impl;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.repository.ExaminationRepository;
 import ru.gsa.biointerface.repository.exception.ReadException;
 
@@ -27,9 +27,10 @@ public class ExaminationRepositoryImpl extends AbstractRepository<Examination, I
         return repository;
     }
 
-    public List<Examination> findAllByPatientRecord(PatientRecord entity) throws Exception {
+    public List<Examination> findAllByPatient(Patient entity) throws Exception {
         try (final Session session = sessionFactory.openSession()) {
-            String hql = "FROM examination where patientRecord_id = :id";
+            //noinspection JpaQlInspection
+            String hql = "FROM examination where patient_id = :id";
             //noinspection unchecked
             Query<Examination> query = session.createQuery(hql);
             query.setParameter("id", entity.getId());

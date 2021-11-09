@@ -13,9 +13,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.ExaminationService;
-import ru.gsa.biointerface.services.PatientRecordService;
+import ru.gsa.biointerface.services.PatientService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,10 +24,10 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class PatientRecordOpenController extends AbstractWindow implements WindowWithProperty<PatientRecord> {
+public class PatientOpenController extends AbstractWindow implements WindowWithProperty<Patient> {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-    private PatientRecord patientRecord;
+    private Patient patient;
     private Examination examination;
     @FXML
     private Text idText;
@@ -52,30 +52,38 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     @FXML
     private Button deleteButton;
 
-    public WindowWithProperty<PatientRecord> setProperty(PatientRecord patientRecord) {
-        if (patientRecord == null)
+    public WindowWithProperty<Patient> setProperty(Patient patient) {
+        if (patient == null)
             throw new NullPointerException("PatientRecord is null");
 
-        this.patientRecord = patientRecord;
+        this.patient = patient;
 
         return this;
     }
 
     @Override
     public void showWindow() {
-        if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
-        if (patientRecord == null)
-            throw new NullPointerException("servicePatientRecord is null. First call setParameter()");
+        if (resourceSource == null || transitionGUI == null) {
+            throw new NullPointerException("" +
+                    "resourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()" +
+                    "");
+        }
+        if (patient == null) {
+            throw new NullPointerException("" +
+                    "servicePatientRecord is null. " +
+                    "First call setParameter()" +
+                    "");
+        }
 
-        idText.setText(String.valueOf(patientRecord.getId()));
-        secondNameText.setText(patientRecord.getSecondName());
-        firstNameText.setText(patientRecord.getFirstName());
-        patronymicText.setText(patientRecord.getPatronymic());
-        birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
+        idText.setText(String.valueOf(patient.getId()));
+        secondNameText.setText(patient.getSecondName());
+        firstNameText.setText(patient.getFirstName());
+        patronymicText.setText(patient.getPatronymic());
+        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
 
-        if (patientRecord.getIcd() != null) {
-            Icd icd = patientRecord.getIcd();
+        if (patient.getIcd() != null) {
+            Icd icd = patient.getIcd();
             icdText.setText(icd.getName() + " (ICD-" + icd.getVersion() + ")");
         } else {
             icdText.setText("-");
@@ -84,7 +92,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
         tableView.getItems().clear();
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
         try {
-            examinations.addAll(ExaminationService.getInstance().findAllByPatientRecord(patientRecord));
+            examinations.addAll(ExaminationService.getInstance().findAllByPatientRecord(patient));
         } catch (Exception e) {
             new AlertError("Error load list examinations: " + e.getMessage());
         }
@@ -105,7 +113,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     @Override
     public String getTitleWindow() {
-        return ": patient record";
+        return ": patients";
     }
 
     @Override
@@ -114,15 +122,15 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     }
 
     public void commentFieldChange() {
-        if (Objects.equals(patientRecord.getComment(), commentField.getText())) {
-            String comment = patientRecord.getComment();
-            patientRecord.setComment(commentField.getText());
+        if (Objects.equals(patient.getComment(), commentField.getText())) {
+            String comment = patient.getComment();
+            patient.setComment(commentField.getText());
             try {
-                PatientRecordService.getInstance().save(patientRecord);
+                PatientService.getInstance().save(patient);
             } catch (Exception e) {
                 commentField.setText(comment);
-                patientRecord.setComment(comment);
-                new AlertError("Error change comment for patient record: " + e.getMessage());
+                patient.setComment(comment);
+                new AlertError("Error change comment for patient: " + e.getMessage());
             }
         }
     }
@@ -130,8 +138,8 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
     public void onAddButtonPush() {
         try {
             //noinspection unchecked
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/Metering.fxml"))
-                    .setProperty(patientRecord)
+            ((WindowWithProperty<Patient>) generateNewWindow("fxml/Metering.fxml"))
+                    .setProperty(patient)
                     .showWindow();
         } catch (Exception e) {
             new AlertError("Error load form for metering: " + e.getMessage());
@@ -171,7 +179,7 @@ public class PatientRecordOpenController extends AbstractWindow implements Windo
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml")
+            generateNewWindow("fxml/Patients.fxml")
                     .showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient records: " + e.getMessage());

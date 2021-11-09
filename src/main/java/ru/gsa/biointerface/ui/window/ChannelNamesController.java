@@ -45,7 +45,10 @@ public class ChannelNamesController extends AbstractWindow {
     @Override
     public void showWindow() throws Exception {
         if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("ResourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException("" +
+                    "ResourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()"
+            );
 
         ObservableList<ChannelName> channelNames = FXCollections.observableArrayList();
         channelNames.addAll(channelNameService.findAll());
@@ -79,7 +82,7 @@ public class ChannelNamesController extends AbstractWindow {
 
     public void onBackButtonPush() {
         try {
-            generateNewWindow("fxml/PatientRecords.fxml").showWindow();
+            generateNewWindow("fxml/Patients.fxml").showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient records: " + e.getMessage());
         }

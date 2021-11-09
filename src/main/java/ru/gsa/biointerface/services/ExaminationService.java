@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.domain.entity.Channel;
 import ru.gsa.biointerface.domain.entity.Examination;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.repository.ExaminationRepository;
 import ru.gsa.biointerface.repository.impl.ExaminationRepositoryImpl;
 
@@ -48,16 +48,16 @@ public class ExaminationService {
         return entities;
     }
 
-    public List<Examination> findAllByPatientRecord(PatientRecord patientRecord) throws Exception {
-        if (patientRecord == null)
-            throw new NullPointerException("PatientRecord is null");
+    public List<Examination> findAllByPatientRecord(Patient patient) throws Exception {
+        if (patient == null)
+            throw new NullPointerException("Patient is null");
 
-        List<Examination> entities = repository.findAllByPatientRecord(patientRecord);
+        List<Examination> entities = repository.findAllByPatient(patient);
 
         if (entities.size() > 0) {
-            LOGGER.info("Get all examinations by patientRecord(id={}) from database", patientRecord.getId());
+            LOGGER.info("Get all examinations by patientRecord(id={}) from database", patient.getId());
         } else {
-            LOGGER.info("Examinations by patientRecord(id={}) is not found in database", patientRecord.getId());
+            LOGGER.info("Examinations by patientRecord(id={}) is not found in database", patient.getId());
         }
 
         return entities;
@@ -86,7 +86,7 @@ public class ExaminationService {
             throw new NullPointerException("Entity is null");
         if (entity.getStartTime() == null)
             throw new NullPointerException("StartTime is null");
-        if (entity.getPatientRecord() == null)
+        if (entity.getPatient() == null)
             throw new NullPointerException("PatientRecord is null");
         if (entity.getDevice() == null)
             throw new NullPointerException("Device is null");
@@ -134,7 +134,7 @@ public class ExaminationService {
     public void recordingStart(Examination entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
-        if (entity.getPatientRecord() == null)
+        if (entity.getPatient() == null)
             throw new NullPointerException("PatientRecord is null");
         if (entity.getDevice() == null)
             throw new NullPointerException("Device is null");

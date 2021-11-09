@@ -23,7 +23,7 @@ public final class SampleCash implements Cash {
         data.add(val);
         if (data.size() > 15) {
             if (listener != null) {
-                listener.setNewSamples(data);
+                listener.addSamples(data);
             }
             data.clear();
         }

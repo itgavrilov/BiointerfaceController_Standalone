@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.entity.Channel;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
+import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.ui.window.AbstractWindow;
 import ru.gsa.biointerface.ui.window.AlertError;
@@ -83,23 +83,31 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
     @Override
     public void showWindow() throws Exception {
-        if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
-        if (examination == null)
-            throw new NullPointerException("examinationService is null. First call setParameter()");
+        if (resourceSource == null || transitionGUI == null) {
+            throw new NullPointerException("" +
+                    "resourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()" +
+                    "");
+        }
+        if (examination == null) {
+            throw new NullPointerException("" +
+                    "examinationService is null. " +
+                    "First call setParameter()" +
+                    "");
+        }
 
         examination = examinationService.loadWithGraphsById(examination.getId());
         idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
         dateTimeText.setText(examination.getStartTimeInLocalDateTime().format(dateTimeFormatter));
-        PatientRecord patientRecord = examination.getPatientRecord();
-        patientRecordIdText.setText(String.valueOf(patientRecord.getId()));
-        secondNameText.setText(patientRecord.getSecondName());
-        firstNameText.setText(patientRecord.getFirstName());
-        patronymicText.setText(patientRecord.getPatronymic());
-        birthdayText.setText(patientRecord.getBirthdayInLocalDate().format(dateFormatter));
+        Patient patient = examination.getPatient();
+        patientRecordIdText.setText(String.valueOf(patient.getId()));
+        secondNameText.setText(patient.getSecondName());
+        firstNameText.setText(patient.getFirstName());
+        patronymicText.setText(patient.getPatronymic());
+        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
 
-        if (patientRecord.getIcd() != null) {
-            Icd icd = patientRecord.getIcd();
+        if (patient.getIcd() != null) {
+            Icd icd = patient.getIcd();
             icdText.setText(icd.getName() + " (ICD-" + icd.getVersion() + ")");
         } else {
             icdText.setText("-");
@@ -180,8 +188,8 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
     public void onBack() {
         try {
             //noinspection unchecked
-            ((WindowWithProperty<PatientRecord>) generateNewWindow("fxml/PatientRecordOpen.fxml"))
-                    .setProperty(examination.getPatientRecord())
+            ((WindowWithProperty<Patient>) generateNewWindow("fxml/PatientOpen.fxml"))
+                    .setProperty(examination.getPatient())
                     .showWindow();
         } catch (Exception e) {
             new AlertError("Error load patient record: " + e.getMessage());

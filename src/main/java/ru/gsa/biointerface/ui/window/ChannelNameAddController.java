@@ -26,7 +26,10 @@ public class ChannelNameAddController extends AbstractWindow {
     @Override
     public void showWindow() {
         if (resourceSource == null || transitionGUI == null)
-            throw new NullPointerException("resourceSource or transitionGUI is null. First call setResourceAndTransition()");
+            throw new NullPointerException("" +
+                    "resourceSource or transitionGUI is null. " +
+                    "First call setResourceAndTransition()" +
+                    "");
 
         transitionGUI.show();
     }

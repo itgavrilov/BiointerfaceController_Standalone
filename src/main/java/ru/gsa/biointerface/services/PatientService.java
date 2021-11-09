@@ -2,9 +2,9 @@ package ru.gsa.biointerface.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.gsa.biointerface.domain.entity.PatientRecord;
-import ru.gsa.biointerface.repository.PatientRecordRepository;
-import ru.gsa.biointerface.repository.impl.PatientRecordRepositoryImpl;
+import ru.gsa.biointerface.domain.entity.Patient;
+import ru.gsa.biointerface.repository.PatientRepository;
+import ru.gsa.biointerface.repository.impl.PatientRepositoryImpl;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -13,25 +13,25 @@ import java.util.Optional;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-public class PatientRecordService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatientRecordService.class);
-    private static PatientRecordService instance = null;
-    private final PatientRecordRepository repository;
+public class PatientService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientService.class);
+    private static PatientService instance = null;
+    private final PatientRepository repository;
 
-    private PatientRecordService() throws Exception {
-        repository = PatientRecordRepositoryImpl.getInstance();
+    private PatientService() throws Exception {
+        repository = PatientRepositoryImpl.getInstance();
     }
 
-    public static PatientRecordService getInstance() throws Exception {
+    public static PatientService getInstance() throws Exception {
         if (instance == null) {
-            instance = new PatientRecordService();
+            instance = new PatientService();
         }
 
         return instance;
     }
 
-    public List<PatientRecord> findAll() throws Exception {
-        List<PatientRecord> entities = repository.findAll();
+    public List<Patient> findAll() throws Exception {
+        List<Patient> entities = repository.findAll();
 
         if (entities.size() > 0) {
             LOGGER.info("Get all patientRecords from database");
@@ -42,13 +42,13 @@ public class PatientRecordService {
         return entities;
     }
 
-    public PatientRecord findById(Integer id) throws Exception {
+    public Patient findById(Integer id) throws Exception {
         if (id == null)
             throw new NullPointerException("Id is null");
         if (id <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Optional<PatientRecord> optional = repository.findById(id);
+        Optional<Patient> optional = repository.findById(id);
 
         if (optional.isPresent()) {
             LOGGER.info("Get patientRecord(id={}) from database", optional.get().getId());
@@ -61,7 +61,7 @@ public class PatientRecordService {
         }
     }
 
-    public void save(PatientRecord entity) throws Exception {
+    public void save(Patient entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
@@ -87,13 +87,13 @@ public class PatientRecordService {
         LOGGER.info("PatientRecord(id={}) is recorded in database", entity.getId());
     }
 
-    public void delete(PatientRecord entity) throws Exception {
+    public void delete(Patient entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
         if (entity.getId() <= 0)
             throw new IllegalArgumentException("Id <= 0");
 
-        Optional<PatientRecord> optional = repository.findById(entity.getId());
+        Optional<Patient> optional = repository.findById(entity.getId());
 
         if (optional.isPresent()) {
             repository.delete(optional.get());

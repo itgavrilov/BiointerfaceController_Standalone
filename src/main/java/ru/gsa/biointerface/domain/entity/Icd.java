@@ -35,7 +35,7 @@ public class Icd implements Serializable, Comparable<Icd> {
 
     @NotNull(message = "Patient records can't be null")
     @OneToMany(mappedBy = "icd", fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<PatientRecord> patientRecords;
+    private Set<Patient> patients;
 
     public Icd() {
     }
@@ -45,7 +45,7 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.name = name;
         this.version = version;
         this.comment = comment;
-        this.patientRecords = new TreeSet<>();
+        this.patients = new TreeSet<>();
     }
 
     public int getId() {
@@ -80,12 +80,12 @@ public class Icd implements Serializable, Comparable<Icd> {
         this.comment = comment;
     }
 
-    public Set<PatientRecord> getPatientRecords() {
-        return patientRecords;
+    public Set<Patient> getPatients() {
+        return patients;
     }
 
-    public void setPatientRecords(Set<PatientRecord> patientRecords) {
-        this.patientRecords = patientRecords;
+    public void setPatients(Set<Patient> patients) {
+        this.patients = patients;
     }
 
     @Override

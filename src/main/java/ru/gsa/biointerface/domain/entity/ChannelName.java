@@ -12,8 +12,8 @@ import java.util.TreeSet;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
-@Entity(name = "channelName")
-@Table()
+@Entity(name = "channel_name")
+@Table(name = "channel_name")
 public class ChannelName implements Serializable, Comparable<ChannelName> {
     @NotNull(message = "Id can't be null")
     @Id

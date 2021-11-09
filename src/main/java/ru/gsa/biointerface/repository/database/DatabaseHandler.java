@@ -30,7 +30,7 @@ public class DatabaseHandler implements Database {
                         .addAnnotatedClass(Examination.class)
                         .addAnnotatedClass(Device.class)
                         .addAnnotatedClass(ChannelName.class)
-                        .addAnnotatedClass(PatientRecord.class)
+                        .addAnnotatedClass(Patient.class)
                         .addAnnotatedClass(Icd.class);
                 instance = new DatabaseHandler(cfg.buildSessionFactory());
                 LOGGER.info("Successful database connection");
@@ -55,7 +55,7 @@ public class DatabaseHandler implements Database {
                         .addAnnotatedClass(Examination.class)
                         .addAnnotatedClass(Device.class)
                         .addAnnotatedClass(ChannelName.class)
-                        .addAnnotatedClass(PatientRecord.class)
+                        .addAnnotatedClass(Patient.class)
                         .addAnnotatedClass(Icd.class);
                 instance = new DatabaseHandler(cfg.buildSessionFactory());
                 LOGGER.info("Successful database connection");
