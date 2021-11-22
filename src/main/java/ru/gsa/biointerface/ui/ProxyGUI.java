@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.gsa.biointerface.ResourceSource;
-import ru.gsa.biointerface.services.PatientService;
+import ru.gsa.biointerface.service.PatientService;
 import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.Window;
 

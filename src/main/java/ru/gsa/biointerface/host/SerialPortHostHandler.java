@@ -13,10 +13,10 @@ import ru.gsa.biointerface.host.serialport.ControlMessages;
 import ru.gsa.biointerface.host.serialport.DataCollector;
 import ru.gsa.biointerface.host.serialport.SerialPortHandler;
 import ru.gsa.biointerface.host.serialport.SerialPortHost;
-import ru.gsa.biointerface.services.ChannelService;
-import ru.gsa.biointerface.services.DeviceService;
-import ru.gsa.biointerface.services.ExaminationService;
-import ru.gsa.biointerface.services.SampleService;
+import ru.gsa.biointerface.service.ChannelService;
+import ru.gsa.biointerface.service.DeviceService;
+import ru.gsa.biointerface.service.ExaminationService;
+import ru.gsa.biointerface.service.SampleService;
 
 import java.util.ArrayList;
 import java.util.List;

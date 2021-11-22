@@ -9,7 +9,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.services.IcdService;
+import ru.gsa.biointerface.service.IcdService;
 
 import java.util.Objects;
 

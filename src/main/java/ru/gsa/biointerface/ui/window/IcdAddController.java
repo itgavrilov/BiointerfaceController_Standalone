@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import ru.gsa.biointerface.domain.entity.Icd;
-import ru.gsa.biointerface.services.IcdService;
+import ru.gsa.biointerface.service.IcdService;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.

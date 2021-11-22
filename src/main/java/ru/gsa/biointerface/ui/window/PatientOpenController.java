@@ -14,8 +14,8 @@ import javafx.scene.text.Text;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.Patient;
-import ru.gsa.biointerface.services.ExaminationService;
-import ru.gsa.biointerface.services.PatientService;
+import ru.gsa.biointerface.service.ExaminationService;
+import ru.gsa.biointerface.service.PatientService;
 
 import java.text.SimpleDateFormat;
 import java.util.Objects;

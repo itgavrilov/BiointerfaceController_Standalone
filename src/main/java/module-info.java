@@ -28,7 +28,7 @@ module ru.gsa.biointerface {
     requires static lombok;
 
     exports ru.gsa.biointerface;
-    exports ru.gsa.biointerface.services;
+    exports ru.gsa.biointerface.service;
     exports ru.gsa.biointerface.domain.entity;
     exports ru.gsa.biointerface.host;
     exports ru.gsa.biointerface.host.cash;

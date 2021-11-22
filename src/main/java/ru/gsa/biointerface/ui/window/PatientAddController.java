@@ -7,8 +7,8 @@ import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.Icd;
 import ru.gsa.biointerface.domain.entity.Patient;
-import ru.gsa.biointerface.services.IcdService;
-import ru.gsa.biointerface.services.PatientService;
+import ru.gsa.biointerface.service.IcdService;
+import ru.gsa.biointerface.service.PatientService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

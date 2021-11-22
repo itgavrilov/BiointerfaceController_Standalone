@@ -13,7 +13,7 @@ import javafx.util.StringConverter;
 import ru.gsa.biointerface.domain.entity.ChannelName;
 import ru.gsa.biointerface.host.HostHandler;
 import ru.gsa.biointerface.host.cash.DataListener;
-import ru.gsa.biointerface.services.ChannelNameService;
+import ru.gsa.biointerface.service.ChannelNameService;
 import ru.gsa.biointerface.ui.window.AlertError;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.ContentForWindow;

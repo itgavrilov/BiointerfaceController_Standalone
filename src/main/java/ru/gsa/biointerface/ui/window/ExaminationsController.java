@@ -11,7 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Patient;
-import ru.gsa.biointerface.services.ExaminationService;
+import ru.gsa.biointerface.service.ExaminationService;
 
 import java.text.SimpleDateFormat;
 import java.util.Objects;

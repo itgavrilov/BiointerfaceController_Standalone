@@ -1,4 +1,4 @@
-package ru.gsa.biointerface.services;
+package ru.gsa.biointerface.service;
 
 import ru.gsa.biointerface.BiointerfaceExeption;
 
