@@ -5,11 +5,6 @@ plugins {
     id 'org.beryx.jlink' version '2.24.1'
 }
 
-def junitVersion = '5.8.1'
-def slf4jVersion = '1.7.32'
-def log4jVersion = '2.14.1'
-def hibernateVersion = '5.6.1.Final'
-
 def defaultEncoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding
 
@@ -19,6 +14,7 @@ java {
     group = 'ru.gsa.biointerface'
     mainClassName = 'ru.gsa.biointerface.Main'
     version = '1.0-SNAPSHOT'
+    modularity.inferModulePath.set(true)
 }
 
 javafx {
@@ -71,14 +67,22 @@ tasks.getByName('jar') {
     }
 }
 
+def junitVersion = '5.8.1'
+def slf4jVersion = '1.7.32'
+def log4jVersion = '2.14.1'
+def hibernateVersion = '5.6.1.Final'
+def lombokVersion = '1.18.22'
+
 dependencies {
+    // сахар дря разработки.
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 //-----------SerialPort----------------------
     implementation("com.fazecast:jSerialComm:2.7.0")
 
 //-----------Logging------------
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")
-    implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-slf4j18-impl:${log4jVersion}")
 
 //-----------Database----------------------
@@ -95,7 +99,7 @@ dependencies {
 
 //-----------Validator for javafx------------
     //implementation 'org.openjfx:javafx:16' // https://mvnrepository.com/artifact/org.openjfx/javafx
-    compileClasspath('net.synedra:validatorfx:0.1.13') {
+    compileClasspath('net.synedra:validatorfx:0.1.14') {
         exclude(group: 'org.openjfx')
     }
 
@@ -104,6 +108,8 @@ dependencies {
     testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
 
 test {

@@ -1,14 +1,15 @@
 package ru.gsa.biointerface.domain.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,11 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "examination")
 @Table(name = "examination")
 public class Examination implements Serializable, Comparable<Examination> {
@@ -28,8 +34,8 @@ public class Examination implements Serializable, Comparable<Examination> {
     @NotNull(message = "Start time can't be null")
     @Past(message = "Start time should be in past")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "starttime", nullable = false)
-    private Date startTime;
+    @Column(nullable = false)
+    private Date starttime;
 
     @NotNull(message = "Patient can't be null")
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
@@ -49,70 +55,23 @@ public class Examination implements Serializable, Comparable<Examination> {
     @OneToMany(mappedBy = "examination", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Channel> channels;
 
-    public Examination() {
-    }
-
     public Examination(Patient patient, Device device, String comment) {
-        this.id = -1;
-        this.startTime = Timestamp.valueOf(LocalDateTime.now());
+        id  = -1;
+        this.starttime = Timestamp.valueOf(LocalDateTime.now());
         this.comment = comment;
-        this.channels = new ArrayList<>();
         this.device = device;
         this.patient = patient;
+        channels = new ArrayList<>();
     }
 
-    public int getId() {
-        return id;
+    public void addChannel(Channel channel) {
+        channels.add(channel);
+        channel.setExamination(this);
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getStartTimeInLocalDateTime() {
-        return startTime.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Device getDevice() {
-        return device;
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public List<Channel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<Channel> channels) {
-        this.channels = channels;
+    public void removeChannel(Channel channel) {
+        channels.remove(channel);
+        channel.setExamination(null);
     }
 
     @Override
@@ -143,14 +102,12 @@ public class Examination implements Serializable, Comparable<Examination> {
 
     @Override
     public String toString() {
-        String startTime = this.getStartTimeInLocalDateTime().format(
-                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
-        );
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyy-MM-dd hh:mm:ss");
 
         return "Examination{" +
                 "id=" + id +
-                ", dateTime=" + startTime +
-                ", patient_id=" + patient.getId() +
+                ", datetime=" + formatter.format(starttime) +
+                ", patientRecord_id=" + patient.getId() +
                 ", device_id=" + device.getId() +
                 '}';
     }

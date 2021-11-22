@@ -24,6 +24,7 @@ import ru.gsa.biointerface.ui.window.WindowWithProperty;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.CompositeNode;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
 public class MeteringController extends AbstractWindow implements WindowWithProperty<Patient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeteringController.class);
     private static MeteringController instants;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
     private final ConnectionToDeviceHandlerFactory connectionToDeviceHandlerFactory = ConnectionToDeviceHandlerFactory.getInstance();
     private final List<CompositeNode<AnchorPane, ChannelForMeteringController>> channelGUIs = new LinkedList<>();
     private final List<ChannelCheckBox> checkBoxesOfChannel = new LinkedList<>();
@@ -134,7 +135,7 @@ public class MeteringController extends AbstractWindow implements WindowWithProp
         secondNameText.setText(patient.getSecondName());
         firstNameText.setText(patient.getFirstName());
         patronymicText.setText(patient.getPatronymic());
-        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
+        birthdayText.setText(dateFormatter.format(patient.getBirthday().getTime()));
         deviceComboBox.setConverter(converter);
 
         if (patient.getIcd() != null) {

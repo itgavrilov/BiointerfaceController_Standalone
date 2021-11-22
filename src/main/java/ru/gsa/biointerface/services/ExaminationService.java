@@ -84,7 +84,7 @@ public class ExaminationService {
     public Examination save(Examination entity) throws Exception {
         if (entity == null)
             throw new NullPointerException("Entity is null");
-        if (entity.getStartTime() == null)
+        if (entity.getStarttime() == null)
             throw new NullPointerException("StartTime is null");
         if (entity.getPatient() == null)
             throw new NullPointerException("PatientRecord is null");

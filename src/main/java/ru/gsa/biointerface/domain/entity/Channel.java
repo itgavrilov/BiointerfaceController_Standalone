@@ -1,5 +1,7 @@
 package ru.gsa.biointerface.domain.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -10,6 +12,11 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "channel")
 @Table(name = "channel")
 public class Channel implements Serializable, Comparable<Channel> {
@@ -30,46 +37,22 @@ public class Channel implements Serializable, Comparable<Channel> {
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Sample> samples;
 
-    public Channel() {
-    }
-
-    public Channel(Integer id, Examination examination, ChannelName channelName) {
-        this.id = new ChannelID(id, examination.getId());
+    public Channel(Integer number, Examination examination, ChannelName channelName) {
+        this.id = new ChannelID(examination.getId(), number);
+        this.examination = examination;
+        this.channelName = channelName;
         this.samples = new LinkedList<>();
-        this.examination = examination;
-        this.channelName = channelName;
     }
 
-    public ChannelID getId() {
-        return id;
+    public void addSample(Sample sample) {
+        sample.setId(new SampleID(samples.size(), id));
+        samples.add(sample);
+        sample.setChannel(this);
     }
 
-    public void setId(ChannelID id) {
-        this.id = id;
-    }
-
-    public Examination getExamination() {
-        return examination;
-    }
-
-    public void setExamination(Examination examination) {
-        this.examination = examination;
-    }
-
-    public ChannelName getChannelName() {
-        return channelName;
-    }
-
-    public void setChannelName(ChannelName channelName) {
-        this.channelName = channelName;
-    }
-
-    public List<Sample> getSamples() {
-        return samples;
-    }
-
-    public void setSamples(List<Sample> samples) {
-        this.samples = samples;
+    public void removeSample(Sample sample) {
+        samples.remove(sample);
+        sample.setChannel(null);
     }
 
     @Override
@@ -100,7 +83,7 @@ public class Channel implements Serializable, Comparable<Channel> {
         return "Channel{" +
                 "number=" + id.getNumber() +
                 ", examination_id=" + id.getExamination_id() +
-                ", channel_name_id=" + channelNameId +
+                ", channelName_id=" + channelNameId +
                 '}';
     }
 }

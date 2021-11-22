@@ -25,6 +25,8 @@ module ru.gsa.biointerface {
 
     requires com.fazecast.jSerialComm;
 
+    requires static lombok;
+
     exports ru.gsa.biointerface;
     exports ru.gsa.biointerface.services;
     exports ru.gsa.biointerface.domain.entity;

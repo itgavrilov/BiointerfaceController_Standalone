@@ -17,16 +17,15 @@ import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.ExaminationService;
 import ru.gsa.biointerface.services.PatientService;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
 public class PatientOpenController extends AbstractWindow implements WindowWithProperty<Patient> {
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
+    private final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private Patient patient;
     private Examination examination;
     @FXML
@@ -80,7 +79,7 @@ public class PatientOpenController extends AbstractWindow implements WindowWithP
         secondNameText.setText(patient.getSecondName());
         firstNameText.setText(patient.getFirstName());
         patronymicText.setText(patient.getPatronymic());
-        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
+        birthdayText.setText(dateFormatter.format(patient.getBirthday().getTime()));
 
         if (patient.getIcd() != null) {
             Icd icd = patient.getIcd();
@@ -97,11 +96,10 @@ public class PatientOpenController extends AbstractWindow implements WindowWithP
             new AlertError("Error load list examinations: " + e.getMessage());
         }
         tableView.setItems(examinations);
-        startTimeCol.setCellValueFactory(param -> {
-            LocalDateTime dateTime = param.getValue().getStartTimeInLocalDateTime();
-            return new SimpleObjectProperty<>(dateTime.format(dateTimeFormatter));
-        });
-        deviceIdCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getDevice().getId()));
+        startTimeCol.setCellValueFactory(param -> new SimpleObjectProperty<>(
+                dateTimeFormatter.format(param.getValue().getStarttime())));
+        deviceIdCol.setCellValueFactory(param -> new SimpleObjectProperty<>(
+                param.getValue().getDevice().getId()));
         tableView.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 onMouseClickedTableView(mouseEvent);

@@ -20,6 +20,7 @@ import ru.gsa.biointerface.ui.window.WindowWithProperty;
 import ru.gsa.biointerface.ui.window.channel.ChannelCheckBox;
 import ru.gsa.biointerface.ui.window.channel.CompositeNode;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,8 +31,8 @@ import java.util.Objects;
  */
 public class ExaminationController extends AbstractWindow implements WindowWithProperty<Examination> {
     private final ExaminationService examinationService;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
+    private final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private final List<CompositeNode<AnchorPane, ChannelController>> channelGUIs = new LinkedList<>();
     private final List<ChannelCheckBox> checkBoxesOfChannel = new LinkedList<>();
     private Examination examination;
@@ -98,13 +99,13 @@ public class ExaminationController extends AbstractWindow implements WindowWithP
 
         examination = examinationService.loadWithGraphsById(examination.getId());
         idDeviceText.setText(String.valueOf(examination.getDevice().getId()));
-        dateTimeText.setText(examination.getStartTimeInLocalDateTime().format(dateTimeFormatter));
+        dateTimeText.setText(dateTimeFormatter.format(examination.getStarttime()));
         Patient patient = examination.getPatient();
         patientRecordIdText.setText(String.valueOf(patient.getId()));
         secondNameText.setText(patient.getSecondName());
         firstNameText.setText(patient.getFirstName());
         patronymicText.setText(patient.getPatronymic());
-        birthdayText.setText(patient.getBirthdayInLocalDate().format(dateFormatter));
+        birthdayText.setText(dateFormatter.format(patient.getBirthday().getTime()));
 
         if (patient.getIcd() != null) {
             Icd icd = patient.getIcd();

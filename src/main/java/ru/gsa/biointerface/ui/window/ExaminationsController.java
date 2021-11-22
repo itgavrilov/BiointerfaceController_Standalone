@@ -13,8 +13,7 @@ import ru.gsa.biointerface.domain.entity.Examination;
 import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.ExaminationService;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 /**
@@ -22,7 +21,7 @@ import java.util.Objects;
  */
 public class ExaminationsController extends AbstractWindow {
     private final ExaminationService examinationService;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private Examination examination;
     @FXML
     private TableView<Examination> tableView;
@@ -60,10 +59,9 @@ public class ExaminationsController extends AbstractWindow {
         ObservableList<Examination> examinations = FXCollections.observableArrayList();
         examinations.addAll(examinationService.findAll());
         tableView.setItems(examinations);
-        startTimeCol.setCellValueFactory(param -> {
-            LocalDateTime dateTime = param.getValue().getStartTimeInLocalDateTime();
-            return new SimpleObjectProperty<>(dateTime.format(dateFormatter));
-        });
+        startTimeCol.setCellValueFactory(param -> new SimpleObjectProperty<>(
+                dateTimeFormatter.format(param.getValue().getStarttime())
+        ));
         patientCol.setCellValueFactory(param -> {
             Patient patient = param.getValue().getPatient();
             String initials = patient.getSecondName() + " " +

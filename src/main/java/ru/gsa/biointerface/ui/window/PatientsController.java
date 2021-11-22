@@ -20,6 +20,7 @@ import ru.gsa.biointerface.domain.entity.Patient;
 import ru.gsa.biointerface.services.IcdService;
 import ru.gsa.biointerface.services.PatientService;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,7 +33,7 @@ public class PatientsController extends AbstractWindow {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientsController.class);
     private final PatientService patientService;
     private final IcdService icdService;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
     private final StringConverter<Icd> converter = new StringConverter<>() {
         @Override
         public String toString(Icd icd) {
@@ -95,8 +96,7 @@ public class PatientsController extends AbstractWindow {
         middleNameCol.setCellValueFactory(new PropertyValueFactory<>("patronymic"));
         birthdayCol.setCellValueFactory(param -> {
             Patient patient = param.getValue();
-            LocalDate birthday = patient.getBirthdayInLocalDate();
-            return new SimpleObjectProperty<>(birthday.format(dateFormatter));
+            return new SimpleObjectProperty<>(dateFormatter.format(patient.getBirthday().getTime()));
         });
         setIcdComboBox();
         transitionGUI.show();

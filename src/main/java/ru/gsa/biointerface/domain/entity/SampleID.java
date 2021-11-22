@@ -1,5 +1,9 @@
 package ru.gsa.biointerface.domain.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import java.io.Serializable;
@@ -8,6 +12,9 @@ import java.util.Objects;
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
  */
+@Getter
+@Setter
+@NoArgsConstructor
 @Embeddable
 public class SampleID implements Serializable, Comparable<SampleID> {
     private int id;
@@ -15,27 +22,8 @@ public class SampleID implements Serializable, Comparable<SampleID> {
     @Embedded
     private ChannelID channel_id;
 
-    public SampleID() {
-    }
-
     public SampleID(Integer id, ChannelID channel_id) {
         this.id = id;
-        this.channel_id = channel_id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public ChannelID getChannel_id() {
-        return channel_id;
-    }
-
-    public void setChannel_id(ChannelID channel_id) {
         this.channel_id = channel_id;
     }
 

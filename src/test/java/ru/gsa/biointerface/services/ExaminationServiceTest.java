@@ -48,12 +48,6 @@ class ExaminationServiceTest {
         DeviceRepositoryImpl.getInstance().save(device);
     }
 
-    @AfterAll
-    static void tearDown() throws Exception {
-        PatientRepositoryImpl.getInstance().delete(patient);
-        DeviceRepositoryImpl.getInstance().delete(device);
-    }
-
     @Test
     void getInstance() throws Exception {
         Assertions.assertSame(service, ExaminationService.getInstance());
@@ -105,7 +99,7 @@ class ExaminationServiceTest {
                 () -> {
                     Examination entityTest =
                             new Examination(patient, device, comment);
-                    entityTest.setStartTime(null);
+                    entityTest.setStarttime(null);
                     service.save(entityTest);
                 });
         Assertions.assertThrows(
@@ -145,8 +139,8 @@ class ExaminationServiceTest {
         entity = entityTest;
 
         String commentTest = comment + "Update";
-        entity.setStartTime(Timestamp.valueOf(LocalDateTime.now()));
-        Date startTimeTest = entity.getStartTime();
+        entity.setStarttime(Timestamp.valueOf(LocalDateTime.now()));
+        Date startTimetest = entity.getStarttime();
         entity.setComment(commentTest);
 
         Examination finalEntity = entity;
