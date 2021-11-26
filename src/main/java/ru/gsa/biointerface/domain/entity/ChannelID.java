@@ -43,6 +43,7 @@ public class ChannelID implements Serializable, Comparable<ChannelID> {
 
     @Override
     public int compareTo(ChannelID o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = examination_id - o.examination_id;
 
         if (result == 0)

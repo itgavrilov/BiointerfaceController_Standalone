@@ -73,6 +73,7 @@ public class Device implements Serializable, Comparable<Device> {
 
     @Override
     public int compareTo(Device o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = 0;
 
         if (id > o.id) {

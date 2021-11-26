@@ -5,10 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Gavrilov Stepan (itgavrilov@gmail.com) on 10.09.2021.
@@ -98,6 +99,7 @@ public class Patient implements Serializable, Comparable<Patient> {
 
     @Override
     public int compareTo(Patient o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = 0;
 
         if (id > o.id) {
@@ -112,7 +114,6 @@ public class Patient implements Serializable, Comparable<Patient> {
     @Override
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
         String icd_id = "-";
 
         if (icd != null) {

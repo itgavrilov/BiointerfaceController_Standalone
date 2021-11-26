@@ -37,8 +37,8 @@ public class Channel implements Serializable, Comparable<Channel> {
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Sample> samples;
 
-    public Channel(Integer number, Examination examination, ChannelName channelName) {
-        this.id = new ChannelID(examination.getId(), number);
+    public Channel(Integer id, Examination examination, ChannelName channelName) {
+        this.id = new ChannelID(id, examination.getId());
         this.examination = examination;
         this.channelName = channelName;
         this.samples = new LinkedList<>();

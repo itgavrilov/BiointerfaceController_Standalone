@@ -45,7 +45,6 @@ public class Icd implements Serializable, Comparable<Icd> {
     private Set<Patient> patients;
 
     public Icd(String name, int version, String comment) {
-        id = -1;
         this.name = name;
         this.version = version;
         this.comment = comment;
@@ -77,6 +76,7 @@ public class Icd implements Serializable, Comparable<Icd> {
 
     @Override
     public int compareTo(Icd o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = 0;
 
         if (id > o.id) {

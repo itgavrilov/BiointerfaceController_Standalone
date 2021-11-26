@@ -42,6 +42,7 @@ public class SampleID implements Serializable, Comparable<SampleID> {
 
     @Override
     public int compareTo(SampleID o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = channel_id.compareTo(o.channel_id);
 
         if (result == 0) {

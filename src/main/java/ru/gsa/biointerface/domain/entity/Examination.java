@@ -56,7 +56,6 @@ public class Examination implements Serializable, Comparable<Examination> {
     private List<Channel> channels;
 
     public Examination(Patient patient, Device device, String comment) {
-        id  = -1;
         this.starttime = Timestamp.valueOf(LocalDateTime.now());
         this.comment = comment;
         this.device = device;
@@ -89,6 +88,7 @@ public class Examination implements Serializable, Comparable<Examination> {
 
     @Override
     public int compareTo(Examination o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = 0;
 
         if (id > o.id) {

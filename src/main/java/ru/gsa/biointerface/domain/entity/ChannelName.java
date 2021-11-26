@@ -42,7 +42,6 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
     private Set<Channel> channels;
 
     public ChannelName(String name, String comment) {
-        id  = -1;
         this.name = name;
         this.comment = comment;
         channels = new TreeSet<>();
@@ -73,6 +72,7 @@ public class ChannelName implements Serializable, Comparable<ChannelName> {
 
     @Override
     public int compareTo(ChannelName o) {
+        if (o == null || getClass() != o.getClass()) return -1;
         int result = 0;
 
         if (id > o.id) {
